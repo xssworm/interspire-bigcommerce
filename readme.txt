@@ -60,10 +60,18 @@ Yes, this plugin requires either a BigCommerce account or an Interspire Shopping
 
 == Changelog ==
 
+= 1.0.1 = 
+* Fixes possible `Uncaught exception 'Exception' with message 'String could not be parsed as XML` error
+* Added error notice if PHP5 is not supported.
+
 = 1.0 =
 * Initial launch
 
 == Upgrade Notice ==
+
+= 1.0.1 = 
+* Fixes possible `Uncaught exception 'Exception' with message 'String could not be parsed as XML` error
+* Added error notice if PHP5 is not supported.
 
 = 1.0 = 
 * Blastoff!

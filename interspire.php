@@ -4,7 +4,7 @@ Plugin Name: Interspire & BigCommerce
 Plugin URI: http://www.seodenver.com/interspire-bigcommerce-wordpress/
 Description: Integrate Interspire and BigCommerce products into your WordPress content
 Author: Katz Web Services, Inc.
-Version: 1.0
+Version: 1.0.1
 Author URI: http://www.katzwebservices.com
 */
 
@@ -12,9 +12,18 @@ add_action('init', array('WP_Interspire','init'),1);
 
 class WP_Interspire {
 	
+	function php5() {
+		echo self::make_notice_box('Your server does not support PHP5, which is required to run the Interspire &amp; BigCommerce plugin. Please contact your host and have them upgrade your server configuration.', 'error');
+	}
+	
 	function init() {
 		if(!defined("INT_CURRENT_PAGE")) { define("INT_CURRENT_PAGE", basename($_SERVER['PHP_SELF'])); }
 		
+		if(!class_exists('SimpleXMLElement')) {
+			add_action('admin_notices', array('WP_Interspire','php5'),9999);
+			return false;
+		}
+				
 		if(is_admin() && in_array(INT_CURRENT_PAGE, array('post.php', 'page.php', 'page-new.php', 'post-new.php', 'wpinterspire'))) {
 		    new WP_Interspire();
 		 	$plugin_dir = basename(dirname(__FILE__)).'languages';
@@ -409,7 +418,14 @@ EOD;
 		}		
 		
 		if($asobject) {
-			$response = new SimpleXMLElement($result, LIBXML_NOCDATA);  // @simplexml_load_string($result);
+			
+			// Begin added 1.0.1
+			try {
+				$response = new SimpleXMLElement($result, LIBXML_NOCDATA);  // @simplexml_load_string($result);
+			} catch (Exception $e) {
+				
+			}			
+			// End 1.0.1
 					
 			if(!is_object($response)) {
 				return false;
@@ -436,15 +452,12 @@ EOD;
                     return;
                 }
 
-//                var form_name = jQuery("#add_product_id option[value='" + form_id + "']").text().replace(" ", "");
                 var display_title = jQuery("#display_title").val();
                 
                 var link_target = '';
                 var link_nofollow = '';
                 if(jQuery("#link_target").is(":checked")) { link_target = ' target=blank'; }
                 if(jQuery("#link_nofollow").is(":checked")) { link_nofollow = ' rel=nofollow'; }
-  //              var title_qs = !display_title ? " title=false" : "";
-//                var description_qs = !display_description ? " description=false" : "";
 
                 var win = window.dialogArguments || opener || parent || top;
                 win.send_to_editor("[interspire link=" + product_id + ""+link_target+link_nofollow+"]"+display_title+"[/interspire]");
