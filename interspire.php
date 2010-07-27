@@ -4,7 +4,7 @@ Plugin Name: Interspire & BigCommerce
 Plugin URI: http://www.seodenver.com/interspire-bigcommerce-wordpress/
 Description: Integrate Interspire and BigCommerce products into your WordPress content
 Author: Katz Web Services, Inc.
-Version: 1.0.1
+Version: 1.0.2
 Author URI: http://www.katzwebservices.com
 */
 
@@ -12,56 +12,64 @@ add_action('init', array('WP_Interspire','init'),1);
 
 class WP_Interspire {
 	
+	public $configured = false;
+	
 	function php5() {
 		echo self::make_notice_box('Your server does not support PHP5, which is required to run the Interspire &amp; BigCommerce plugin. Please contact your host and have them upgrade your server configuration.', 'error');
 	}
 	
 	function init() {
-		if(!defined("INT_CURRENT_PAGE")) { define("INT_CURRENT_PAGE", basename($_SERVER['PHP_SELF'])); }
-		
-		if(!class_exists('SimpleXMLElement')) {
-			add_action('admin_notices', array('WP_Interspire','php5'),9999);
-			return false;
-		}
+		if(is_admin()) {
+			$WPI = new WP_Interspire();
+
+			if(in_array(basename($_SERVER['PHP_SELF']), array('post.php', 'page.php', 'page-new.php', 'post-new.php', 'wpinterspire'))) {
+				$plugin_dir = basename(dirname(__FILE__)).'languages';
+				load_plugin_textdomain( 'wpinterspire', 'wp-content/plugins/' . $plugin_dir, $plugin_dir );
 				
-		if(is_admin() && in_array(INT_CURRENT_PAGE, array('post.php', 'page.php', 'page-new.php', 'post-new.php', 'wpinterspire'))) {
-		    new WP_Interspire();
-		 	$plugin_dir = basename(dirname(__FILE__)).'languages';
-			load_plugin_textdomain( 'wpinterspire', 'wp-content/plugins/' . $plugin_dir, $plugin_dir );
+				if($WPI->configured) {	
+					wp_enqueue_style('media');
+					add_action('admin_footer',  array(&$WPI, 'int_add_mce_popup'));
+					add_action('media_buttons_context', array(&$WPI, 'add_interspire_button'));
+					global $interspire_icon;
+					$interspire_icon = $WPI->icon;
+				}	
+			}
 			
-			add_action('admin_footer',  array('WP_Interspire', 'int_add_mce_popup'));
-			add_action('media_buttons_context', array('WP_Interspire', 'add_form_button'));
-			
-			global $interspire_icon;
-			$interspire_icon = WP_PLUGIN_URL . "/" . basename(dirname(__FILE__)) ."/interspire-button.png";
+			if(isset($_REQUEST['wpinterspirerebuild'])) {
+				if($_REQUEST['wpinterspirerebuild'] == 'products' || $_REQUEST['wpinterspirerebuild'] == 'all') {
+					$WPI->BuildProducts();
+				}
+				if($_REQUEST['wpinterspirerebuild'] == 'productsselect' || $_REQUEST['wpinterspirerebuild'] == 'all') {
+					$WPI->BuildProductsSelect();
+				}
+			}
 		}
 	}
 	
 	function WP_Interspire() {
-		wp_enqueue_style('media');
-    	add_action('admin_menu', array(&$this, 'admin'));
+		add_action('admin_menu', array(&$this, 'admin'));
 	    add_filter( 'plugin_action_links', array(&$this, 'settings_link'), 10, 2 );
         add_action('admin_init', array(&$this, 'settings_init') );
-    	$options = get_option('wpinterspire', array());
+    	$this->options = get_option('wpinterspire', array());
         
         // Set each setting...
-        foreach($options as $key=> $value) {
+        foreach($this->options as $key=> $value) {
         	$this->{$key} = $value;
         }
-		
-		$this->BuildProducts();
-		$this->BuildProductsSelect();
-
-        // Lets do this check only once
-        $this->settings_checked = $this->CheckSettings();
+        $this->icon = WP_PLUGIN_URL . "/" . basename(dirname(__FILE__)) ."/interspire-button.png";
+        
+		if(isset($this->username) && isset($this->xmltoken) && !empty($this->username) && !empty($this->xmltoken)) {
+			 // Lets do this check only once
+	        $this->settings_checked = $this->CheckSettings();
+	        
+	        if($this->settings_checked === true && !is_array($this->settings_checked)) {
+	        	$this->configured = true;
+			}
+	    }
         
         // and put this in a global too, so widgets can check it
         global $wpinterspire_settings_checked;
         $wpinterspire_settings_checked = $this->settings_checked;
-        
-        if ((int) $this->new_users_list > 0) {
-            add_action('user_register', array(&$this, 'user_register') );
-        }
     }
 
 
@@ -127,7 +135,7 @@ class WP_Interspire {
                         	$rebuildText = "Your product list has been built. <strong>Has it changed?</strong>";
                         	$rebuildLink = 'Re-build your products list';
                         } else {
-                        	$rebuildText = "Your product list has not yet been built. <strong>Build it now:</strong>";
+                        	$rebuildText = "Your product list has not yet been built. ";
                         	$rebuildLink = 'Build your products list';
                         }
                        
@@ -180,15 +188,24 @@ EOD;
     }
     
     function show_configuration_check($link = true) {
+    	global $interspire_icon;
+    	$options = $this->options;
+    	
         if(!function_exists('curl_init')) { // Added 1.2.2
             $content = __('Your server does not support <code>curl_init</code>. Please call your host and ask them to enable this functionality, which is required for this awesome plugin.', 'wpinterspire');
             echo $this->make_notice_box($content, 'error');
         } else {
-            if(!is_array($this->settings_checked) && $this->settings_checked === true) {
-                $content = __('Your '); if($link) { $content .= '<a href="' . admin_url( 'options-general.php?page=wpinterspire' ) . '">'; } $content .=  __('Interspire API settings', 'wpinterspire'); if($link) { $content .= '</a>'; } $content .= __(' are configured properly. When editing posts, look for the <img src="'.$this->icon.'" width="14" height="14" alt="Add a Product" /> icon; click it to add a product to your post or page.'); 
+            if($this->configured) {
+                $content = __('Your '); if($link) { $content .= '<a href="' . admin_url( 'options-general.php?page=wpinterspire' ) . '">'; } $content .=  __('Interspire API settings', 'wpinterspire'); if($link) { $content .= '</a>'; } $content .= __(' are configured properly.');
+                if(!isset($options['productsselect'])) {
+                	$content .= __(', however your product list has not yet been built. <strong><a href="?page=wpinterspire&amp;wpinterspirerebuild=all">Build it now</a></strong>.');
+                } else {
+                 	$content .= __('When editing posts, look for the <img src="'.$this->icon.'" width="14" height="14" alt="Add a Product" /> icon; click it to add a product to your post or page.');
+                 }
                 echo $this->make_notice_box($content, 'success');
             } else {
-                $content = 'Your '; if($link) { $content .= '<a href="' . admin_url( 'options-general.php?page=wpinterspire' ) . '">'; } $content .=  __('Interspire API settings', 'wpinterspire') ; if($link) { $content .= '</a>'; } $content .= '  are <strong>not configured properly:</strong><br /><blockquote>'.$this->settings_checked['errormessage'].'</blockquote>';
+                $content = 'Your '; if($link) { $content .= '<a href="' . admin_url( 'options-general.php?page=wpinterspire' ) . '">'; } $content .=  __('Interspire API settings', 'wpinterspire') ; if($link) { $content .= '</a>'; } $content .= '  are <strong>not configured properly</strong>';
+                if(is_array($this->settings_checked)) { $content .= '<br /><blockquote>'.$this->settings_checked['errormessage'].'</blockquote>'; }
                 echo $this->make_notice_box($content, 'error');
             };
         }
@@ -220,9 +237,8 @@ EOD;
 			} else {
 				return true;
 			}
-			return true;
 		}
-
+		return false;
 	}
 	
 	private function GenerateRequest($xml = '') {
@@ -237,7 +253,7 @@ EOD;
 	}
 	
 	private function BuildProducts() {
-		$options = get_option('wpinterspire');
+		$options = $this->options;
 		
 		if((isset($_REQUEST['wpinterspirerebuild']) && $_REQUEST['wpinterspirerebuild'] == 'products' || $_REQUEST['wpinterspirerebuild'] == 'all') || !isset($options['productsselect'])) {
 			$products = $this->GetProducts(false, true); // Force rebuild
@@ -257,7 +273,7 @@ EOD;
 		    	unset($products['data']['results']['item'][$i]['prodinvtrack'], $products['data']['results']['item'][$i]['prodlowinv'], $products['data']['results']['item'][$i]['prodistaxable'], $products['data']['results']['item'][$i]['imagedateadded'], $products['data']['results']['item'][$i]['imageid'],$products['data']['results']['item'][$i]['prodvendorfeatured'], $products['data']['results']['item'][$i]['prodvariationid']);
 		    	$i++;
 		    }
-#			echo '<pre>'.print_r($products,true); 			
+		    
 			$options['products'] = maybe_serialize($products);
 			
 			update_option('wpinterspire', $options);
@@ -285,7 +301,7 @@ EOD;
 	}
 	
 	private function BuildProductsSelect() {
-		$options = get_option('wpinterspire');
+		$options = $this->options;
 		
 		if((isset($_REQUEST['wpinterspirerebuild']) && $_REQUEST['wpinterspirerebuild'] == 'select' || $_REQUEST['wpinterspirerebuild'] == 'all') || !isset($options['productsselect'])) {
 			$products = maybe_unserialize($options['products']);
@@ -297,8 +313,6 @@ EOD;
 	        $output .= '</select>';
 	        
 	        $options['productsselect'] = $output;
-	        
-	        #echo '<pre>'.print_r($output,true); die();
 	                                	
 			update_option('wpinterspire', $options);
 		}
@@ -316,7 +330,7 @@ EOD;
 			
 			$response = $this->PostToRemoteFileAndGetResponse($xml);
 		} else {
-			$options = get_option('wpinterspire');
+			$options = $this->options;
 			$response = maybe_unserialize($options['products']);
 		}
 		return $response;
@@ -332,7 +346,7 @@ EOD;
 		$xml = $this->GenerateRequest($xml);
 		
 		$response = $this->PostToRemoteFileAndGetResponse($xml);
-#		echo '<pre style="clear:both; float:left;">'.print_r($response->data->results, true).'</pre>';
+		
 		return $response;
 	}
 	
@@ -436,7 +450,7 @@ EOD;
 		}
 	}
 	           
-    public function add_form_button($context){
+    public function add_interspire_button($context){
     	global $interspire_icon;
         $out = '<a href="#TB_inline?inlineId=select_product" class="thickbox" title="' . __("Add Interspire Product(s)", 'wpinterspire') . '"><img src="'.$interspire_icon.'" width="14" height="14" alt="' . __("Add a Product", 'wpinterspire') . '" /></a>';
         return $context . $out;
@@ -469,6 +483,13 @@ EOD;
                 	<div class="media-upload-form type-form">
                 	<h3 class="media-title"><?php _e("Insert a Product", "wpinterspire"); ?></h3>
                     </div>
+                    <?php 
+                    $options = $this->options;
+                   	if(empty($options['productsselect'])) { 
+                   		echo '<p>Your settings are correct, however your product list has not been generated. (<em>This may take a while if you have lots of products.</em>)</p>
+                   		<p><a href="' . admin_url( 'options-general.php?page=wpinterspire&wpinterspirerebuild=all' ) . '" class="button">Generate your list now</a></p>';
+                   	} else { ?>
+                            
                     <div id="media-items" style="width:auto; overflow:hidden;">
 					<div class="media-item media-blank">
 						<h4 class="media-sub-title"><?php _e("Select a product below to add it to your post or page.", "wpinterspire"); ?></h4>
@@ -487,9 +508,7 @@ EOD;
 								<td class="field">
 								
                             <?php
-                            
-                            $list = get_option('wpinterspire');
-                            echo $list['productsselect'];
+                    			echo $options['productsselect'];        
                             ?></td>
 							</tr>
 					
@@ -514,6 +533,7 @@ EOD;
 						</tbody></table>
 					</div>
 					</div>
+					<?php } ?>
             </div>
         </div>
 

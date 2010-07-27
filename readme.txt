@@ -60,6 +60,11 @@ Yes, this plugin requires either a BigCommerce account or an Interspire Shopping
 
 == Changelog ==
 
+= 1.0.2 =
+* Quick fix, vital update:  fixes errors caused by 1.0.1. Sorry folks!
+* Improves settings check to make sure configuration is done properly
+* If settings have been configured but a products list hasn't been generated, the editor button will show a link to generate the list
+
 = 1.0.1 = 
 * Fixes possible `Uncaught exception 'Exception' with message 'String could not be parsed as XML` error
 * Added error notice if PHP5 is not supported.
@@ -68,6 +73,10 @@ Yes, this plugin requires either a BigCommerce account or an Interspire Shopping
 * Initial launch
 
 == Upgrade Notice ==
+
+= 1.0.2 =
+* Very important if you upgraded to 1.0.1 without having configured your settings!
+* Otherwise, it improves settings validation
 
 = 1.0.1 = 
 * Fixes possible `Uncaught exception 'Exception' with message 'String could not be parsed as XML` error
