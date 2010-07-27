@@ -196,11 +196,11 @@ EOD;
             echo $this->make_notice_box($content, 'error');
         } else {
             if($this->configured) {
-                $content = __('Your '); if($link) { $content .= '<a href="' . admin_url( 'options-general.php?page=wpinterspire' ) . '">'; } $content .=  __('Interspire API settings', 'wpinterspire'); if($link) { $content .= '</a>'; } $content .= __(' are configured properly.');
+                $content = __('Your '); if($link) { $content .= '<a href="' . admin_url( 'options-general.php?page=wpinterspire' ) . '">'; } $content .=  __('Interspire API settings', 'wpinterspire'); if($link) { $content .= '</a>'; } $content .= __(' are configured properly');
                 if(!isset($options['productsselect'])) {
                 	$content .= __(', however your product list has not yet been built. <strong><a href="?page=wpinterspire&amp;wpinterspirerebuild=all">Build it now</a></strong>.');
                 } else {
-                 	$content .= __('When editing posts, look for the <img src="'.$this->icon.'" width="14" height="14" alt="Add a Product" /> icon; click it to add a product to your post or page.');
+                 	$content .= __('. When editing posts, look for the <img src="'.$this->icon.'" width="14" height="14" alt="Add a Product" /> icon; click it to add a product to your post or page.');
                  }
                 echo $this->make_notice_box($content, 'success');
             } else {
@@ -258,7 +258,10 @@ EOD;
 		if((isset($_REQUEST['wpinterspirerebuild']) && $_REQUEST['wpinterspirerebuild'] == 'products' || $_REQUEST['wpinterspirerebuild'] == 'all') || !isset($options['productsselect'])) {
 			$products = $this->GetProducts(false, true); // Force rebuild
 			$products = $this->simplexml2array($products);
-			unset($products['status'], $products['version']);
+			if(!is_array($products)) { return false; }
+			if(isset($products['status']) && isset($products['version'])) {
+				unset($products['status'], $products['version']);
+			}
 			
 			asort($products['data']['results']);
 			
@@ -305,6 +308,8 @@ EOD;
 		
 		if((isset($_REQUEST['wpinterspirerebuild']) && $_REQUEST['wpinterspirerebuild'] == 'select' || $_REQUEST['wpinterspirerebuild'] == 'all') || !isset($options['productsselect'])) {
 			$products = maybe_unserialize($options['products']);
+			
+			if(!is_array($products)) { return false; }
 			
 			$output = '<select id="add_product_id"  style="width:90%;">';
 		    foreach($products['data']['results']['item'] as $product){
