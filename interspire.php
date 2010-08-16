@@ -2,7 +2,7 @@
 /*
 Plugin Name: Interspire & BigCommerce
 Plugin URI: http://www.seodenver.com/interspire-bigcommerce-wordpress/
-Description: Integrate Interspire and BigCommerce products into your WordPress content
+Description: Integrate Interspire and BigCommerce products into your WordPress website
 Author: Katz Web Services, Inc.
 Version: 1.0.3
 Author URI: http://www.katzwebservices.com
