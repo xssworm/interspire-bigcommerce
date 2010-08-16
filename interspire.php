@@ -4,7 +4,7 @@ Plugin Name: Interspire & BigCommerce
 Plugin URI: http://www.seodenver.com/interspire-bigcommerce-wordpress/
 Description: Integrate Interspire and BigCommerce products into your WordPress content
 Author: Katz Web Services, Inc.
-Version: 1.0.2
+Version: 1.0.3
 Author URI: http://www.katzwebservices.com
 */
 
@@ -139,7 +139,7 @@ class WP_Interspire {
                         	$rebuildLink = 'Build your products list';
                         }
                        
-                       $rows[] = array(
+                       $rows['unset'] = array(
                                 'id' => 'wpinterspirerebuild',
                                 'label' => __('Products', 'wpinterspire'),
                                 'desc' => '',
@@ -147,8 +147,7 @@ class WP_Interspire {
                         	);	
 						                                
                         $this->postbox('wpinterspiresettings',__('Store Settings', 'wpinterspire'), $this->form_table($rows), false);
-                        
-                        
+                         
                     ?>
                         
 
@@ -223,14 +222,19 @@ EOD;
  
 	private function CheckSettings() {
 		
-		$xml = '<requesttype>authentication</requesttype>
-		<requestmethod>xmlapitest</requestmethod>
-		<details></details>';
+		// Changed this from the APITest requestmethod, since it was so buggy.
+		// We want this to be fast, so we call a negative productID so it doesn't
+		// actually get a product.
+		$xml = '<requesttype>products</requesttype>
+	<requestmethod>GetProduct</requestmethod>
+	<details>
+		<productId>-1</productId>
+	</details>';
 
 		$xml = $this->GenerateRequest($xml);
 		
 		$response = $this->PostToRemoteFileAndGetResponse($xml);		
-
+		
 		if($response) {
 			if($response->status == 'FAILED') { 
 				return array('errormessage' => $response->errormessage);
@@ -254,8 +258,8 @@ EOD;
 	
 	private function BuildProducts() {
 		$options = $this->options;
-		
-		if((isset($_REQUEST['wpinterspirerebuild']) && $_REQUEST['wpinterspirerebuild'] == 'products' || $_REQUEST['wpinterspirerebuild'] == 'all') || !isset($options['productsselect'])) {
+		// Added $this->configured in 1.0.3
+		if($this->configured && (isset($_REQUEST['wpinterspirerebuild']) && $_REQUEST['wpinterspirerebuild'] == 'products' || $_REQUEST['wpinterspirerebuild'] == 'all') || !isset($options['productsselect'])) {
 			$products = $this->GetProducts(false, true); // Force rebuild
 			$products = $this->simplexml2array($products);
 			if(!is_array($products)) { return false; }
@@ -306,7 +310,8 @@ EOD;
 	private function BuildProductsSelect() {
 		$options = $this->options;
 		
-		if((isset($_REQUEST['wpinterspirerebuild']) && $_REQUEST['wpinterspirerebuild'] == 'select' || $_REQUEST['wpinterspirerebuild'] == 'all') || !isset($options['productsselect'])) {
+		// Added $this->configured in 1.0.3
+		if($this->configured && (isset($_REQUEST['wpinterspirerebuild']) && $_REQUEST['wpinterspirerebuild'] == 'select' || $_REQUEST['wpinterspirerebuild'] == 'all') || !isset($options['productsselect'])) {
 			$products = maybe_unserialize($options['products']);
 			
 			if(!is_array($products)) { return false; }
@@ -372,9 +377,12 @@ EOD;
 				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 			}
 			curl_setopt($ch, CURLOPT_TIMEOUT, 60);
-
-			if (is_ssl()) {
+			
+			// Had this backwards until 1.0.3
+			if (!is_ssl()) {
 				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			} else {
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 			}
 
 			if($Vars != "") {
@@ -442,7 +450,7 @@ EOD;
 			try {
 				$response = new SimpleXMLElement($result, LIBXML_NOCDATA);  // @simplexml_load_string($result);
 			} catch (Exception $e) {
-				
+
 			}			
 			// End 1.0.1
 					
@@ -454,7 +462,7 @@ EOD;
 			return $result;
 		}
 	}
-	           
+		           
     public function add_interspire_button($context){
     	global $interspire_icon;
         $out = '<a href="#TB_inline?inlineId=select_product" class="thickbox" title="' . __("Add Interspire Product(s)", 'wpinterspire') . '"><img src="'.$interspire_icon.'" width="14" height="14" alt="' . __("Add a Product", 'wpinterspire') . '" /></a>';
@@ -471,15 +479,15 @@ EOD;
                     return;
                 }
 
-                var display_title = jQuery("#display_title").val();
-                
+                var display_title = jQuery("#interspire_display_title").val();
+                alert(display_title);
                 var link_target = '';
                 var link_nofollow = '';
                 if(jQuery("#link_target").is(":checked")) { link_target = ' target=blank'; }
                 if(jQuery("#link_nofollow").is(":checked")) { link_nofollow = ' rel=nofollow'; }
-
+				
                 var win = window.dialogArguments || opener || parent || top;
-                win.send_to_editor("[interspire link=" + product_id + ""+link_target+link_nofollow+"]"+display_title+"[/interspire]");
+				win.send_to_editor("[interspire link=" + product_id + ""+link_target+link_nofollow+"]"+display_title+"[/interspire]");
             }
         </script>
 
@@ -501,9 +509,9 @@ EOD;
 						<table class="describe"><tbody>
 							<tr>
 								<th valign="top" scope="row" class="label" style="width:130px;">
-									<span class="alignleft"><label for="display_title"><?php _e("Link Text", "wpinterspire"); ?></label></span>
+									<span class="alignleft"><label for="interspire_display_title"><?php _e("Link Text", "wpinterspire"); ?></label></span>
 								</th>
-								<td class="field"><input type="text" id="display_title" size="100" style="width:90%;" />
+								<td class="field"><input type="text" id="interspire_display_title" size="100" style="width:90%;" />
 							</tr>
 							
 							<tr>

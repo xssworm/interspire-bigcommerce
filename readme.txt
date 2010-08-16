@@ -1,7 +1,7 @@
 === Interspire & BigCommerce ===
 Tags: ecommerce, interspire, bigcommerce, e-commerce, shop, cart, paypal, authorize, authorize.net, stock control, ecommerce, zencart, volition, shopsite, oscommerce, zen cart, prestashop, merchant
 Requires at least: 2.8
-Tested up to: 3.0
+Tested up to: 3.0.1
 Stable tag: trunk
 Contributors: katzwebdesign
 Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zackkatz%40gmail%2ecom&item_name=Interspire%20BigCommerce%20for%20WordPress&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8
@@ -60,6 +60,10 @@ Yes, this plugin requires either a BigCommerce account or an Interspire Shopping
 
 == Changelog ==
 
+= 1.0.3 = 
+* Fixed issue with BigCommerce API authentication. Sorry for the problems everyone - it should be working now. Had been using Interspire-only method of basic checking of settings.
+* Updated Insert Product form to prevent conflict with other plugins (Gravity Forms, for example).
+
 = 1.0.2 =
 * Quick fix, vital update:  fixes errors caused by 1.0.1. Sorry folks!
 * Improves settings check to make sure configuration is done properly
@@ -73,6 +77,10 @@ Yes, this plugin requires either a BigCommerce account or an Interspire Shopping
 * Initial launch
 
 == Upgrade Notice ==
+
+= 1.0.3 =
+* Fixed issue with BigCommerce API authentication. Sorry for the problems everyone - it should be working now.
+* Updated Insert Product form to prevent conflict with other plugins (Gravity Forms, for example).
 
 = 1.0.2 =
 * Very important if you upgraded to 1.0.1 without having configured your settings!
