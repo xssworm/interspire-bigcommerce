@@ -12,7 +12,7 @@ Integrate the great Interspire Shopping Cart & BigCommerce hosted ecommerce shop
 
 <h3>Easily find and link to your Interspire or BigCommerce products from within WordPress</h3>
 
-<h4>This plugin adds a button to the post/page editor that makes it easy to link to your products.</h4>
+<strong>This plugin adds a button to the post/page editor that makes it easy to link to your products.</strong>
 
 You want to spend your time writing the best content, not hunting for the link for the product you're blogging about. This plugin is simple to set up, and powerful. If you use WordPress and Interspire or BigCommerce, it's a must have.
 
@@ -60,6 +60,14 @@ Yes, this plugin requires either a BigCommerce account or an Interspire Shopping
 
 == Changelog ==
 
+= 1.0.4 = 
+* Fixed bug where product lists would appear to have not been built, although they already had.
+* Removed the dialog box when inserting product. That was for debug purposes.
+* Added optional `Store Path` setting. When configured, the plugin doesn't send full URL to the editor, only the product page. Example: instead of <code>[interspire link=http://example.com/products/product.html]Anchor Text[/interspire]</code>, it will now be <code>[interspire link=/products/product.html]Anchor Text[/interspire]</code>.
+* Added <code>[bigcommerce]</code> shortcode that works the same way as `[interspire]`; figured it made sense :-)
+* Added option to give thanks by adding a link to the plugin page on your footer. (please do!!!)
+* Speeded up the plugin a bit by removing a few calls to the database
+
 = 1.0.3 = 
 * Fixed issue with BigCommerce API authentication. Sorry for the problems everyone - it should be working now. Had been using Interspire-only method of basic checking of settings.
 * Updated Insert Product form to prevent conflict with other plugins (Gravity Forms, for example).
@@ -77,6 +85,10 @@ Yes, this plugin requires either a BigCommerce account or an Interspire Shopping
 * Initial launch
 
 == Upgrade Notice ==
+
+= 1.0.4 = 
+* Fixed bug where product lists would appear to have not been built, although they already had.
+* Speeded up the plugin a bit by removing a few calls to the database
 
 = 1.0.3 =
 * Fixed issue with BigCommerce API authentication. Sorry for the problems everyone - it should be working now.
