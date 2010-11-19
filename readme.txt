@@ -86,6 +86,10 @@ Yes, this plugin requires either a BigCommerce account or an Interspire Shopping
 
 == Upgrade Notice ==
 
+= 1.0.5 =
+* Fixed generation of product list
+* Fixed editor button product insertion
+
 = 1.0.4 = 
 * Fixed bug where product lists would appear to have not been built, although they already had.
 * Speeded up the plugin a bit by removing a few calls to the database

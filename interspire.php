@@ -250,8 +250,7 @@ EOD;
 
 		$xml = $this->GenerateRequest($xml);
 		
-		$response = $this->PostToRemoteFileAndGetResponse($xml);		
-		
+		$response = $this->PostToRemoteFileAndGetResponse($xml);
 		if($response) {
 			if($response->status == 'FAILED') { 
 				return array('errormessage' => $response->errormessage);
@@ -278,6 +277,7 @@ EOD;
 		// Added $this->configured in 1.0.3
 		if($this->configured && (isset($_REQUEST['wpinterspirerebuild']) && $_REQUEST['wpinterspirerebuild'] == 'products' || $_REQUEST['wpinterspirerebuild'] == 'all') || !isset($this->productsselect)) {
 			$products = $this->GetProducts(false, true); // Force rebuild
+			print_r($products); die();
 			$products = $this->simplexml2array($products);
 			if(!is_array($products)) { return false; }
 			if(isset($products['status']) && isset($products['version'])) {
@@ -351,7 +351,12 @@ EOD;
 			
 			$xml = $this->GenerateRequest($xml);
 			
-			$response = $this->PostToRemoteFileAndGetResponse($xml);
+			$url = http_build_url($this->xmlpath, array('query' => "xml=" .urlencode($xml)));
+		
+			$response = wp_remote_retrieve_body( wp_remote_post($url) );
+			print_r($response);
+			die();
+			#$response = $this->PostToRemoteFileAndGetResponse($xml);
 		} else {
 			$response = maybe_unserialize($this->products);
 		}
