@@ -60,6 +60,11 @@ Yes, this plugin requires either a BigCommerce account or an Interspire Shopping
 
 == Changelog ==
 
+= 1.0.6 = 
+* Whoops! This is what 1.0.5 was supposed to be.
+* Fixed generation of product list
+* Fixed editor button product insertion
+
 = 1.0.4 = 
 * Fixed bug where product lists would appear to have not been built, although they already had.
 * Removed the dialog box when inserting product. That was for debug purposes.
@@ -85,6 +90,9 @@ Yes, this plugin requires either a BigCommerce account or an Interspire Shopping
 * Initial launch
 
 == Upgrade Notice ==
+
+= 1.0.6 = 
+* Whoops! This is what 1.0.5 was supposed to be.
 
 = 1.0.5 =
 * Fixed generation of product list
