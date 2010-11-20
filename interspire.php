@@ -4,7 +4,7 @@ Plugin Name: Interspire & BigCommerce
 Plugin URI: http://www.seodenver.com/interspire-bigcommerce-wordpress/
 Description: Integrate Interspire and BigCommerce products into your WordPress website
 Author: Katz Web Services, Inc.
-Version: 1.0.4
+Version: 1.0.6
 Author URI: http://www.katzwebservices.com
 */
 
@@ -12,7 +12,7 @@ add_action('init', array('WP_Interspire','init'),1);
 
 class WP_Interspire {
 	
-	public $configured = false;
+	var $configured = false;
 	
 	function php5() {
 		echo self::make_notice_box('Your server does not support PHP5, which is required to run the Interspire &amp; BigCommerce plugin. Please contact your host and have them upgrade your server configuration.', 'error');
@@ -55,6 +55,9 @@ class WP_Interspire {
         foreach($this->options as $key=> $value) {
         	$this->{$key} = $value;
         }
+        $this->products = get_option('wpinterspire_products');
+        $this->productsselect = $this->BuildProductsSelect();
+        
         $this->icon = WP_PLUGIN_URL . "/" . basename(dirname(__FILE__)) ."/interspire-button.png";
         
 		if(isset($this->username) && isset($this->xmltoken) && !empty($this->username) && !empty($this->xmltoken)) {
@@ -147,7 +150,7 @@ class WP_Interspire {
                         );
                                                 
                         
-                        if(!empty($this->productsselect)) {
+                        if(!empty($this->options['productsselect'])) {
                         	$rebuildText = "Your product list has been built. <strong>Has it changed?</strong>";
                         	$rebuildLink = 'Re-build your products list';
                         } else {
@@ -250,7 +253,8 @@ EOD;
 
 		$xml = $this->GenerateRequest($xml);
 		
-		$response = $this->PostToRemoteFileAndGetResponse($xml);
+		$response = $this->PostToRemoteFileAndGetResponse($xml);		
+		
 		if($response) {
 			if($response->status == 'FAILED') { 
 				return array('errormessage' => $response->errormessage);
@@ -273,11 +277,9 @@ EOD;
 	}
 	
 	private function BuildProducts() {
-		$options = $this->options;
 		// Added $this->configured in 1.0.3
-		if($this->configured && (isset($_REQUEST['wpinterspirerebuild']) && $_REQUEST['wpinterspirerebuild'] == 'products' || $_REQUEST['wpinterspirerebuild'] == 'all') || !isset($this->productsselect)) {
+		if($this->configured && (isset($_REQUEST['wpinterspirerebuild']) && $_REQUEST['wpinterspirerebuild'] == 'products' || $_REQUEST['wpinterspirerebuild'] == 'all')) {
 			$products = $this->GetProducts(false, true); // Force rebuild
-			print_r($products); die();
 			$products = $this->simplexml2array($products);
 			if(!is_array($products)) { return false; }
 			if(isset($products['status']) && isset($products['version'])) {
@@ -298,9 +300,7 @@ EOD;
 		    	$i++;
 		    }
 		    
-			$options['products'] = maybe_serialize($products);
-			
-			update_option('wpinterspire', $options);
+			update_option('wpinterspire_products', maybe_serialize($products));
 		}
 	}
 	
@@ -326,7 +326,7 @@ EOD;
 	
 	private function BuildProductsSelect() {
 		// Added $this->configured in 1.0.3
-		if($this->configured && (isset($_REQUEST['wpinterspirerebuild']) && $_REQUEST['wpinterspirerebuild'] == 'select' || $_REQUEST['wpinterspirerebuild'] == 'all') || !isset($this->productsselect)) {
+		if($this->configured && (isset($_REQUEST['wpinterspirerebuild']) && $_REQUEST['wpinterspirerebuild'] == 'select' || $_REQUEST['wpinterspirerebuild'] == 'all') || empty($this->productsselect)) {
 			$products = maybe_unserialize($this->products);
 			
 			if(!is_array($products)) { return false; }
@@ -335,9 +335,10 @@ EOD;
 		    foreach($products['data']['results']['item'] as $product){
 		        $output .= '<option value="'.htmlentities($product['prodlink']).'">'.esc_html($product['prodname']).'</option>';
 		    }
-	        $output .= '</select>';
-	        
-	        $this->productsselect = $output;
+	        $output .= '</select>';	        
+	        $this->options['productsselect'] = $output;
+	        update_option('wpinterspire', $this->options);
+	        return;
 		}
 	}
 	
@@ -351,14 +352,9 @@ EOD;
 			
 			$xml = $this->GenerateRequest($xml);
 			
-			$url = http_build_url($this->xmlpath, array('query' => "xml=" .urlencode($xml)));
-		
-			$response = wp_remote_retrieve_body( wp_remote_post($url) );
-			print_r($response);
-			die();
-			#$response = $this->PostToRemoteFileAndGetResponse($xml);
+			$response = $this->PostToRemoteFileAndGetResponse($xml);
 		} else {
-			$response = maybe_unserialize($this->products);
+			$response = maybe_unserialize(get_option('wpinterspire_products'));
 		}
 		return $response;
 	}
@@ -482,7 +478,7 @@ EOD;
 		           
     public function add_interspire_button($context){
     	global $interspire_icon;
-        $out = '<a href="#TB_inline?inlineId=select_product" class="thickbox" title="' . __("Add Interspire Product(s)", 'wpinterspire') . '"><img src="'.$interspire_icon.'" width="14" height="14" alt="' . __("Add a Product", 'wpinterspire') . '" /></a>';
+        $out = '<a href="#TB_inline?width=640&inlineId=interspire_select_product" class="thickbox" title="' . __("Add Interspire Product(s)", 'wpinterspire') . '"><img src="'.$interspire_icon.'" width="14" height="14" alt="' . __("Add a Product", 'wpinterspire') . '" /></a>';
         return $context . $out;
     }
     
@@ -513,7 +509,7 @@ EOD;
             }
         </script>
 
-        <div id="select_product" style="width:90%; display:none;">
+        <div id="interspire_select_product" style="display:none;">
                 <div id="media-upload">
                 	<div class="media-upload-form type-form">
                 	<h3 class="media-title"><?php _e("Insert a Product", "wpinterspire"); ?></h3>
@@ -523,7 +519,8 @@ EOD;
                    		echo '<p>Your settings are correct, however your product list has not been generated. (<em>This may take a while if you have lots of products.</em>)</p>
                    		<p><a href="' . admin_url( 'options-general.php?page=wpinterspire&wpinterspirerebuild=all' ) . '" class="button">Generate your list now</a></p>';
                    	} else { 
-                   		if(!empty($this->products) && empty($this->productsselect)) {
+                   		$products = maybe_unserialize($this->products);
+                   		if(!empty($products) && empty($this->options['productsselect'])) {
                    			$this->BuildProductsSelect();
                    		}
                    	?>
@@ -546,7 +543,7 @@ EOD;
 								<td class="field">
 								
                             <?php
-                    			echo $this->productsselect;        
+                    			echo $this->options['productsselect'];        
                             ?></td>
 							</tr>
 					
