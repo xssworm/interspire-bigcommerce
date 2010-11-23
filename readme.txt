@@ -17,10 +17,10 @@ Integrate the great Interspire Shopping Cart & BigCommerce hosted ecommerce shop
 You want to spend your time writing the best content, not hunting for the link for the product you're blogging about. This plugin is simple to set up, and powerful. If you use WordPress and Interspire or BigCommerce, it's a must have.
 
 <strong>What is BigCommerce?</strong><br />
-BigCommerce is the #1 rated hosted e-commerce platform. If you want to have an e-commerce store without having to manage the server, security, and payments, BigCommerce is for you. <a href="http://www.bigcommerce.com/145-0-3-6.html" target="_blank">Visit BigCommerce.com to start your own online store today!</a>. You can also check out all the <a href="http://www.bigcommerce.com/livestores/">neat stores that use BigCommerce</a>.
+BigCommerce is the #1 rated hosted e-commerce platform. If you want to have an e-commerce store without having to manage the server, security, and payments, BigCommerce is for you. <a href="http://www.bigcommerce.com/145-0-3-6.html" target="_blank" rel="nofollow">Visit BigCommerce.com to start your own online store today!</a>. You can also check out all the <a href="http://www.bigcommerce.com/livestores/" rel="nofollow">neat stores that use BigCommerce</a>.
 
 <strong>What is Interspire Shopping Cart?</strong><br />
-Interspire Shopping Cart is an all-in-one e-commerce and shopping cart software platform that includes absolutely everything you need to sell online and attract more customers using the power, reach and affordability of the Internet. <a href="http://www.interspire.com/240-2-3-8.html" target="_blank">Check out Interspire Shopping Cart today!</a>
+Interspire Shopping Cart is an all-in-one e-commerce and shopping cart software platform that includes absolutely everything you need to sell online and attract more customers using the power, reach and affordability of the Internet. <a href="http://www.interspire.com/240-2-3-8.html" target="_blank" rel="nofollow">Check out Interspire Shopping Cart today!</a>
 
 <h4>Interspire & BigCommerce for WordPress Features:</h4>
 * Insert a link into your content for any product in your store
@@ -56,7 +56,7 @@ If your web host does not support PHP5, please contact your host and see if they
 * This plugin is released under a GPL license.
 
 = Do I need a BigCommerce account or Interspire Shopping Cart to use this plugin? =
-Yes, this plugin requires either a BigCommerce account or an Interspire Shopping Cart license. You can sign up for <a href="http://www.bigcommerce.com/145-3.html" rel="nofollow">a free 15 day trial of BigCommerce</a> or <a href="http://www.interspire.com/240-2-3-1.html">test drive Interspire Shopping Cart</a> in an online demo.
+Yes, this plugin requires either a BigCommerce account or an Interspire Shopping Cart license. You can sign up for <a href="http://www.bigcommerce.com/145-3.html" rel="nofollow">a free 15 day trial of BigCommerce</a> or <a href="http://www.interspire.com/240-2-3-1.html" rel="nofollow">test drive Interspire Shopping Cart</a> in an online demo.
 
 == Changelog ==
 
