@@ -4,7 +4,7 @@ Plugin Name: Interspire & BigCommerce
 Plugin URI: http://www.seodenver.com/interspire-bigcommerce-wordpress/
 Description: Integrate Interspire and BigCommerce products into your WordPress website
 Author: Katz Web Services, Inc.
-Version: 1.0.6
+Version: 1.1
 Author URI: http://www.katzwebservices.com
 */
 
@@ -20,58 +20,46 @@ class WP_Interspire {
 	
 	function init() {
 		if(is_admin()) {
+			global $pagenow;
 			$WPI = new WP_Interspire();
-
-			if(in_array(basename($_SERVER['PHP_SELF']), array('post.php', 'page.php', 'page-new.php', 'post-new.php', 'wpinterspire'))) {
+			if(in_array(basename($_SERVER['PHP_SELF']), array('post.php', 'page.php', 'page-new.php', 'post-new.php')) || (in_array(basename($_SERVER['PHP_SELF']), array('options-general.php')) && isset($_REQUEST['page']) && $_REQUEST['page'] == 'wpinterspire'))  {
 				$plugin_dir = basename(dirname(__FILE__)).'languages';
 				load_plugin_textdomain( 'wpinterspire', 'wp-content/plugins/' . $plugin_dir, $plugin_dir );
 				
-				if($WPI->configured) {	
+				if($WPI->configured) {
 					wp_enqueue_style('media');
 					add_action('admin_footer',  array(&$WPI, 'int_add_mce_popup'));
 					add_action('media_buttons_context', array(&$WPI, 'add_interspire_button'));
-					global $interspire_icon;
-					$interspire_icon = $WPI->icon;
-				}	
-			}
-			
-			if(isset($_REQUEST['wpinterspirerebuild'])) {
-				if($_REQUEST['wpinterspirerebuild'] == 'products' || $_REQUEST['wpinterspirerebuild'] == 'all') {
-					$WPI->BuildProducts();
 				}
 			}
+			
 		} else {
 			add_action('wp_footer', 'kws_givethanks_interspire');
 		}
 	}
 	
 	function WP_Interspire() {
-		add_action('admin_menu', array(&$this, 'admin'));
+    	add_action('admin_menu', array(&$this, 'admin'));
 	    add_filter('plugin_action_links', array(&$this, 'settings_link'), 10, 2 );
         add_action('admin_init', array(&$this, 'settings_init') );
-    	$this->options = get_option('wpinterspire', array());
-        
-        // Set each setting...
-        foreach($this->options as $key=> $value) {
-        	$this->{$key} = $value;
-        }
-        $this->products = get_option('wpinterspire_products');
-        $this->productsselect = $this->BuildProductsSelect();
-        
-        $this->icon = WP_PLUGIN_URL . "/" . basename(dirname(__FILE__)) ."/interspire-button.png";
-        
-		if(isset($this->username) && isset($this->xmltoken) && !empty($this->username) && !empty($this->xmltoken)) {
-			 // Lets do this check only once
-	        $this->settings_checked = $this->CheckSettings();
+    	
+    	if(in_array(basename($_SERVER['PHP_SELF']), array('post.php', 'page.php', 'page-new.php', 'post-new.php')) || (in_array(basename($_SERVER['PHP_SELF']), array('options-general.php')) && isset($_REQUEST['page']) && $_REQUEST['page'] == 'wpinterspire'))  {   	
+    			
+	    	$this->options = get_option('wpinterspire', array());
 	        
-	        if($this->settings_checked === true && !is_array($this->settings_checked)) {
-	        	$this->configured = true;
-			}
-	    }
-        
-        // and put this in a global too, so widgets can check it
-        global $wpinterspire_settings_checked;
-        $wpinterspire_settings_checked = $this->settings_checked;
+	        // Set each setting...
+	        foreach($this->options as $key=> $value) {
+	        	$this->{$key} = $value;
+	        }
+	                
+	        $this->icon = WP_PLUGIN_URL . "/" . basename(dirname(__FILE__)) ."/interspire-button.png";
+	        
+	        if(in_array(basename($_SERVER['PHP_SELF']), array('options-general.php')) && isset($_REQUEST['page']) && $_REQUEST['page'] == 'wpinterspire') {
+	        	$this->CheckSettings();
+	        }
+	        
+			$this->BuildProductsSelect();
+		}
     }
 
 
@@ -110,6 +98,12 @@ class WP_Interspire {
                     	wp_nonce_field('update-options'); 
                         settings_fields('wpinterspire_options');
                    
+                   		echo "
+                   			<div>
+                   				<input type='hidden' name='wpinterspire[seourls]' value='no' />
+                   				<input type='hidden' name='wpinterspire[configured]' value='{$this->configured}' />
+                   			</div>
+                   		";
                        
                        	$rows[] = array(
                                 'id' => 'wpinterspire_username',
@@ -138,7 +132,15 @@ class WP_Interspire {
                                 'desc' => 'Your Store\'s URL, including <code>http://</code>. Entering this into your browser should take you to your home page. This is optional, and only to shorten the shortcode when linking to your products.',
                                 'content' => "<input type='text' name='wpinterspire[storepath]' id='wpinterspire_storepath' value='".esc_attr($this->storepath)."' size='40' style='width:95%!important;' />"
                         );
+                       
+                        $checked = ($this->seourls !== 'no') ? ' checked=checked' : '';
                         
+                        $rows[] = array(
+                                'id' => 'wpinterspire_seourls',
+                                'label' => __('SEO URLs (optional)', 'wpinterspire'),
+                                'desc' => 'Please show support for this plugin by enabling.',
+                                'content' => "<p><label for='wpinterspire_seourls'><input type='checkbox' name='wpinterspire[seourls]' id='wpinterspire_seourls' value='yes' $checked /> The store uses SEO-friendly URL structure <span class='howto'>If your product URLs do not look like <code>/products.php?product=product-name</code>, this should be checked.</span></label></p>"
+                        ); 
                         
                         $checked = (!empty($this->showlink)) ? ' checked=checked' : '';
                         
@@ -150,8 +152,8 @@ class WP_Interspire {
                         );
                                                 
                         
-                        if(!empty($this->options['productsselect'])) {
-                        	$rebuildText = "Your product list has been built. <strong>Has it changed?</strong>";
+                        if(!empty($this->productsselect)) {
+                        	$rebuildText = "Your product list has been built:</p>".$this->productsselect."<p><strong>Has the list changed?</strong>";
                         	$rebuildLink = 'Re-build your products list';
                         } else {
                         	$rebuildText = "Your product list has not yet been built. ";
@@ -162,7 +164,7 @@ class WP_Interspire {
                                 'id' => 'wpinterspirerebuild',
                                 'label' => __('Products', 'wpinterspire'),
                                 'desc' => '',
-                                'content' => "<p>$rebuildText <a href='?page=wpinterspire&amp;wpinterspirerebuild=all' class='button'>$rebuildLink</a><br /><small>Note: this may take a long time, depending on the size of your products list.</small></p>"
+                                'content' => "<p>$rebuildText <a href='".wp_nonce_url(admin_url('options-general.php?page=wpinterspire&amp;wpinterspirerebuild=all'), 'rebuild')."' class='button'>$rebuildLink</a><br /><small>Note: this may take a long time, depending on the size of your products list.</small></p>"
                         	);	
 						                                
                         $this->postbox('wpinterspiresettings',__('Store Settings', 'wpinterspire'), $this->form_table($rows), false);
@@ -206,7 +208,6 @@ EOD;
     }
     
     function show_configuration_check($link = true) {
-    	global $interspire_icon;
     	$options = $this->options;
     	
         if(!function_exists('curl_init')) { // Added 1.2.2
@@ -216,7 +217,7 @@ EOD;
             if($this->configured) {
                 $content = __('Your '); if($link) { $content .= '<a href="' . admin_url( 'options-general.php?page=wpinterspire' ) . '">'; } $content .=  __('Interspire API settings', 'wpinterspire'); if($link) { $content .= '</a>'; } $content .= __(' are configured properly');
                 
-                if(empty($this->products)) {
+                if(empty($this->productsselect)) {
                 	$content .= __(', however your product list has not yet been built. <strong><a href="?page=wpinterspire&amp;wpinterspirerebuild=all">Build it now</a></strong>.');
                 } else {
                  	$content .= __('. When editing posts, look for the <img src="'.$this->icon.'" width="14" height="14" alt="Add a Product" /> icon; click it to add a product to your post or page.');
@@ -241,7 +242,14 @@ EOD;
     }
  
 	private function CheckSettings() {
+
+		if(empty($this->username) || empty($this->xmltoken) || empty($this->username)) {
+			$this->settings_checked = $this->configured = false;
+			return false;
+		}
 		
+		if(!isset($_REQUEST['updated'])) { return $this->configured; }
+			
 		// Changed this from the APITest requestmethod, since it was so buggy.
 		// We want this to be fast, so we call a negative productID so it doesn't
 		// actually get a product.
@@ -256,9 +264,14 @@ EOD;
 		$response = $this->PostToRemoteFileAndGetResponse($xml);		
 		
 		if($response) {
-			if($response->status == 'FAILED') { 
-				return array('errormessage' => $response->errormessage);
+			if($response->status == 'FAILED') {
+				$this->settings_checked = array('errormessage' => $response->errormessage);
+	        	$this->configured = false;
+				return $this->settings_checked;
 			} else {
+	        	$this->configured = $this->options['configured'] = true;
+				$this->settings_checked = true;
+				update_option('wpinterspire', $this->options);
 				return true;
 			}
 		}
@@ -276,102 +289,122 @@ EOD;
 		return $request;
 	}
 	
-	private function BuildProducts() {
+	private function MakeURLSafe($val)
+	{                         
+		$val = str_replace("-", "%2d", $val);
+		$val = str_replace("+", "%2b", $val);
+		$val = str_replace("+", "%2b", $val);
+		$val = str_replace("/", "{47}", $val); 
+		$val = urlencode($val);
+		$val = str_replace("+", "-", $val);
+		return $val;
+	}
+
+	private function MakeURL($url) {
+		if ($this->seourls != 'no') {
+			return $this->MakeURLSafe($url);
+		} else {
+			return sprintf("products.php?product=%s", MakeURLSafe($url));
+		}
+	}
+
+	
+	private function BuildProductsSelect($rebuild = false, $products = array()) {
 		// Added $this->configured in 1.0.3
-		if($this->configured && (isset($_REQUEST['wpinterspirerebuild']) && $_REQUEST['wpinterspirerebuild'] == 'products' || $_REQUEST['wpinterspirerebuild'] == 'all')) {
-			$products = $this->GetProducts(false, true); // Force rebuild
-			$products = $this->simplexml2array($products);
-			if(!is_array($products)) { return false; }
-			if(isset($products['status']) && isset($products['version'])) {
-				unset($products['status'], $products['version']);
+		if($this->configured && (isset($_REQUEST['wpinterspirerebuild']) && ($_REQUEST['wpinterspirerebuild'] == 'select' || $_REQUEST['wpinterspirerebuild'] == 'all')) || $rebuild === true) {
+			if(isset($_REQUEST['wpinterspirerebuild']) && $_REQUEST['wpinterspirerebuild'] != 'select') {
+				$products = $this->GetProducts();
 			}
 			
-			asort($products['data']['results']);
+			if(empty($products)) { $products = get_option('wpinterspire_products'); }
 			
-			$i = 0;
-			foreach($products['data']['results']['item'] as $product){
-		    	$p = $this->GetProduct($product['productid']);
-				$p = $this->simplexml2array($p);
-
-		    	$products['data']['results']['item'][$i]['prodlink'] = $p['data']['prodlink'];
-		    	
-		    	// We want to unset some data in the array to make the data size smaller.
-		    	unset($products['data']['results']['item'][$i]['prodinvtrack'], $products['data']['results']['item'][$i]['prodlowinv'], $products['data']['results']['item'][$i]['prodistaxable'], $products['data']['results']['item'][$i]['imagedateadded'], $products['data']['results']['item'][$i]['imageid'],$products['data']['results']['item'][$i]['prodvendorfeatured'], $products['data']['results']['item'][$i]['prodvariationid']);
-		    	$i++;
+			$products = maybe_unserialize($products);
+			
+			$output = '<select id="interspire_add_product_id"  style="width:90%;">'."\n".'<option value="" disabled="disabled" selected="selected">Select a product&hellip;</option>'."\n";
+		    foreach($products['items'] as $product) {
+				if(!is_object($product['prodname']) &&  !empty($product['prodname'])) {
+					$output .= '<option value="'.esc_html($this->MakeURL($product['prodname'])).'">'.esc_html($product['prodname']).'</option>'."\n";
+				}
 		    }
-		    
-			update_option('wpinterspire_products', maybe_serialize($products));
+	        $output .= '</select>'."\n";
+		    update_option('wpinterspire_productselect', $this->productsselect);
+		} else {
+			$output = get_option('wpinterspire_productselect');
+			if(!$output) {
+				$this->BuildProductsSelect(true);
+			}
 		}
+		$this->productsselect = $output;
+		return $output;
 	}
-	
-	private function simplexml2array($xml) {
-	   if (get_class($xml) == 'SimpleXMLElement') {
-	       $attributes = $xml->attributes();
-	       foreach($attributes as $k=>$v) {
-	           if ($v) $a[$k] = (string) $v;
-	       }
-	       $x = $xml;
-	       $xml = get_object_vars($xml);
-	   }
-	   if (is_array($xml)) {
-	       if (count($xml) == 0) return (string) $x; // for CDATA
-	       foreach($xml as $key=>$value) {
-	           $r[$key] = $this->simplexml2array($value);
-	       }
-	       if (isset($a)) $r['@'] = $a;    // Attributes
-	       return $r;
-	   }
-	   return (string) $xml;
-	}
-	
-	private function BuildProductsSelect() {
-		// Added $this->configured in 1.0.3
-		if($this->configured && (isset($_REQUEST['wpinterspirerebuild']) && $_REQUEST['wpinterspirerebuild'] == 'select' || $_REQUEST['wpinterspirerebuild'] == 'all') || empty($this->productsselect)) {
-			$products = maybe_unserialize($this->products);
-			
-			if(!is_array($products)) { return false; }
-			
-			$output = '<select id="add_product_id"  style="width:90%;"><option value="" disabled="disabled" selected="selected">Select a product&hellip;</option>';
-		    foreach($products['data']['results']['item'] as $product){
-		        $output .= '<option value="'.htmlentities($product['prodlink']).'">'.esc_html($product['prodname']).'</option>';
-		    }
-	        $output .= '</select>';	        
-	        $this->options['productsselect'] = $output;
-	        update_option('wpinterspire', $this->options);
-	        return;
-		}
-	}
-	
-	public function GetProducts($options = array(), $force_rebuild = false) {
+		
+	public function GetProducts($start = 0, $force_rebuild = true, $GetProducts = false, $i=0) {
 		if($force_rebuild) {
 			$xml = '<requesttype>products</requesttype>
 			<requestmethod>GetProducts</requestmethod>
 			<details>
-				<start>0</start>
+				<start>'.(int)$start.'</start>
 			</details>';
 			
 			$xml = $this->GenerateRequest($xml);
 			
 			$response = $this->PostToRemoteFileAndGetResponse($xml);
+			
+			if(empty($GetProducts)) { $GetProducts = array(); }
+			
+			foreach($response->data->results->item as $item) {
+				if(!is_object($item) || $item->prodvisible == '0') { continue; }
+				
+				unset($item->currentinv);
+				unset($item->prodlowinv);
+				unset($item->prodvendorfeatured);
+				unset($item->prodfeatured);
+				unset($item->imageid);
+				unset($item->imagedateadded);
+				unset($item->imagedesc);
+				unset($item->prodistaxable);
+				unset($item->prodinvtrack);
+				unset($item->imagefiletinysize);
+				unset($item->imagefilethumbsize);
+				unset($item->imagefilestdsize);
+				unset($item->imagefilezoomsize);
+
+				if(!empty($this->storepath)) {
+					$item->imagefiletiny = str_replace((string)$this->storepath, '', (string)$item->imagefiletiny);
+					$item->imagefilethumb = str_replace((string)$this->storepath, '', (string)$item->imagefilethumb);
+					$item->imagefilezoom = str_replace((string)$this->storepath, '', (string)$item->imagefilezoom);
+					$item->imagefilestd = str_replace((string)$this->storepath, '', (string)$item->imagefilestd);
+				}
+				
+				if(empty($item->productid)) { unset($item->productid); }
+				if(empty($item->proddesc)) { unset($item->proddesc); }
+				if(empty($item->prodcode)) { unset($item->prodcode); }
+				if(empty($item->prodvariationid) && $item->prodvariationid !== '0') { unset($item->prodvariationid); }
+				if(empty($item->imagedesc)) { unset($item->imagedesc); }
+				if(empty($item->imagefiletiny)) { unset($item->imagefiletiny); }
+				if(empty($item->imagefilethumb)) { unset($item->imagefilethumb); }
+				if(empty($item->imagefilezoom)) { unset($item->imagefilezoom); }
+				if(empty($item->imagefilestd)) { unset($item->imagefilestd); }
+				
+				$GetProducts['items'][$i] = (array)$item;
+				$i++;
+			}
+		
+			if((int)$response->data->end < (int)$response->data->numResults) {
+				$this->GetProducts($response->data->end, true, $GetProducts, $i);
+			} else {
+				$GetProducts['status'] = (string)$response->status;
+				$GetProducts['version'] = (int)$response->version;
+				$GetProducts['numResults'] = (int)$response->data->numResults;
+				asort($GetProducts['items']);
+				$updated = update_option('wpinterspire_products', $GetProducts);
+				return $GetProducts;
+			}
 		} else {
-			$response = maybe_unserialize(get_option('wpinterspire_products'));
+			return maybe_unserialize(get_option('wpinterspire_products'));
 		}
-		return $response;
 	}
-	
-	public function GetProduct($id = NULL) {		
-		$xml = "<requesttype>products</requesttype>
-		<requestmethod>GetProduct</requestmethod>
-		<details>
-			<productId>$id</productId>
-		</details>";
-		
-		$xml = $this->GenerateRequest($xml);
-		
-		$response = $this->PostToRemoteFileAndGetResponse($xml);
-		
-		return $response;
-	}
+
 	
 	private function PostToRemoteFileAndGetResponse($Vars="", $asobject = true)
 	{	
@@ -477,19 +510,20 @@ EOD;
 	}
 		           
     public function add_interspire_button($context){
-    	global $interspire_icon;
-        $out = '<a href="#TB_inline?width=640&inlineId=interspire_select_product" class="thickbox" title="' . __("Add Interspire Product(s)", 'wpinterspire') . '"><img src="'.$interspire_icon.'" width="14" height="14" alt="' . __("Add a Product", 'wpinterspire') . '" /></a>';
+    	$out = '<a href="#TB_inline?width=640&inlineId=interspire_select_product" class="thickbox" title="' . __("Add Interspire Product(s)", 'wpinterspire') . '"><img src="'.$this->icon.'" width="14" height="14" alt="' . __("Add a Product", 'wpinterspire') . '" /></a>';
         return $context . $out;
     }
     
     function int_add_mce_popup(){
         ?>
         <script>
-            function InsertProduct(){
-                var product_id = jQuery("#add_product_id").val();
+            function InterspireInsertProduct(){
+                var product_id = jQuery("#interspire_add_product_id").val();
                 if(product_id == ""){
                     alert("<?php _e("The product you selected does not have a link. Try rebuilding your product list in settings.", "wpinterspire") ?>");
                     return;
+                } else {
+                	var link_product = ' link="' + product_id + '"';
                 }
 
                 var display_title = jQuery("#interspire_display_title").val();
@@ -501,11 +535,12 @@ EOD;
                 if(!empty($this->storepath)) { ?>
                 product_id = product_id.replace("<?php echo $this->storepath; ?>", '');
                 <?php } ?>
-                if(jQuery("#link_target").is(":checked")) { link_target = ' target=blank'; }
-                if(jQuery("#link_nofollow").is(":checked")) { link_nofollow = ' rel=nofollow'; }
+                if(jQuery("#link_target").is(":checked")) { link_target = ' target="blank"'; }
+                if(jQuery("#link_nofollow").is(":checked")) { link_nofollow = ' rel="nofollow"'; }
 				
                 var win = window.dialogArguments || opener || parent || top;
-				win.send_to_editor("[interspire link=" + product_id +link_target+link_nofollow+"]"+display_title+"[/interspire]");
+                var shortcodeName = '<?php echo preg_match('/mybigcommerce/ism', $this->xmlpath) ? 'bigcommerce' : 'interspire'; ?>';
+				win.send_to_editor("["+shortcodeName+link_product+link_target+link_nofollow+"]"+display_title+"[/"+shortcodeName+"]");
             }
         </script>
 
@@ -515,14 +550,10 @@ EOD;
                 	<h3 class="media-title"><?php _e("Insert a Product", "wpinterspire"); ?></h3>
                     </div>
                     <?php 
-                   	if(empty($this->products)) { 
+                   	if(empty($this->productsselect)) { 
                    		echo '<p>Your settings are correct, however your product list has not been generated. (<em>This may take a while if you have lots of products.</em>)</p>
                    		<p><a href="' . admin_url( 'options-general.php?page=wpinterspire&wpinterspirerebuild=all' ) . '" class="button">Generate your list now</a></p>';
                    	} else { 
-                   		$products = maybe_unserialize($this->products);
-                   		if(!empty($products) && empty($this->options['productsselect'])) {
-                   			$this->BuildProductsSelect();
-                   		}
                    	?>
                    	        
                     <div id="media-items" style="width:auto; overflow:hidden;">
@@ -538,12 +569,12 @@ EOD;
 							
 							<tr>
 								<th valign="top" scope="row" class="label">
-									<span class="alignleft"><label for="add_product_id">Select the Product</label></span>
+									<span class="alignleft"><label for="interspire_add_product_id">Select the Product</label></span>
 								</th>
 								<td class="field">
 								
                             <?php
-                    			echo $this->options['productsselect'];        
+                    			echo $this->productsselect;        
                             ?></td>
 							</tr>
 					
@@ -560,7 +591,7 @@ EOD;
 							<tr>
 								<td></td>
 								<td>
-									<input type="button" class="button-primary" value="Insert Product" onclick="InsertProduct();"/>&nbsp;&nbsp;&nbsp;
+									<input type="button" class="button-primary" value="Insert Product" onclick="InterspireInsertProduct();"/>&nbsp;&nbsp;&nbsp;
 				                    <a class="button" style="color:#bbb;" href="#" title="Cancel" onclick="tb_remove(); return false;"><?php _e("Cancel", "wpinterspire"); ?></a>
 								</td>
 							</tr>
@@ -617,15 +648,26 @@ function wpinterspire_shortcode($atts, $content) {
 		'link' => '',
 		'rel' => '',
 		'target' => '',
+		'nofollow' => ''
 	), $atts));
 	
 	if(!strpos('http', $link)) { // If the link is shorter because $this->storepath is entered
 		$options = get_option('wpinterspire');
-		$storepath = $options['storepath'];
+		extract($options);
+		if(empty($storepath)) {
+			preg_match('/(.+)\/xml\.php/ism', $options['xmlpath'], $m);
+			if(!empty($m)) {
+				$storepath = $m[1];
+			}
+		}
 		if(substr($link, 0, 1) == '/' && substr($storepath, -1, 1) == '/') { // If they start and end with // we strip one.
 			$link = substr($link, 1);
 		};
-		$link = $storepath.$link;
+		if($seourls != 'no') {
+			$link = $storepath.'/products/'.$link.'.html';
+		} else {
+			$link = $storepath.'/products.php?product='.$link;
+		}
 	}
 	
 	if(isset($rel) && $rel !='') {$nofollow=' rel="'.$rel.'"';}

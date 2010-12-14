@@ -60,6 +60,14 @@ Yes, this plugin requires either a BigCommerce account or an Interspire Shopping
 
 == Changelog ==
 
+= 1.1 =
+__Note: Existing links will not be backward compatible with previous versions of this plugin!__
+
+* Fixed the issues with previous versions - now lists will generate in much less time and will include unlimited numbers of products
+* Added configuration option for whether or not to use SEO-friendly URLs
+* BigCommerce users will now see `[bigcommerce]` shortcode instead of `[interspire]`
+* Improved settings check: settings are only checked when they have changed
+
 = 1.0.6 = 
 * Whoops! This is what 1.0.5 was supposed to be.
 * Fixed generation of product list
@@ -90,6 +98,12 @@ Yes, this plugin requires either a BigCommerce account or an Interspire Shopping
 * Initial launch
 
 == Upgrade Notice ==
+
+= 1.1 =
+* Fixed the issues with previous versions - now lists will generate in much less time and will include unlimited numbers of products
+* Added configuration option for whether or not to use SEO-friendly URLs
+* BigCommerce users will now see `[bigcommerce]` shortcode instead of `[interspire]`
+* Improved settings check: settings are only checked when they have changed
 
 = 1.0.6 = 
 * Whoops! This is what 1.0.5 was supposed to be.
