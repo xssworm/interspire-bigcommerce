@@ -68,6 +68,12 @@ Yes, this plugin requires either a BigCommerce account or an Interspire Shopping
 
 == Changelog ==
 
+= 1.2.1 = 
+* Fixed <a href="http://wordpress.org/support/topic/445905">bug #445905</a> issue where product list would not appear to have been generated.
+* Fixed issue where plugin says settings are configured properly, but are not.
+* Fixed issue where if a store had no images, the media browser's image tab would show pagination for an empty set of products
+* Fixed pagination inside the media browser: the pages are now based on products with images instead of the number of products
+
 = 1.2 =
 * Added a tab to WordPress' `Add an Image` media tabs, allowing you to easily embed your product images and link to product pages or larger images.
 
@@ -109,6 +115,12 @@ __Note: Existing links will not be backward compatible with previous versions of
 * Initial launch
 
 == Upgrade Notice ==
+
+= 1.2.1 = 
+* Fixed <a href="http://wordpress.org/support/topic/445905">bug #445905</a> issue where product list would not appear to have been generated.
+* Fixed issue where plugin says settings are configured properly, but are not.
+* Fixed issue where if a store had no images, the media browser's image tab would show pagination for an empty set of products
+* Fixed pagination inside the media browser: the pages are now based on products with images instead of the number of products
 
 = 1.2 =
 * Added a tab to WordPress' `Add an Image` media tabs, allowing you to easily embed your product images and link to product pages or larger images.

@@ -4,7 +4,7 @@ Plugin Name: Interspire & BigCommerce
 Plugin URI: http://www.seodenver.com/interspire-bigcommerce-wordpress/
 Description: Integrate Interspire and BigCommerce products into your WordPress website
 Author: Katz Web Services, Inc.
-Version: 1.2
+Version: 1.2.1
 Author URI: http://www.katzwebservices.com
 */
 
@@ -42,7 +42,11 @@ class WP_Interspire {
 	}
 	
 	function add_media_upload_tabs($tabs) {
-		if(strpos($this->options['xmlpath'], 'mybigcommerce')) {
+		if(!isset($this->options)) {
+			$this->get_options();
+		}
+		
+		if(strpos($this->options['xmlpath'], 'bigcommerce')) {
 			$newtab = array('interspire' => __('BigCommerce', 'wpinterspire'));
 		} else {
 			$newtab = array('interspire' => __('Interspire', 'wpinterspire'));
@@ -54,6 +58,15 @@ class WP_Interspire {
 		return wp_iframe( array(&$this, 'media_process') );
 	}
 	
+	function get_options() {
+		$this->options = get_option('wpinterspire', array());
+			        
+        // Set each setting...
+        foreach($this->options as $key=> $value) {
+        	$this->{$key} = $value;
+        }
+	}
+	
 	function WP_Interspire() {
     	add_action('admin_menu', array(&$this, 'admin'));
 	    add_filter('plugin_action_links', array(&$this, 'settings_link'), 10, 2 );
@@ -61,12 +74,7 @@ class WP_Interspire {
     	
     	if(in_array(basename($_SERVER['PHP_SELF']), array('post.php', 'page.php', 'page-new.php', 'post-new.php')) || (in_array(basename($_SERVER['PHP_SELF']), array('options-general.php')) && isset($_REQUEST['page']) && $_REQUEST['page'] == 'wpinterspire') || (in_array(basename($_SERVER['PHP_SELF']), array('media-upload.php')) && isset($_REQUEST['tab']) && $_REQUEST['tab'] == 'interspire'))  {   	
     			
-	    	$this->options = get_option('wpinterspire', array());
-	        
-	        // Set each setting...
-	        foreach($this->options as $key=> $value) {
-	        	$this->{$key} = $value;
-	        }
+	    	$this->get_options();
 	                
 	        $this->icon = WP_PLUGIN_URL . "/" . basename(dirname(__FILE__)) ."/interspire-button.png";
 	        
@@ -264,7 +272,7 @@ EOD;
 			return false;
 		}
 		
-		if(!isset($_REQUEST['updated'])) { return $this->configured; }
+		if(!isset($_REQUEST['updated']) && !isset($_REQUEST['settings-updated']) && !isset($_REQUEST['wpinterspirerebuild'])) { return $this->configured; }
 			
 		// Changed this from the APITest requestmethod, since it was so buggy.
 		// We want this to be fast, so we call a negative productID so it doesn't
@@ -343,6 +351,7 @@ EOD;
 				}
 		    }
 	        $output .= '</select>'."\n";
+	        $this->productsselect = $output;
 		    update_option('wpinterspire_productselect', $this->productsselect);
 		} else {
 			$output = get_option('wpinterspire_productselect');
@@ -566,7 +575,8 @@ EOD;
                 	<h3 class="media-title"><?php _e("Insert a Product", "wpinterspire"); ?></h3>
                     </div>
                     <?php 
-                   	if(empty($this->productsselect)) { 
+                    $this->BuildProductsSelect();
+                   	if(empty($this->productsselect)) {
                    		echo '<p>Your settings are correct, however your product list has not been generated. (<em>This may take a while if you have lots of products.</em>)</p>
                    		<p><a href="' . admin_url( 'options-general.php?page=wpinterspire&wpinterspirerebuild=all' ) . '" class="button">Generate your list now</a></p>';
                    	} else { 
@@ -660,6 +670,7 @@ EOD;
 		
 
 		$Products = $this->GetProducts(0, false);
+
 		if(is_wp_error($Products) || !$Products) { 
 			echo '<div class="tablenav"><form id="filter"><h3>The Interspire &amp; BigCommerce plugin settings have not been properly configured.</h3></form></div>';
 			return false;
@@ -820,36 +831,43 @@ var addExtImage = {
 <div class="tablenav">
 
 <?php
-$_GET['paged'] = isset( $_GET['paged'] ) ? intval($_GET['paged']) : 0;
-	if ( $_GET['paged'] < 1 )
-		$_GET['paged'] = 1;
-	$start = ( $_GET['paged'] - 1 ) * 10;
-	if ( $start < 1 )
-		$start = 0;
+	
+	$i = 0;
+	foreach ($Products['items'] as $key => $product ) {
+		if(empty($product['imagefilestd'])) { continue; }
+		$i++;
+	}
 		
-$page_links = paginate_links( array(
-	'base' => add_query_arg( 'paged', '%#%' ),
-	'format' => '',
-	'prev_text' => __('&laquo;'),
-	'next_text' => __('&raquo;'),
-	'total' => ceil(sizeof($Products['items']) / 10),
-	'current' => $_GET['paged']
-));
+	$_GET['paged'] = isset( $_GET['paged'] ) ? intval($_GET['paged']) : 0;
+		if ( $_GET['paged'] < 1 )
+			$_GET['paged'] = 1;
+		$start = ( $_GET['paged'] - 1 ) * 10;
+		if ( $start < 1 )
+			$start = 0;
+			
+	$page_links = paginate_links( array(
+		'base' => add_query_arg( 'paged', '%#%' ),
+		'format' => '',
+		'prev_text' => __('&laquo;'),
+		'next_text' => __('&raquo;'),
+		'total' => ceil($i / 10),
+		'current' => $_GET['paged']
+	));
+		
+	if ( $page_links ) {
+		$page_links_form = "<form id='filter'>";
+		$page_links_form .= "<div class='tablenav-pages'>{$page_links}</div>";
+		$page_links_form .= "</form>";
+	}
 
-	echo "<form id='filter'>";
-	
-if ( $page_links )
-	echo "<div class='tablenav-pages'>$page_links</div>";
-	
-	echo "</form>";
-
-	echo '<div class="alignleft actions">';
+	$mediaitems .= '<div class="alignleft actions">';
 	
 	$default_align = get_option('image_default_align');
 	if ( empty($default_align) )
 		$default_align = 'none';
 		
-		echo '<form enctype="multipart/form-data" method="post" action="http://local/dev/devwordpress/wp-admin/media-upload.php?type=image&amp;tab=interspire&amp;post_id=1384" class="media-upload-form validate" id="library-form">
+		$postID = isset($_GET['post']) ? (int)$_GET['post'] : 0;
+		$mediaitems .= '<form enctype="multipart/form-data" method="post" action="'.admin_url('media-upload.php?type=image&amp;tab=interspire&amp;post_id='.$postID).'" class="media-upload-form validate" id="library-form">
 		<div id="media-items">
 		';
 		
@@ -859,7 +877,7 @@ if ( $page_links )
 			$i++;
 			if($i < $start || $i > ($start + 9)) { continue; }
 			extract((array)$product);
-			echo "<a class='toggle describe-toggle-on' href='#media-item-$productid'>$toggle_on</a>
+			$mediaitems .= "<a class='toggle describe-toggle-on' href='#media-item-$productid'>$toggle_on</a>
 	<a class='toggle describe-toggle-off' href='#media-item-$productid'>$toggle_off</a>".'
 			<div id="media-item-'.$productid.'" class="media-item preloaded">
 				<div style="width:40px; float:left;"><img src="'.$this->storepath.$imagefilethumb.'" class="pinkynail toggle" /></div>
@@ -917,9 +935,9 @@ if ( $page_links )
 			<button type="button" id="url-product-'.$productid.'" class="button url-product" value="">' . __('Link to product') . '</button>
 			<button type="button" id="url-src-'.$productid.'" class="button url-src" value="">' . __('Link to image') . '</button>';
 			if(!empty($imagefilezoom)) {
-			echo '<button type="button" id="url-large-'.$productid.'" class="button url-large" value="'.$imagefilezoom.'">' . __('Link to large image') . '</button>';
+			$mediaitems .= '<button type="button" id="url-large-'.$productid.'" class="button url-large" value="'.$imagefilezoom.'">' . __('Link to large image') . '</button>';
 			}
-			echo '<p class="help">' . __('Enter a link URL or click above for presets.') . '</p></td>
+			$mediaitems .= '<p class="help">' . __('Enter a link URL or click above for presets.') . '</p></td>
 		</tr>
 		<tr>
 			<td></td>
@@ -932,7 +950,14 @@ if ( $page_links )
 			
 			';
 		}
-		echo '</div></form></div></div>';
+		$mediaitems .= '</div></form></div></div>';
+		
+		if($i == 0) {
+			_e('<div class="updated"><p>Your store has no images.</p></div>');
+		} else {
+			_e($page_links_form.$mediaitems);
+		}
+		
 	}
 
 
