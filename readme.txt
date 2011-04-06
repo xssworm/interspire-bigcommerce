@@ -1,7 +1,7 @@
 === Interspire & BigCommerce ===
 Tags: ecommerce, interspire, bigcommerce, e-commerce, shop, cart, paypal, authorize, authorize.net, stock control, ecommerce, zencart, volition, shopsite, oscommerce, zen cart, prestashop, merchant
 Requires at least: 2.8
-Tested up to: 3.1
+Tested up to: 3.1.1
 Stable tag: trunk
 Contributors: katzwebdesign
 Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zackkatz%40gmail%2ecom&item_name=Interspire%20BigCommerce%20for%20WordPress&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8
@@ -68,6 +68,9 @@ Yes, this plugin requires either a BigCommerce account or an Interspire Shopping
 
 == Changelog ==
 
+= 1.2.2 = 
+* Fixed `Call to undefined function MakeURLSafe()` error
+
 = 1.2.1 = 
 * Fixed <a href="http://wordpress.org/support/topic/445905">bug #445905</a> issue where product list would not appear to have been generated.
 * Fixed issue where plugin says settings are configured properly, but are not.
@@ -115,6 +118,9 @@ __Note: Existing links will not be backward compatible with previous versions of
 * Initial launch
 
 == Upgrade Notice ==
+
+= 1.2.2 = 
+* Fixed `Call to undefined function MakeURLSafe()` error
 
 = 1.2.1 = 
 * Fixed <a href="http://wordpress.org/support/topic/445905">bug #445905</a> issue where product list would not appear to have been generated.

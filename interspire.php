@@ -328,7 +328,7 @@ EOD;
 		if ($this->seourls != 'no') {
 			return $this->MakeURLSafe($url);
 		} else {
-			return sprintf("products.php?product=%s", MakeURLSafe($url));
+			return sprintf("products.php?product=%s", $this->MakeURLSafe($url));
 		}
 	}
 
