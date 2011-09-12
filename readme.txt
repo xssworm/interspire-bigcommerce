@@ -1,7 +1,7 @@
 === Interspire & BigCommerce ===
 Tags: ecommerce, interspire, bigcommerce, e-commerce, shop, cart, paypal, authorize, authorize.net, stock control, ecommerce, zencart, volition, shopsite, oscommerce, zen cart, prestashop, merchant
 Requires at least: 2.8
-Tested up to: 3.1.1
+Tested up to: 3.2.1
 Stable tag: trunk
 Contributors: katzwebdesign
 Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zackkatz%40gmail%2ecom&item_name=Interspire%20BigCommerce%20for%20WordPress&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8
@@ -68,6 +68,9 @@ Yes, this plugin requires either a BigCommerce account or an Interspire Shopping
 
 == Changelog ==
 
+= 1.2.3 = 
+* Fixed <a href="http://www.seodenver.com/interspire-bigcommerce-wordpress/#comment-307176267">issue reported</a> by <a href="http://www.brandywinejewelrysupply.com/">Brandywine Jewelry</a>  where "Screen Options" in WordPress' Add/Edit Post screen are permanently hidden. Thanks for reporting!
+
 = 1.2.2 = 
 * Fixed `Call to undefined function MakeURLSafe()` error
 
@@ -118,6 +121,11 @@ __Note: Existing links will not be backward compatible with previous versions of
 * Initial launch
 
 == Upgrade Notice ==
+
+= 1.3 = 
+* Removed `curl`-only data retrieval; now uses WordPress' built-in `wp_remote_post()` functionality
+* Fixed some PHP notices on fresh installation and in the product image browser
+* Fixed <a href="http://www.seodenver.com/interspire-bigcommerce-wordpress/#comment-307176267">issue reported</a> by <a href="http://www.brandywinejewelrysupply.com/">Brandywine Jewelry</a>  where "Screen Options" in WordPress' Add/Edit Post screen are permanently hidden. Thanks for reporting!
 
 = 1.2.2 = 
 * Fixed `Call to undefined function MakeURLSafe()` error

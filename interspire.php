@@ -4,7 +4,7 @@ Plugin Name: Interspire & BigCommerce
 Plugin URI: http://www.seodenver.com/interspire-bigcommerce-wordpress/
 Description: Integrate Interspire and BigCommerce products into your WordPress website
 Author: Katz Web Services, Inc.
-Version: 1.2.2
+Version: 1.3
 Author URI: http://www.katzwebservices.com
 */
 
@@ -27,7 +27,6 @@ class WP_Interspire {
 				load_plugin_textdomain( 'wpinterspire', 'wp-content/plugins/' . $plugin_dir, $plugin_dir );
 				
 				if($WPI->configured) {
-					wp_enqueue_style('media');
 					add_action('admin_footer',  array(&$WPI, 'int_add_mce_popup'));
 					add_action('media_buttons_context', array(&$WPI, 'add_interspire_button'));
 				}
@@ -59,7 +58,14 @@ class WP_Interspire {
 	}
 	
 	function get_options() {
-		$this->options = get_option('wpinterspire', array());
+		$this->options = get_option('wpinterspire', array(
+			'username' => '',
+			'xmlpath' => '',
+			'xmltoken' => '',
+			'storepath' => '',
+			'seourls' => '',
+			'showlink' => ''
+		));
 			        
         // Set each setting...
         foreach($this->options as $key=> $value) {
@@ -175,22 +181,25 @@ class WP_Interspire {
                                 'content' => "<p><label for='wpinterspire_showlink'><input type='checkbox' name='wpinterspire[showlink]' id='wpinterspire_showlink' $checked /> Help show the love by telling the world you use this plugin. A link will be added to your footer.</label></p>"
                         );
                                                 
+                        if($this->configured) {
                         
-                        if(!empty($this->productsselect)) {
-                        	$rebuildText = "Your product list has been built:</p>".$this->productsselect."<p><strong>Has the list changed?</strong>";
-                        	$rebuildLink = 'Re-build your products list';
-                        } else {
-                        	$rebuildText = "Your product list has not yet been built. ";
-                        	$rebuildLink = 'Build your products list';
-                        }
-                       
-                       $rows['unset'] = array(
-                                'id' => 'wpinterspirerebuild',
-                                'label' => __('Products', 'wpinterspire'),
-                                'desc' => '',
-                                'content' => "<p>$rebuildText <a href='".wp_nonce_url(admin_url('options-general.php?page=wpinterspire&amp;wpinterspirerebuild=all'), 'rebuild')."' class='button'>$rebuildLink</a><br /><small>Note: this may take a long time, depending on the size of your products list.</small></p>"
-                        	);	
-						                                
+	                        if(!empty($this->productsselect)) {
+	                        	$rebuildText = "Your product list has been built:</p>".$this->productsselect."<p><strong>Has the list changed?</strong>";
+	                        	$rebuildLink = 'Re-build your products list';
+	                        } else {
+	                        	$rebuildText = "Your product list has not yet been built. ";
+	                        	$rebuildLink = 'Build your products list';
+	                        }
+	                       
+	                       $rows['unset'] = array(
+	                                'id' => 'wpinterspirerebuild',
+	                                'label' => __('Products', 'wpinterspire'),
+	                                'desc' => '',
+	                                'content' => "<p>$rebuildText <a href='".wp_nonce_url(admin_url('options-general.php?page=wpinterspire&amp;wpinterspirerebuild=all'), 'rebuild')."' class='button'>$rebuildLink</a><br /><small>Note: this may take a long time, depending on the size of your products list.</small></p>"
+	                        	);	
+						
+						}
+												                                
                         $this->postbox('wpinterspiresettings',__('Store Settings', 'wpinterspire'), $this->form_table($rows), false);
                          
                     ?>
@@ -224,7 +233,7 @@ class WP_Interspire {
 	<hr />
 	<h4>This plugin requires Interspire or BigCommerce accounts.</h4>
 	<p><strong>What is BigCommerce?</strong><br />
-	BigCommerce is the #1 rated hosted e-commerce platform. If you want to have an e-commerce store without having to manage the server, security, and payments, BigCommerce is for you. <a href="http://katzwebservicesinc.bigcommerce.com" target="_blank">Visit BigCommerce.com to start your own online store today!</a>. You can also check out all the <a href="http://www.bigcommerce.com/livestores/">neat stores that use BigCommerce</a>.</p>
+	BigCommerce is the #1 rated hosted e-commerce platform. If you want to have an e-commerce store without having to manage the server, security, and payments, BigCommerce is for you. <a href="http://www.bigcommerce.com/145-0-3-6.html" target="_blank">Visit BigCommerce.com to start your own online store today!</a>. You can also check out all the <a href="http://www.bigcommerce.com/livestores/">neat stores that use BigCommerce</a>.</p>
 	<p><strong>What is Interspire Shopping Cart?</strong><br />
 Interspire Shopping Cart is an all-in-one e-commerce and shopping cart software platform that includes absolutely everything you need to sell online and attract more customers using the power, reach and affordability of the Internet. <a href="http://www.interspire.com/240-2-3-8.html" target="_blank">Check out Interspire Shopping Cart today!</a></p>
 EOD;
@@ -234,25 +243,20 @@ EOD;
     function show_configuration_check($link = true) {
     	$options = $this->options;
     	
-        if(!function_exists('curl_init')) { // Added 1.2.2
-            $content = __('Your server does not support <code>curl_init</code>. Please call your host and ask them to enable this functionality, which is required for this awesome plugin.', 'wpinterspire');
-            echo $this->make_notice_box($content, 'error');
-        } else {
-            if($this->configured) {
-                $content = __('Your '); if($link) { $content .= '<a href="' . admin_url( 'options-general.php?page=wpinterspire' ) . '">'; } $content .=  __('Interspire API settings', 'wpinterspire'); if($link) { $content .= '</a>'; } $content .= __(' are configured properly');
-                
-                if(empty($this->productsselect)) {
-                	$content .= __(', however your product list has not yet been built. <strong><a href="?page=wpinterspire&amp;wpinterspirerebuild=all">Build it now</a></strong>.');
-                } else {
-                 	$content .= __('. When editing posts, look for the <img src="'.$this->icon.'" width="14" height="14" alt="Add a Product" /> icon; click it to add a product to your post or page.');
-                 }
-                echo $this->make_notice_box($content, 'success');
+        if($this->configured) {
+            $content = __('Your '); if($link) { $content .= '<a href="' . admin_url( 'options-general.php?page=wpinterspire' ) . '">'; } $content .=  __('Interspire API settings', 'wpinterspire'); if($link) { $content .= '</a>'; } $content .= __(' are configured properly');
+            
+            if(empty($this->productsselect)) {
+            	$content .= __(', however your product list has not yet been built. <strong><a href="?page=wpinterspire&amp;wpinterspirerebuild=all">Build it now</a></strong>.');
             } else {
-                $content = 'Your '; if($link) { $content .= '<a href="' . admin_url( 'options-general.php?page=wpinterspire' ) . '">'; } $content .=  __('Interspire API settings', 'wpinterspire') ; if($link) { $content .= '</a>'; } $content .= '  are <strong>not configured properly</strong>';
-                if(is_array($this->settings_checked)) { $content .= '<br /><blockquote>'.$this->settings_checked['errormessage'].'</blockquote>'; }
-                echo $this->make_notice_box($content, 'error');
-            };
-        }
+             	$content .= __('. When editing posts, look for the <img src="'.$this->icon.'" width="14" height="14" alt="Add a Product" /> icon; click it to add a product to your post or page.');
+             }
+            echo $this->make_notice_box($content, 'success');
+        } else {
+            $content = 'Your '; if($link) { $content .= '<a href="' . admin_url( 'options-general.php?page=wpinterspire' ) . '">'; } $content .=  __('Interspire API settings', 'wpinterspire') ; if($link) { $content .= '</a>'; } $content .= '  are <strong>not configured properly</strong>';
+            if(is_array($this->settings_checked)) { $content .= '<br /><blockquote>'.$this->settings_checked['errormessage'].'</blockquote>'; }
+            echo $this->make_notice_box($content, 'error');
+        };
     }
 
     function make_notice_box($content, $type="error") {
@@ -266,7 +270,8 @@ EOD;
     }
  
 	private function CheckSettings() {
-
+		#$this->configured = $this->options['configured'] = true;
+		#return;
 		if(empty($this->username) || empty($this->xmltoken) || empty($this->username)) {
 			$this->settings_checked = $this->configured = false;
 			return false;
@@ -278,16 +283,16 @@ EOD;
 		// We want this to be fast, so we call a negative productID so it doesn't
 		// actually get a product.
 		$xml = '<requesttype>products</requesttype>
-	<requestmethod>GetProduct</requestmethod>
-	<details>
-		<productId>-1</productId>
-	</details>';
+		<requestmethod>GetProduct</requestmethod>
+		<details>
+			<productId>-1</productId>
+		</details>';
 
 		$xml = $this->GenerateRequest($xml);
 		
-		$response = $this->PostToRemoteFileAndGetResponse($xml);		
+		$response = $this->PostToRemoteFileAndGetResponse($xml);
 		
-		if($response) {
+		if($response && !empty($response)) {
 			if($response->status == 'FAILED') {
 				$this->settings_checked = array('errormessage' => $response->errormessage);
 	        	$this->configured = false;
@@ -299,6 +304,8 @@ EOD;
 				return true;
 			}
 		}
+		
+		$this->configured = $this->options['configured'] = false;
 		return false;
 	}
 	
@@ -343,7 +350,7 @@ EOD;
 			if(empty($products)) { $products = get_option('wpinterspire_products'); }
 			
 			$products = maybe_unserialize($products);
-			if(!is_array($products)) { return; }
+			if(!is_array($products) || empty($products) || empty($products['items'])) { return; }
 			$output = '<select id="interspire_add_product_id"  style="width:90%;">'."\n".'<option value="" disabled="disabled" selected="selected">Select a product&hellip;</option>'."\n";
 		    foreach($products['items'] as $product) {
 				if(!is_object($product['prodname']) &&  !empty($product['prodname'])) {
@@ -376,6 +383,8 @@ EOD;
 			$response = $this->PostToRemoteFileAndGetResponse($xml);
 			
 			if(empty($GetProducts)) { $GetProducts = array(); }
+			
+			if(empty($response->data->results->item)) { return false; }
 			
 			foreach($response->data->results->item as $item) {
 				if(!is_object($item) || $item->prodvisible == '0') { continue; }
@@ -433,95 +442,26 @@ EOD;
 	
 	private function PostToRemoteFileAndGetResponse($Vars="", $asobject = true)
 	{	
-		$Vars = "xml=" .urlencode($Vars);
+		$Vars = 'xml='.urlencode($Vars);
 		
 		$Path = $this->xmlpath;
 		
 		$result = null;
 
-		if(function_exists("curl_exec")) {
-			// Use CURL if it's available
-			$ch = curl_init($Path);
+		$args = array(
+			'body' => $Vars,
+			'sslverify' => is_ssl(),
+			'timeout' => 600
+		);
+		$result = wp_remote_retrieve_body(wp_remote_post( $Path, $args ));
 
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			if (ini_get('open_basedir') == '') {
-				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-			}
-			curl_setopt($ch, CURLOPT_TIMEOUT, 60);
-			
-			// Had this backwards until 1.0.3
-			if (!is_ssl()) {
-				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-			} else {
-				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-			}
-
-			if($Vars != "") {
-				curl_setopt($ch, CURLOPT_POST, 1);
-				curl_setopt($ch, CURLOPT_POSTFIELDS, $Vars);
-			}
-			$result = curl_exec($ch);
-		}
-		else {
-			// Use fsockopen instead
-			$Path = @parse_url($Path);
-			if(!isset($Path['host']) || $Path['host'] == '') {
-				return null;
-			}
-			if(!isset($Path['port'])) {
-				$Path['port'] = 80;
-			}
-			if(!isset($Path['path'])) {
-				$Path['path'] = '/';
-			}
-			if(isset($Path['query'])) {
-				$Path['path'] .= "?".$Path['query'];
-			}
-
-			$fp = @fsockopen($Path['host'], $Path['port'], $errorNo, $error, 10);
-			@stream_set_timeout($fp, 10);
-			if(!$fp) {
-				return null;
-			}
-
-			$headers = array();
-
-			// If we have one or more variables, perform a post request
-			if($Vars != '') {
-				$headers[] = "POST ".$Path['path']." HTTP/1.0";
-				$headers[] = "Content-Length: ".strlen($Vars);
-			}
-			// Otherwise, let's get.
-			else {
-				$headers[] = "GET ".$Path['path']." HTTP/1.0";
-			}
-			$headers[] = "Host: ".$Path['host'];
-			$headers[] = "Connection: Close";
-
-			if($Vars != '') {
-				$headers[] = "\r\n".$Vars; // Extra CRLF to indicate the start of the data transmission
-			}
-
-			if(!@fwrite($fp, implode("\r\n", $headers))) {
-				return false;
-			}
-			while(!@feof($fp)) {
-				$result .= @fgets($fp, 12800);
-			}
-			@fclose($fp);
-
-			// Strip off the headers. Content starts at a double CRLF.
-			$result = explode("\r\n\r\n", $result, 2);
-			$result = $result[1];
-		}		
-		
 		if($asobject) {
 			
 			// Begin added 1.0.1
 			try {
 				$response = new SimpleXMLElement($result, LIBXML_NOCDATA);  // @simplexml_load_string($result);
 			} catch (Exception $e) {
-
+				return false;
 			}			
 			// End 1.0.1
 					
@@ -530,7 +470,7 @@ EOD;
 			}
 			return $response;
 		} else {
-			return $result;
+			return empty($response) ? false : $response;
 		}
 	}
 		           
@@ -541,7 +481,7 @@ EOD;
     
     function int_add_mce_popup(){
         ?>
-        <script>
+        <script type="text/javascript">
             function InterspireInsertProduct(){
                 var product_id = jQuery("#interspire_add_product_id").val();
                 if(product_id == ""){
@@ -860,7 +800,7 @@ var addExtImage = {
 		$page_links_form .= "</form>";
 	}
 
-	$mediaitems .= '<div class="alignleft actions">';
+	$mediaitems = '<div class="alignleft actions">';
 	
 	$default_align = get_option('image_default_align');
 	if ( empty($default_align) )
