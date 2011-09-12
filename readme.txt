@@ -68,7 +68,9 @@ Yes, this plugin requires either a BigCommerce account or an Interspire Shopping
 
 == Changelog ==
 
-= 1.2.3 = 
+= 1.3 = 
+* Removed `curl`-only data retrieval; now uses WordPress' built-in `wp_remote_post()` functionality
+* Fixed some PHP notices on fresh installation and in the product image browser
 * Fixed <a href="http://www.seodenver.com/interspire-bigcommerce-wordpress/#comment-307176267">issue reported</a> by <a href="http://www.brandywinejewelrysupply.com/">Brandywine Jewelry</a>  where "Screen Options" in WordPress' Add/Edit Post screen are permanently hidden. Thanks for reporting!
 
 = 1.2.2 = 
