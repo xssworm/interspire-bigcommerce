@@ -1,16 +1,16 @@
-=== BigCommerce ===
-Tags: ecommerce, interspire, bigcommerce, e-commerce, shop, cart, paypal, authorize, authorize.net, stock control, ecommerce, zencart, volition, shopsite, oscommerce, zen cart, prestashop, merchant
+=== Bigcommerce ===
+Tags: ecommerce, interspire, bigcommerce, e-commerce, shop, cart, paypal, authorize, authorize.net, stock control, ecommerce, zencart, volition, shopsite, oscommerce, zen cart, prestashop, merchant, big commerce
 Requires at least: 2.8
 Tested up to: 3.4.2
 Stable tag: trunk
 Contributors: katzwebdesign
-Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zackkatz%40gmail%2ecom&item_name=BigCommerce%20for%20WordPress&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8
+Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zackkatz%40gmail%2ecom&item_name=Bigcommerce%20for%20WordPress&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8
 
-Integrate the great BigCommerce hosted eCommerce shopping cart into WordPress.
+Integrate the great Bigcommerce hosted eCommerce shopping cart into WordPress.
 
 == Description ==
 
-<h3>Easily find and link to your BigCommerce products from within WordPress</h3>
+<h3>Easily find and link to your Bigcommerce products from within WordPress</h3>
 
 <strong>This plugin adds a button to the post/page editor that makes it easy to link to your products.</strong>
 
@@ -19,7 +19,7 @@ You want to spend your time writing the best content, not hunting for the link f
 <h3>Easily Embed & Link Your Store's Images</h3>
 Now you can easily insert product images using the WordPress `Add an Image` button. Adding product images has never been easier! (see the Screenshots section for an example).
 
-<h4>BigCommerce for WordPress Features:</h4>
+<h4>Bigcommerce for WordPress Features:</h4>
 * Insert a link into your content for any product in your store
 	* Select custom link text
 	* Choose to open the link in the same window or a new window
@@ -29,14 +29,14 @@ Now you can easily insert product images using the WordPress `Add an Image` butt
 	* Choose to link to the product page, the product image, or the full-sized product image
 	* Add `alt`, `title`, alignment and captions -- just like with normal WordPress images!
 
-<strong>What is BigCommerce?</strong><br />
-BigCommerce is the #1 rated hosted e-commerce platform. If you want to have an e-commerce store without having to manage the server, security, and payments, BigCommerce is for you. <a href="http://katzwebservicesinc.bigcommerce.com" target="_blank" rel="nofollow">Visit BigCommerce.com to start your own online store today!</a>. You can also check out all the <a href="http://www.bigcommerce.com/livestores/" rel="nofollow">neat stores that use BigCommerce</a>.
+<strong>What is Bigcommerce?</strong><br />
+Bigcommerce is the #1 rated hosted e-commerce platform. If you want to have an e-commerce store without having to manage the server, security, and payments, Bigcommerce is for you. <a href="http://katzwebservicesinc.bigcommerce.com" target="_blank" rel="nofollow">Visit Bigcommerce.com to start your own online store today!</a>. You can also check out all the <a href="http://www.bigcommerce.com/livestores/" rel="nofollow">neat stores that use Bigcommerce</a>.
 
 == Installation ==
 
 1. Upload plugin files to your plugins folder, or install using WordPress' built-in Add New Plugin installer
 1. Activate the plugin
-1. Go to the plugin settings page (under Settings > Interspire / BigCommerce)
+1. Go to the plugin settings page (under Settings > Interspire / Bigcommerce)
 1. Enter in your store's username (not your email address) and the API information. (Instructions for finding your API Key are on the settings page on the right.
 1. Click Save Changes.
 1. If the settings are correct, it will say so.
@@ -47,7 +47,7 @@ BigCommerce is the #1 rated hosted e-commerce platform. If you want to have an e
 1. How the Add Products modal screen appears in the WordPress editor.
 2. A button is added to the editor (next to the Media buttons). The product links appear as the `[interspire]` shortcode.
 3. This shows the shortcode from above on the live site.
-4. Once configured, easily add an image from your Interspire or BigCommerce shopping cart and link it to the product page. Adding product images has never been easier!
+4. Once configured, easily add an image from your Interspire or Bigcommerce shopping cart and link it to the product page. Adding product images has never been easier!
 
 == Frequently Asked Questions == 
 
@@ -84,7 +84,7 @@ __Note: Existing links will not be backward compatible with previous versions of
 
 * Fixed the issues with previous versions - now lists will generate in much less time and will include unlimited numbers of products
 * Added configuration option for whether or not to use SEO-friendly URLs
-* BigCommerce users will now see `[bigcommerce]` shortcode instead of `[interspire]`
+* Bigcommerce users will now see `[bigcommerce]` shortcode instead of `[interspire]`
 * Improved settings check: settings are only checked when they have changed
 
 = 1.0.6 = 
