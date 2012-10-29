@@ -76,7 +76,7 @@
 					<td>
 						<input type='text' name='wpinterspire[storepath]' id='wpinterspire_storepath' value='<?php echo esc_attr( $this->storepath ); ?>' size='40' /><br />
 						<small>
-							Your Store's URL, including <code>http(s)://</code>.
+							Your Store's URL (<code>http://mystore.mybigcommerce.com/</code>).
 							Entering this into your browser should take you to your home page.
 							This is optional, and only to shorten the shortcode when linking to your products.
 						</small>
@@ -87,7 +87,7 @@
 					<td>
 						<input type='checkbox' name='wpinterspire[seourls]' id='wpinterspire_seourls' value='yes' <?php echo ( ( isset( $this->seourls ) && $this->seourls == 'yes' ) ? 'checked=checked' : '' ); ?> />
 						The store uses SEO-friendly URL structure<br />
-						<small>If your product URLs do not look like <code>/products.php?product=product-name</code>, this should be checked.</small>
+						<small>If your product URLs look like <code>/products.php?product=product-name</code>, this should be unchecked.</small>
 					</td>
 				</tr>
 				<tr>

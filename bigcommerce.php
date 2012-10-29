@@ -84,11 +84,11 @@ class WP_Interspire {
 		}
 		return array_merge($tabs, $newtab);
 	}
-	
+
 	function menu_handle() {
 		return wp_iframe( array(&$this, 'media_process') );
 	}
-	
+
 	function get_options() {
 		$this->options = get_option('wpinterspire', array(
 			'username' => '',
@@ -98,9 +98,9 @@ class WP_Interspire {
 			'seourls' => '',
 			'showlink' => ''
 		));
-			        
+
         // Set each setting...
-        foreach($this->options as $key=> $value) {
+        foreach( $this->options as $key => $value ) {
         	$this->{$key} = $value;
         }
 	}
@@ -152,8 +152,12 @@ class WP_Interspire {
     	$options = $this->options;
     	
         if($this->configured) {
-            $content = __('Your '); if($link) { $content .= '<a href="' . admin_url( 'options-general.php?page=wpinterspire' ) . '">'; } $content .=  __('Interspire API settings', 'wpinterspire'); if($link) { $content .= '</a>'; } $content .= __(' are configured properly');
-            
+            $content = __('Your ');
+            if($link) { $content .= '<a href="' . admin_url( 'options-general.php?page=wpinterspire' ) . '">'; }
+            $content .=  __('Interspire API settings', 'wpinterspire');
+            if($link) { $content .= '</a>'; }
+            $content .= __(' are configured properly');
+
             if(empty($this->productsselect)) {
             	$content .= __(', however your product list has not yet been built. <strong><a href="?page=wpinterspire&amp;wpinterspirerebuild=all">Build it now</a></strong>.');
             } else {
@@ -161,7 +165,11 @@ class WP_Interspire {
              }
             echo $this->make_notice_box($content, 'success');
         } else {
-            $content = 'Your '; if($link) { $content .= '<a href="' . admin_url( 'options-general.php?page=wpinterspire' ) . '">'; } $content .=  __('Interspire API settings', 'wpinterspire') ; if($link) { $content .= '</a>'; } $content .= '  are <strong>not configured properly</strong>';
+            $content = 'Your ';
+            if($link) { $content .= '<a href="' . admin_url( 'options-general.php?page=wpinterspire' ) . '">'; }
+            $content .=  __('Interspire API settings', 'wpinterspire') ;
+            if($link) { $content .= '</a>'; }
+            $content .= '  are <strong>not configured properly</strong>';
             if(is_array($this->settings_checked)) { $content .= '<br /><blockquote>'.$this->settings_checked['errormessage'].'</blockquote>'; }
             echo $this->make_notice_box($content, 'error');
         };
@@ -384,7 +392,11 @@ class WP_Interspire {
 	}
 
     public function add_interspire_button($context){
-    	$out = '<a href="#TB_inline?width=640&inlineId=interspire_select_product" class="thickbox" title="' . __("Add Interspire Product(s)", 'wpinterspire') . '"><img src="'.$this->icon.'" width="14" height="14" alt="' . __("Add a Product", 'wpinterspire') . '" /></a>';
+    	$out = '<a href="#TB_inline?width=640&inlineId=interspire_select_product" class="thickbox" title="'
+    		. __("Add Interspire Product(s)", 'wpinterspire')
+    		. '"><img src="'.$this->icon.'" width="14" height="14" alt="'
+    		. __("Add a Product", 'wpinterspire')
+    		. '" /></a>';
         return $context . $out;
     }
 
@@ -393,168 +405,31 @@ class WP_Interspire {
 		require( 'mce-popup.html.php' );
     }
 
-    function media_process() {
+	function media_process() {
 		media_upload_header();
-		
-
-		$Products = $this->GetProducts(0, false);
-
-		if(is_wp_error($Products) || !$Products) { 
+		$Products = $this->GetProducts( 0, false );
+		if( is_wp_error( $Products ) || ! $Products ) { 
 			echo '<div class="tablenav"><form id="filter"><h3>The Bigcommerce plugin settings have not been properly configured.</h3></form></div>';
 			return false;
 		}
-	
-	$toggle_on  = __( 'Show' );
-	$toggle_off = __( 'Hide' );
+		$toggle_on  = __( 'Show' );
+		$toggle_off = __( 'Hide' );
 		$class = empty( $errors ) ? 'startclosed' : 'startopen';
-	
-	if ( !apply_filters( 'disable_captions', '' ) ) {
-		$caption = '
-			<tr>
-				<th valign="top" scope="row" class="label">
-					<span class="alignleft"><label for="caption">' . __('Image Caption') . '</label></span>
-				</th>
-				<td class="field"><input id="caption" name="caption" value="" type="text" /></td>
-			</tr>
-		';
-	} else {
-		$caption = '';
-	}
-	require( 'media.js.php' );
-?>
-<div class="tablenav">
-<?php
-	
-	$i = 0;
-	foreach ($Products['items'] as $key => $product ) {
-		if(empty($product['imagefilestd'])) { continue; }
-		$i++;
-	}
-		
-	$_GET['paged'] = isset( $_GET['paged'] ) ? intval($_GET['paged']) : 0;
-		if ( $_GET['paged'] < 1 )
-			$_GET['paged'] = 1;
-		$start = ( $_GET['paged'] - 1 ) * 10;
-		if ( $start < 1 )
-			$start = 0;
-			
-	$page_links = paginate_links( array(
-		'base' => add_query_arg( 'paged', '%#%' ),
-		'format' => '',
-		'prev_text' => __('&laquo;'),
-		'next_text' => __('&raquo;'),
-		'total' => ceil($i / 10),
-		'current' => $_GET['paged']
-	));
-		
-	if ( $page_links ) {
-		$page_links_form = "<form id='filter'>";
-		$page_links_form .= "<div class='tablenav-pages'>{$page_links}</div>";
-		$page_links_form .= "</form>";
-	}
-
-	$mediaitems = '<div class="alignleft actions">';
-	
-	$default_align = get_option('image_default_align');
-	if ( empty($default_align) )
-		$default_align = 'none';
-		
-		$postID = isset($_GET['post']) ? (int)$_GET['post'] : 0;
-		$mediaitems .= '<form enctype="multipart/form-data" method="post" action="'.admin_url('media-upload.php?type=image&amp;tab=interspire&amp;post_id='.$postID).'" class="media-upload-form validate" id="library-form">
-		<div id="media-items">
-		';
-		
-		$i = 0;
-		foreach ($Products['items'] as $key => $product ) {
-			if(empty($product['imagefilestd'])) { continue; }
-			$i++;
-			if($i < $start || $i > ($start + 9)) { continue; }
-			extract((array)$product);
-			$mediaitems .= "<a class='toggle describe-toggle-on' href='#media-item-$productid'>$toggle_on</a>
-	<a class='toggle describe-toggle-off' href='#media-item-$productid'>$toggle_off</a>".'
-			<div id="media-item-'.$productid.'" class="media-item preloaded">
-				<div style="width:40px; float:left;"><img src="'.$this->storepath.$imagefilethumb.'" class="pinkynail toggle" /></div>
-				<div class="filename new">
-					<span class="title">'.$prodname.'</span>
-				</div>
-	<table class="slidetoggle describe '.$class.'">
-		<thead class="media-item-info" id="media-head-$post->ID">
-		<tbody>
-		<tr>
-			<th valign="top" scope="row" class="label" style="width:130px;">
-				<span class="alignleft"><label for="src-'.$productid.'">' . __('Image URL') . '</label></span>
-				<span class="alignright"><abbr title="required" class="status_img required">*</abbr></span>
-			</th>
-			<td class="field"><input id="src-'.$productid.'" name="src" value="'.$this->storepath.$imagefilestd.'" type="text" aria-required="true" /></td>
-		</tr>
-
-		<tr>
-			<th valign="top" scope="row" class="label">
-				<span class="alignleft"><label for="title-'.$productid.'">' . __('Image Title') . '</label></span>
-				<span class="alignright"><abbr title="required" class="required">*</abbr></span>
-			</th>
-			<td class="field"><input id="title-'.$productid.'" name="title" value="'.$prodname.'" type="text" aria-required="true" /></td>
-		</tr>
-
-		<tr>
-			<th valign="top" scope="row" class="label">
-				<span class="alignleft"><label for="alt-'.$productid.'">' . __('Alternate Text') . '</label></span>
-			</th>
-			<td class="field"><input id="alt-'.$productid.'" name="alt" value="'.$prodname.'" type="text" aria-required="true" />
-			<p class="help">' . __('Alt text for the image, e.g. &#8220;The Mona Lisa&#8221;') . '</p></td>
-		</tr>
-		' . $caption . '
-		<tr class="align">
-			<th valign="top" scope="row" class="label"><p><label for="align-'.$productid.'">' . __('Alignment') . '</label></p></th>
-			<td class="field">
-				<input name="align" id="align-none-'.$productid.'" value="none" onclick="addExtImage.align=\'align\'+this.value" type="radio"' . ($default_align == 'none' ? ' checked="checked"' : '').' />
-				<label for="align-none-'.$productid.'" class="align image-align-none-label">' . __('None') . '</label>
-				<input name="align" id="align-left-'.$productid.'" value="left" onclick="addExtImage.align=\'align\'+this.value" type="radio"' . ($default_align == 'left' ? ' checked="checked"' : '').' />
-				<label for="align-left-'.$productid.'" class="align image-align-left-label">' . __('Left') . '</label>
-				<input name="align" id="align-center-'.$productid.'" value="center" onclick="addExtImage.align=\'align\'+this.value" type="radio"' . ($default_align == 'center' ? ' checked="checked"' : '').' />
-				<label for="align-center-'.$productid.'" class="align image-align-center-label">' . __('Center') . '</label>
-				<input name="align" id="align-right-'.$productid.'" value="right" onclick="addExtImage.align=\'align\'+this.value" type="radio"' . ($default_align == 'right' ? ' checked="checked"' : '').' />
-				<label for="align-right-'.$productid.'" class="align image-align-right-label">' . __('Right') . '</label>
-			</td>
-		</tr>
-
-		<tr>
-			<th valign="top" scope="row" class="label">
-				<span class="alignleft"><label for="url-'.$productid.'">' . __('Link Image To:') . '</label></span>
-			</th>
-			<td class="field"><input id="url-'.$productid.'" name="url" value="" type="text" /><br />
-			<input type="hidden" id="productlink-'.$productid.'" value="'.esc_html($this->MakeURL($prodname)).'" />
-			<button type="button" id="url-none-'.$productid.'" class="button url-none" value="">' . __('None') . '</button>
-			<button type="button" id="url-product-'.$productid.'" class="button url-product" value="">' . __('Link to product') . '</button>
-			<button type="button" id="url-src-'.$productid.'" class="button url-src" value="">' . __('Link to image') . '</button>';
-			if(!empty($imagefilezoom)) {
-			$mediaitems .= '<button type="button" id="url-large-'.$productid.'" class="button url-large" value="'.$imagefilezoom.'">' . __('Link to large image') . '</button>';
-			}
-			$mediaitems .= '<p class="help">' . __('Enter a link URL or click above for presets.') . '</p></td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>
-				<input type="button" class="button" id="go_button-'.$productid.'" style="color:#bbb;" onclick="addExtImage.insert(this)" value="' . esc_attr__('Insert into Post') . '" />
-			</td>
-		</tr>
-	</tbody></table>
-			</div>
-			
+		if( !apply_filters( 'disable_captions', '' ) ) {
+			$caption = '
+				<tr>
+					<th valign="top" scope="row" class="label">
+						<span class="alignleft"><label for="caption">' . __('Image Caption') . '</label></span>
+					</th>
+					<td class="field"><input id="caption" name="caption" value="" type="text" /></td>
+				</tr>
 			';
-		}
-		$mediaitems .= '</div></form></div></div>';
-		
-		if($i == 0) {
-			_e('<div class="updated"><p>Your store has no images.</p></div>');
-		} else {
-			_e($page_links_form.$mediaitems);
-		}
-		
+		} else { $caption = ''; }
+		require( 'media.js.php' );
+		require( 'media.html.php' );
 	}
 
-
-} 
+} /* End Of Plugin Class */
 
 // Outside the class so we don't have to load the whole object
 function wpinterspire_shortcode($atts, $content) {
@@ -578,10 +453,11 @@ function wpinterspire_shortcode($atts, $content) {
 			$link = substr($link, 1);
 		};
 		if($seourls != 'no') {
-			$link = $storepath.'/products/'.$link.'.html';
+			$link = $storepath . '/' . strtolower($link) . '/';
 		} else {
-			$link = $storepath.'/products.php?product='.$link;
+			$link = $storepath . '/products.php?product=' . $link;
 		}
+		$link = str_replace( '//', '/', $link);
 	}
 	
 	if(isset($rel) && $rel !='') {$nofollow=' rel="'.$rel.'"';}
