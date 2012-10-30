@@ -5,7 +5,7 @@
 			</div>
 			<?php 
 			$this->BuildProductsSelect();
-			if(empty($this->productsselect)) {
+			if( ! get_option('wpinterspire_productselect') ) {
 				echo '<p>Your settings are correct, however your product list has not been generated. (<em>This may take a while if you have lots of products.</em>)</p>
 				<p><a href="' . admin_url( 'options-general.php?page=wpinterspire&wpinterspirerebuild=all' ) . '" class="button">Generate your list now</a></p>';
 			} else { 
@@ -26,7 +26,7 @@
 								<span class="alignleft"><label for="interspire_add_product_id">Select the Product</label></span>
 							</th>
 							<td class="field">
-								<?php echo $this->productsselect; ?>
+								<?php echo get_option( 'wpinterspire_productselect' ); ?>
 							</td>
 						</tr>
 						<tr>

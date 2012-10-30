@@ -29,7 +29,7 @@ jQuery(function($){
 	$('button.url-large').live('click', function() {
 		var id = $(this).attr('id');
 		id = id.replace('url-large-', '');
-		$('#url-'+id).val('<?php echo $this->storepath; ?>'+jQuery(this).val());
+		$('#url-'+id).val('<?php echo $options->storepath; ?>'+jQuery(this).val());
 		return false;
 	});
 	
@@ -44,10 +44,10 @@ jQuery(function($){
 		var id = $(this).attr('id');
 		id = id.replace('url-product-', '');
 		<?php		
-		if($this->options['seourls'] == 'no') {
-			echo 'var link = "'.$this->storepath.'/products.php?product="+$("#productlink-"+id).val();';
+		if($options->seourls == 'no') {
+			echo 'var link = "'.$options->storepath.'/products.php?product="+$("#productlink-"+id).val();';
 		} else {
-			echo 'var link = "'.$this->storepath.'/products/"+$("#productlink-"+id).val()+".html";';
+			echo 'var link = "'.$options->storepath.'/products/"+$("#productlink-"+id).val()+".html";';
 		}
 		?>
 		$('#url-'+id).val(link);
