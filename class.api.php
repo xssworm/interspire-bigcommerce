@@ -53,6 +53,42 @@ class Bigcommerce_api {
 		}
 	}
 
+	// Get Products
+	public function SetProducts( $start = 0, $force_rebuild = true, $Products = false, $i = 0 ) {
+		$options = Bigcommerce::get_options();
+
+		// Not Forcing Rebuild
+		if( ! $force_rebuild ) {
+			return maybe_unserialize( get_option( 'wpinterspire_products' ) );
+		}
+
+		// Query Bigcommerce API
+		$response = self::get_products();
+		if( empty( $Products ) ) { $Products = array(); }
+		if( empty( $response->data->results->item ) ) { return false; }
+
+		// Loop Responses
+		foreach( $response->data->results->item as $item ) {
+
+			// Ensure Valid
+			if( !is_object( $item ) || $item->prodvisible == '0' ) { continue; }
+
+			// Store
+			$Products['items'][$i] = (array) $item;
+			$i ++;
+		}
+	
+		if( (int) $response->data->end < (int) $response->data->numResults ) {
+			self::SetProducts( $response->data->end, true, $Products, $i );
+		} else {
+			$Products['status'] = (string) $response->status;
+			$Products['version'] = (int) $response->version;
+			$Products['numResults'] = (int) $response->data->numResults;
+			asort( $Products['items'] );
+			$updated = update_option( 'wpinterspire_products', $Products );
+			return $Products;
+		}
+	}
 }
 
 ?>

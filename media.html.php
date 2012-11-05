@@ -57,7 +57,7 @@
 		<a class='toggle describe-toggle-on' href='#media-item-$productid'>$toggle_on</a>
 		<a class='toggle describe-toggle-off' href='#media-item-$productid'>$toggle_off</a>".'
 		<div id="media-item-'.$productid.'" class="media-item preloaded">
-			<div style="width:40px; float:left;"><img src="'.$this->storepath.$imagefilethumb.'" class="pinkynail toggle" /></div>
+			<div style="width:40px; float:left;"><img src="'.$options->storepath.$imagefilethumb.'" class="pinkynail toggle" /></div>
 			<div class="filename new"><span class="title">'.$prodname.'</span></div>
 			<table class="slidetoggle describe '.$class.'">
 				<thead class="media-item-info" id="media-head-$post->ID" />
@@ -67,7 +67,7 @@
 							<span class="alignleft"><label for="src-'.$productid.'">' . __('Image URL') . '</label></span>
 							<span class="alignright"><abbr title="required" class="status_img required">*</abbr></span>
 						</th>
-						<td class="field"><input id="src-'.$productid.'" name="src" value="'.$this->storepath.$imagefilestd.'" type="text" aria-required="true" /></td>
+						<td class="field"><input id="src-'.$productid.'" name="src" value="'.$options->storepath.$imagefilestd.'" type="text" aria-required="true" /></td>
 					</tr>
 					<tr>
 						<th valign="top" scope="row" class="label">
@@ -103,7 +103,7 @@
 							<span class="alignleft"><label for="url-'.$productid.'">' . __('Link Image To:') . '</label></span>
 						</th>
 						<td class="field"><input id="url-'.$productid.'" name="url" value="" type="text" /><br />
-						<input type="hidden" id="productlink-'.$productid.'" value="'.esc_html($this->MakeURL($prodname)).'" />
+						<input type="hidden" id="productlink-'.$productid.'" value="'.esc_html(self::MakeURL($prodname)).'" />
 						<button type="button" id="url-none-'.$productid.'" class="button url-none" value="">' . __('None') . '</button>
 						<button type="button" id="url-product-'.$productid.'" class="button url-product" value="">' . __('Link to product') . '</button>
 						<button type="button" id="url-src-'.$productid.'" class="button url-src" value="">' . __('Link to image') . '</button>';

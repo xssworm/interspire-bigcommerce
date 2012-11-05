@@ -4,7 +4,7 @@
 			<h3 class="media-title"><?php _e("Insert a Product", "wpinterspire"); ?></h3>
 			</div>
 			<?php 
-			$this->BuildProductsSelect();
+			self::BuildProductsSelect();
 			if( ! get_option('wpinterspire_productselect') ) {
 				echo '<p>Your settings are correct, however your product list has not been generated. (<em>This may take a while if you have lots of products.</em>)</p>
 				<p><a href="' . admin_url( 'options-general.php?page=wpinterspire&wpinterspirerebuild=all' ) . '" class="button">Generate your list now</a></p>';
