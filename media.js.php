@@ -44,7 +44,7 @@ jQuery(function($){
 		var id = $(this).attr('id');
 		id = id.replace('url-product-', '');
 		<?php		
-		if($options->seourls == 'no') {
+		if( $options->seourls == 'no' ) {
 			echo 'var link = "'.$options->storepath.'/products.php?product="+$("#productlink-"+id).val();';
 		} else {
 			echo 'var link = "'.$options->storepath.'/products/"+$("#productlink-"+id).val()+".html";';

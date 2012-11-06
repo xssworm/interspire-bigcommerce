@@ -4,7 +4,7 @@
 class Bigcommerce_api {
 
 	// Query Bigcommerce For All Products
-	public function get_products() {
+	private function get_products() {
 		$xml =
 			'<requesttype>products</requesttype>'
 			. '<requestmethod>GetProduct</requestmethod>'
@@ -88,6 +88,59 @@ class Bigcommerce_api {
 			$updated = update_option( 'wpinterspire_products', $Products );
 			return $Products;
 		}
+	}
+
+	// Checks Saved Settings
+	public function CheckSettings() {
+    	$options = Bigcommerce::get_options();
+
+    	// No Username Or Token
+		if( empty( $options->username ) || empty( $options->xmltoken ) ) {
+			return false;
+		}
+
+		// Query Bigcommerce API	
+		$response = self::get_products();
+
+		// Handle The Response
+		if( ! $response || empty( $response ) ) { return false; }
+
+		// Handle Bad Response
+		if( $response->status == 'FAILED' ) {
+			Bigcommerce::$errors[] = $response->errormessage;
+			return false;
+		}
+
+		// Handle Good Response
+		return true;
+	}
+
+	// Builds Select Box Of Products
+	public function BuildProductsSelect( $rebuild = false ) {
+		$output = get_option( 'wpinterspire_productselect' );
+
+		// Rebuilding
+		if( $rebuild === true || ! $output ) {
+			$products = self::SetProducts();
+			if( empty( $products ) ) { $products = get_option( 'wpinterspire_products' ); }
+			$products = maybe_unserialize( $products );
+			if( ! is_array( $products ) || empty( $products ) || empty( $products['items'] ) ) { return; }
+			$output = '
+				<select id="interspire_add_product_id">
+				<option value="" disabled="disabled" selected="selected">Products</option>
+			';
+		    foreach( $products['items'] as $product ) {
+				if( ! is_object( $product['prodname'] ) &&  !empty( $product['prodname'] ) ) {
+					$output .= '<option value="' . sanitize_title( $product['prodname'] ) . '">'
+						. esc_html( $product['prodname'] ) . '</option>'."\n";
+				}
+		    }
+	        $output .= '</select>';
+
+	        // Save Products To Cache
+		    update_option( 'wpinterspire_productselect', $output );
+		}
+		return $output;
 	}
 }
 

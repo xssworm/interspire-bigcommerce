@@ -103,7 +103,7 @@
 							<span class="alignleft"><label for="url-'.$productid.'">' . __('Link Image To:') . '</label></span>
 						</th>
 						<td class="field"><input id="url-'.$productid.'" name="url" value="" type="text" /><br />
-						<input type="hidden" id="productlink-'.$productid.'" value="'.esc_html(self::MakeURL($prodname)).'" />
+						<input type="hidden" id="productlink-'.$productid.'" value="' . esc_html( self::MakeURL( $prodname ) ) . '" />
 						<button type="button" id="url-none-'.$productid.'" class="button url-none" value="">' . __('None') . '</button>
 						<button type="button" id="url-product-'.$productid.'" class="button url-product" value="">' . __('Link to product') . '</button>
 						<button type="button" id="url-src-'.$productid.'" class="button url-src" value="">' . __('Link to image') . '</button>';

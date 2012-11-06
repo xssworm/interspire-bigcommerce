@@ -11,8 +11,10 @@
 
 	<p>
 		<?php
-		echo ! get_option('wpinterspire_productselect')
-			? "Your product list has been built:</p>" . get_option('wpinterspire_productselect') . "<p><strong>Has the list changed?</strong>"
+		echo get_option( 'wpinterspire_productselect' )
+			? 'Your product list has been built:</p>'
+				. get_option( 'wpinterspire_productselect' )
+				. '<p><strong>Has the list changed?</strong>'
 			: 'Your product list has not yet been built.';
 		?>
 		<a href='<?php echo wp_nonce_url( admin_url( 'options-general.php?page=wpinterspire&amp;wpinterspirerebuild=all' ), 'rebuild' ); ?>' class='button'>
