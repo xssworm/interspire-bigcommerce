@@ -17,7 +17,6 @@
 		if( jQuery( '#link_target' ).is( ':checked' ) ) { link_target = ' target="blank"'; }
 		if( jQuery( '#link_nofollow' ).is( ':checked' ) ) { link_nofollow = ' rel="nofollow"'; }
 		var win = window.dialogArguments || opener || parent || top;
-		var shortcodeName = '<?php echo preg_match('/mybigcommerce/ism', $options->xmlpath) ? 'bigcommerce' : 'interspire'; ?>';
-		win.send_to_editor('[' + shortcodeName + link_product + link_target + link_nofollow + ']' + display_title + '[/' + shortcodeName + ']');
+		win.send_to_editor('[bigcommerce' + link_product + link_target + link_nofollow + ']' + display_title + '[/bigcommerce]');
 	}
 </script>

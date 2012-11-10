@@ -64,14 +64,14 @@
 				<tbody>
 					<tr>
 						<th valign="top" scope="row" class="label" style="width:130px;">
-							<span class="alignleft"><label for="src-'.$productid.'">' . __('Image URL') . '</label></span>
+							<span class="alignleft"><label for="src-'.$productid.'">' . __( 'Image URL', 'wpinterspire' ) . '</label></span>
 							<span class="alignright"><abbr title="required" class="status_img required">*</abbr></span>
 						</th>
 						<td class="field"><input id="src-'.$productid.'" name="src" value="'.$options->storepath.$imagefilestd.'" type="text" aria-required="true" /></td>
 					</tr>
 					<tr>
 						<th valign="top" scope="row" class="label">
-							<span class="alignleft"><label for="title-'.$productid.'">' . __('Image Title') . '</label></span>
+							<span class="alignleft"><label for="title-'.$productid.'">' . __( 'Image Title', 'wpinterspire' ) . '</label></span>
 							<span class="alignright"><abbr title="required" class="required">*</abbr></span>
 						</th>
 						<td class="field"><input id="title-'.$productid.'" name="title" value="'.$prodname.'" type="text" aria-required="true" /></td>
@@ -79,38 +79,38 @@
 			
 					<tr>
 						<th valign="top" scope="row" class="label">
-							<span class="alignleft"><label for="alt-'.$productid.'">' . __('Alternate Text') . '</label></span>
+							<span class="alignleft"><label for="alt-'.$productid.'">' . __( 'Alternate Text', 'wpinterspire' ) . '</label></span>
 						</th>
 						<td class="field"><input id="alt-'.$productid.'" name="alt" value="'.$prodname.'" type="text" aria-required="true" />
-						<p class="help">' . __('Alt text for the image, e.g. &#8220;The Mona Lisa&#8221;') . '</p></td>
+						<p class="help">' . __( 'Alt text for the image, e.g. &#8220;The Mona Lisa&#8221;', 'wpinterspire' ) . '</p></td>
 					</tr>
 					' . $caption . '
 					<tr class="align">
-						<th valign="top" scope="row" class="label"><p><label for="align-'.$productid.'">' . __('Alignment') . '</label></p></th>
+						<th valign="top" scope="row" class="label"><p><label for="align-'.$productid.'">' . __( 'Alignment', 'wpinterspire' ) . '</label></p></th>
 						<td class="field">
 							<input name="align" id="align-none-'.$productid.'" value="none" onclick="addExtImage.align=\'align\'+this.value" type="radio"' . ($default_align == 'none' ? ' checked="checked"' : '').' />
-							<label for="align-none-'.$productid.'" class="align image-align-none-label">' . __('None') . '</label>
+							<label for="align-none-'.$productid.'" class="align image-align-none-label">' . __( 'None', 'wpinterspire' ) . '</label>
 							<input name="align" id="align-left-'.$productid.'" value="left" onclick="addExtImage.align=\'align\'+this.value" type="radio"' . ($default_align == 'left' ? ' checked="checked"' : '').' />
-							<label for="align-left-'.$productid.'" class="align image-align-left-label">' . __('Left') . '</label>
+							<label for="align-left-'.$productid.'" class="align image-align-left-label">' . __( 'Left', 'wpinterspire' ) . '</label>
 							<input name="align" id="align-center-'.$productid.'" value="center" onclick="addExtImage.align=\'align\'+this.value" type="radio"' . ($default_align == 'center' ? ' checked="checked"' : '').' />
-							<label for="align-center-'.$productid.'" class="align image-align-center-label">' . __('Center') . '</label>
+							<label for="align-center-'.$productid.'" class="align image-align-center-label">' . __( 'Center', 'wpinterspire' ) . '</label>
 							<input name="align" id="align-right-'.$productid.'" value="right" onclick="addExtImage.align=\'align\'+this.value" type="radio"' . ($default_align == 'right' ? ' checked="checked"' : '').' />
-							<label for="align-right-'.$productid.'" class="align image-align-right-label">' . __('Right') . '</label>
+							<label for="align-right-'.$productid.'" class="align image-align-right-label">' . __( 'Right', 'wpinterspire' ) . '</label>
 						</td>
 					</tr>
 					<tr>
 						<th valign="top" scope="row" class="label">
-							<span class="alignleft"><label for="url-'.$productid.'">' . __('Link Image To:') . '</label></span>
+							<span class="alignleft"><label for="url-'.$productid.'">' . __( 'Link Image To:', 'wpinterspire' ) . '</label></span>
 						</th>
 						<td class="field"><input id="url-'.$productid.'" name="url" value="" type="text" /><br />
-						<input type="hidden" id="productlink-'.$productid.'" value="' . esc_html( self::MakeURL( $prodname ) ) . '" />
-						<button type="button" id="url-none-'.$productid.'" class="button url-none" value="">' . __('None') . '</button>
-						<button type="button" id="url-product-'.$productid.'" class="button url-product" value="">' . __('Link to product') . '</button>
-						<button type="button" id="url-src-'.$productid.'" class="button url-src" value="">' . __('Link to image') . '</button>';
+						<input type="hidden" id="productlink-'.$productid.'" value="' . esc_html( self::MakeURLSafe( $prodname ) ) . '" />
+						<button type="button" id="url-none-'.$productid.'" class="button url-none" value="">' . __( 'None', 'wpinterspire' ) . '</button>
+						<button type="button" id="url-product-'.$productid.'" class="button url-product" value="">' . __( 'Link to product', 'wpinterspire' ) . '</button>
+						<button type="button" id="url-src-'.$productid.'" class="button url-src" value="">' . __( 'Link to image', 'wpinterspire' ) . '</button>';
 						if( ! empty( $imagefilezoom ) ) {
 							$mediaitems .= '<button type="button" id="url-large-'.$productid.'" class="button url-large" value="'.$imagefilezoom.'">' . __('Link to large image') . '</button>';
 						}
-						$mediaitems .= '<p class="help">' . __('Enter a link URL or click above for presets.') . '</p></td>
+						$mediaitems .= '<p class="help">' . __( 'Enter a link URL or click above for presets.', 'wpinterspire' ) . '</p></td>
 					</tr>
 					<tr>
 						<td></td>

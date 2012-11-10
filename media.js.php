@@ -43,13 +43,7 @@ jQuery(function($){
 	$('button.url-product').live('click', function() {
 		var id = $(this).attr('id');
 		id = id.replace('url-product-', '');
-		<?php		
-		if( $options->seourls == 'no' ) {
-			echo 'var link = "'.$options->storepath.'/products.php?product="+$("#productlink-"+id).val();';
-		} else {
-			echo 'var link = "'.$options->storepath.'/products/"+$("#productlink-"+id).val()+".html";';
-		}
-		?>
+		<?php echo 'var link = "' . $options->storepath . '/products/"+$("#productlink-"+id).val()+".html";'; ?>
 		$('#url-'+id).val(link);
 		return false;
 	});

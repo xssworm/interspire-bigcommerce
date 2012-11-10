@@ -88,21 +88,22 @@ class Bigcommerce {
 	}
 
 	// Tied To WP Hook By The Same Name
-    function media_buttons_context( $context ) {
-    	return $context . '
+	function media_buttons_context( $context ) {
+		if( ! self::$configured ) { return $context; }
+		return $context . '
 			<a href="#TB_inline?width=640&inlineId=interspire_select_product" class="thickbox"
 				title="' . __( 'Add Interspire Product(s)', 'wpinterspire' ) . '">
 			<img src="' . plugins_url( 'insert.png', __FILE__ ) . '" width="14" height="14"
 				alt="' . __( "Add a Product", 'wpinterspire' ) . '" /></a>
 		';
-    }
+	}
 
 	// Tied To WP Hook By The Same Name
-    function admin_footer(){
+	function admin_footer(){
 		$options = self::get_options();
 		require( 'mce-popup.js.php' );
 		require( 'mce-popup.html.php' );
-    }
+	}
 
 	// Presents Media Insertion Content
 	function media_process() {
@@ -150,10 +151,8 @@ class Bigcommerce {
 		return ( object ) get_option(
 			'wpinterspire', array(
 				'username' => '',
-				'xmlpath' => '',
 				'xmltoken' => '',
 				'storepath' => '',
-				'seourls' => '',
 				'showlink' => '',
 			)
 		);
@@ -204,8 +203,6 @@ class Bigcommerce {
 				. (
 					( ! get_option( 'wpinterspire_productselect' ) )
 					? __( ' However, your product list has not yet been built.', 'wpinterspire' )
-						. '<strong><a href="?page=wpinterspire&amp;wpinterspirerebuild=all">'
-						. __( 'Build it now', 'wpinterspire' ) . '</a></strong>'
 					: __( ' When editing posts, look for the ', 'wpinterspire' )
 						. '<img src="' . plugins_url( 'insert.png', __FILE__ )
 						. '" width="14" height="14" alt="' . __( 'Add a Product', 'wpinterspire') . '" />'
@@ -216,15 +213,6 @@ class Bigcommerce {
 			if( self::$errors ) { $content .= '<br /><blockquote>' . implode( '<br />', self::$errors ) . '</blockquote>'; }
 		}
 		echo self::make_notice_box( $content, ( ( self::$configured ) ? false : true ) );
-	}
-
-	function MakeURL( $url ) {
-		$options = self::get_options();
-		if ( $options->seourls != 'no' ) {
-			return self::MakeURLSafe( $url );
-		} else {
-			return sprintf( 'products.php?product=%s', self::MakeURLSafe( $url ) );
-		}
 	}
 
 	// Give Thanks Footer Link
@@ -254,13 +242,10 @@ class Bigcommerce {
 				), $atts
 			)
 		);
-		$link = ( $options->seourls == 'yes' )
-			? $options->storepath . "{$link}/"
-			: $options->storepath . "products.php?product={$link}";
 		if( $rel ) { $rel = " rel='{$rel}'"; }
 		if( $target ) { $target = " target='{$target}'"; };
 		if( $nofollow ) { $nofollow = " nofollow='nofollow'"; };
-		return "<a href='{$link}'{$rel}{$target}{$nofollow}>{$content}</a>";
+		return "<a href='{$options->storepath}{$link}/'{$rel}{$target}{$nofollow}>{$content}</a>";
 	}
 
 

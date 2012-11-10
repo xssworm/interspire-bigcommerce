@@ -30,7 +30,7 @@ class Bigcommerce_api {
 	private function communicate( $Vars='', $asobject = true ) {
 		$options = Bigcommerce::get_options();
 		$Vars = 'xml=' . urlencode( $Vars );
-		$Path = $options->xmlpath;
+		$Path = "{$options->storepath}xml.php";
 		$result = null;
 		$args = array(
 			'body' => $Vars,

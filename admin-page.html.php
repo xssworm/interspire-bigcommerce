@@ -24,7 +24,7 @@
 
 	<?php } else { ?>
 
-	<h3>This plugin requires a Bigcommerce account.</h3>
+	<h3>This Plugin requires a Bigcommerce account.</h3>
 	<h4>What is Bigcommerce?</h4>
 	<p>
 		Bigcommerce is the #1 rated hosted e-commerce platform.
@@ -39,13 +39,7 @@
 	<hr />
 
 	<h3>Store Settings</h3>
-	<p>
-		Find your API settings at <code>yourstore.com/admin/index.php?ToDo=viewUsers</code>.
-		Click Edit next to your username.
-		Check the &quot;Yes, allow this user to use the XML API&quot; checkbox.
-	</p>
 	<form method="post" action="options.php">
-		<input type='hidden' name='wpinterspire[seourls]' value='no' />
 		<input type='hidden' name='wpinterspire[configured]' value='<?php echo self::$configured; ?>' />
 		<?php 
 		wp_nonce_field( 'update-options' );
@@ -57,21 +51,20 @@
 					<th scope="row"><label for="wpinterspire_username"><?php echo __('Store Username', 'wpinterspire'); ?>:</label></th>
 					<td>
 						<input type='text' name='wpinterspire[username]' id='wpinterspire_username' value='<?php echo esc_attr( $options->username ); ?>' size='40' /><br />
-						<small>The username whose API credentials are below.</small>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="wpinterspire_xmlpath"><?php echo __('API Path', 'wpinterspire'); ?>:</label></th>
-					<td>
-						<input type='text' name='wpinterspire[xmlpath]' id='wpinterspire_xmlpath' value='<?php echo esc_attr( $options->xmlpath ); ?>' size='40' /><br />
-						<small>Your Store's API Path (<code>http://www.example.com/xml.php</code>).</small>
+						<small>
+							Your store username, such as <code>admin</code>.
+							Find this setting by logging into your store, and clicking on Users.
+						</small>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="wpinterspire_xmltoken"><?php echo __('API Token', 'wpinterspire'); ?>:</label></th>
 					<td>
 						<input type='text' name='wpinterspire[xmltoken]' id='wpinterspire_xmltoken' value='<?php echo esc_attr( $options->xmltoken ); ?>' size='40' /><br />
-						<small>Your Store's API Token.</small>
+						<small>
+							Your user account's API Token.
+							Find this setting by logging into your store, clicking on Users, clicking Edit for the user account, then scrolling down to the API Token.
+						</small>
 					</td>
 				</tr>
 				<tr>
@@ -86,19 +79,11 @@
 					</td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="wpinterspire_seourls"><?php echo __('SEO URLs (optional)', 'wpinterspire'); ?>:</label></th>
-					<td>
-						<input type='checkbox' name='wpinterspire[seourls]' id='wpinterspire_seourls' value='yes' <?php echo ( ( isset( $options->seourls ) && $options->seourls == 'yes' ) ? 'checked=checked' : '' ); ?> />
-						The store uses SEO-friendly URL structure<br />
-						<small>If your product URLs look like <code>/products.php?product=product-name</code>, this should be unchecked.</small>
-					</td>
-				</tr>
-				<tr>
 					<th scope="row"><label for="wpinterspire_showlink"><?php echo __('Give Thanks (optional)', 'wpinterspire'); ?>:</label></th>
 					<td>
 						<input type='checkbox' name='wpinterspire[showlink]' id='wpinterspire_showlink' value='yes' <?php echo ( ( isset( $options->showlink ) && $options->showlink == 'yes' ) ? 'checked=checked' : '' ); ?> />
-						Help show the love by telling the world you use this plugin.<br />
-						<small>A link will be added to your footer. Please show support for this plugin by enabling.</small>
+						Help show the love by telling the world you use this Plugin.<br />
+						<small>A link will be added to your footer. Please show support for this Plugin by enabling.</small>
 					</td>
 				</tr>
 			</tbody>
