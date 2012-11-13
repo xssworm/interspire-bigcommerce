@@ -18,7 +18,7 @@
 			: 'Your product list has not yet been built.';
 		?>
 		<a href='<?php echo wp_nonce_url( admin_url( 'options-general.php?page=wpinterspire&amp;wpinterspirerebuild=all' ), 'rebuild' ); ?>' class='button'>
-		<?php echo ! get_option( 'wpinterspire_productselect' ) ? 'Re-build your products list' : 'Build your products list'; ?></a><br />
+		<?php echo get_option( 'wpinterspire_productselect' ) ? 'Re-build your products list' : 'Build your products list'; ?></a><br />
 		<small>Note: this may take a long time, depending on the size of your products list.</small>
 	</p>
 

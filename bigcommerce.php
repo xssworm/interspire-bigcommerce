@@ -39,35 +39,39 @@ class Bigcommerce {
 	function admin_init() {
 		global $pagenow;
 
-		// Only For Page/Post Editor Or Settings Page
-		if(
-			in_array(
-				$pagenow, array(
-					'post.php', 'page.php', 'page-new.php', 'post-new.php'
-				)
-			) || (
-				$pagenow == 'options-general.php'
-				&& isset( $_REQUEST['page'] )
-				&& $_REQUEST['page'] == 'wpinterspire'
-			)
-		) {
-
-			// Support For Localizations
-			load_plugin_textdomain(
-				'wpinterspire', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/'
-			);
-
-			// Run Settings Check
-			self::$configured = Bigcommerce_api::CheckSettings();
-			Bigcommerce_api::BuildProductsSelect( isset( $_REQUEST['wpinterspirerebuild'] ) );
-		}
-
 		// Handles Saving Of Settings
         register_setting(
         	'wpinterspire_options',
         	'wpinterspire',
         	array( 'Bigcommerce', 'sanitize_settings' )
         );
+
+		// Support For Localizations
+		load_plugin_textdomain(
+			'wpinterspire', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/'
+		);
+
+		// Only Continue For Page/Post Editor Or Settings Page
+		if(
+			! in_array(
+				$pagenow, array(
+					'options-general.php', 'post.php', 'page.php', 'page-new.php', 'post-new.php'
+				)
+			) 
+		) { return; }
+		if(
+			$pagenow == 'options-general.php'
+			&& isset( $_REQUEST['page'] )
+			&& $_REQUEST['page'] != 'wpinterspire'
+		) { return; }
+
+		// Run Settings Check
+		self::$configured = Bigcommerce_api::CheckSettings();
+
+		// (Re)Build Products If Requested
+		if ( isset( $_REQUEST['wpinterspirerebuild'] ) ) {
+			Bigcommerce_api::BuildProductsSelect( true );
+		}
     }
 
 
@@ -99,7 +103,7 @@ class Bigcommerce {
 	}
 
 	// Tied To WP Hook By The Same Name
-	function admin_footer(){
+	function admin_footer() {
 		$options = self::get_options();
 		require( 'mce-popup.js.php' );
 		require( 'mce-popup.html.php' );
@@ -109,7 +113,7 @@ class Bigcommerce {
 	function media_process() {
 		$options = self::get_options();
 		media_upload_header();
-		$Products = Bigcommerce_api::SetProducts( 0, false );
+		$Products = Bigcommerce_api::GetProducts( false );
 		if( is_wp_error( $Products ) || ! $Products ) { 
 			echo '
 				<div class="tablenav">
@@ -197,7 +201,6 @@ class Bigcommerce {
 
 	// Displays The Configuration Check
 	function show_configuration_check() {
-		$options = self::get_options();
 		if( self::$configured ) {
 			$content = __( 'Your Bigcommerce API settings are configured properly.', 'wpinterspire' )
 				. (
