@@ -34,7 +34,7 @@ class Bigcommerce_api {
 		try {
 			$response = new SimpleXMLElement( $result, LIBXML_NOCDATA );
 		} catch ( Exception $error ) {
-			Bigcommerce::$errors = $error;
+			Bigcommerce::$errors[] = $error;
 			return false;
 		}
 

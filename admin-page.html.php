@@ -62,8 +62,8 @@
 					<td>
 						<input type='text' name='wpinterspire[xmltoken]' id='wpinterspire_xmltoken' value='<?php echo esc_attr( $options->xmltoken ); ?>' size='40' /><br />
 						<small>
-							Your user account's API Token.
-							Find this setting by logging into your store, clicking on Users, clicking Edit for the user account, then scrolling down to the API Token.
+							Your API Token for the store username specified above.
+							Find this setting by logging into your store, clicking on Users, clicking Edit for the store username specified above, then scrolling down to the API Token.
 						</small>
 					</td>
 				</tr>

@@ -164,8 +164,18 @@ class Bigcommerce {
 
     // Sanitizes Setting Value Submissions
     function sanitize_settings( $input ) {
-        return $input;
-    }
+		foreach( $input as $key => $val ) {
+
+		   	// Add SSL Protocol and Trailing Slash To Store URL
+		   	if( $key == 'storepath' ) {
+				$val = str_replace( 'http:', 'https:', $val );
+				$val = ( substr( $val, ( strlen( $val ) - 1 ), 1 ) != '/' )
+					? "{$val}/" : $val;
+				$input[$key] = $val;
+			}
+		}
+    	return $input;
+	}
 
 	// Tied To WP Hook By The Same Name - Adds Settings Link
     function plugin_action_links( $links, $file ) {
