@@ -69,9 +69,10 @@ class Bigcommerce {
 		self::$configured = Bigcommerce_api::CheckSettings();
 
 		// (Re)Build Products If Requested
-		if ( isset( $_REQUEST['wpinterspirerebuild'] ) ) {
-			Bigcommerce_api::BuildProductsSelect( true );
-		}
+		if (
+			isset( $_REQUEST['wpinterspirerebuild'] )
+			&& $_REQUEST['wpinterspirerebuild'] == 'all'
+		) { Bigcommerce_api::BuildProductsSelect( true ); }
     }
 
 

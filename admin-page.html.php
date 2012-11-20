@@ -48,7 +48,11 @@
 		<table class="form-table">
 			<tbody>
 				<tr>
-					<th scope="row"><label for="wpinterspire_username"><?php echo __('Store Username', 'wpinterspire'); ?>:</label></th>
+					<th scope="row">
+						<label for="wpinterspire_username">
+							<?php _e( 'Store Username', 'wpinterspire' ); ?>:
+						</label>
+					</th>
 					<td>
 						<input type='text' name='wpinterspire[username]' id='wpinterspire_username' value='<?php echo esc_attr( $options->username ); ?>' size='40' /><br />
 						<small>
@@ -58,7 +62,11 @@
 					</td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="wpinterspire_xmltoken"><?php echo __('API Token', 'wpinterspire'); ?>:</label></th>
+					<th scope="row">
+						<label for="wpinterspire_xmltoken">
+							<?php _e( 'API Token', 'wpinterspire' ); ?>:
+						</label>
+					</th>
 					<td>
 						<input type='text' name='wpinterspire[xmltoken]' id='wpinterspire_xmltoken' value='<?php echo esc_attr( $options->xmltoken ); ?>' size='40' /><br />
 						<small>
@@ -68,7 +76,11 @@
 					</td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="wpinterspire_storepath"><?php echo __('Store Path (optional)', 'wpinterspire'); ?>:</label></th>
+					<th scope="row">
+						<label for="wpinterspire_storepath">
+							<?php _e( 'Store Path (optional)', 'wpinterspire' ); ?>:
+						</label>
+					</th>
 					<td>
 						<input type='text' name='wpinterspire[storepath]' id='wpinterspire_storepath' value='<?php echo esc_attr( $options->storepath ); ?>' size='40' /><br />
 						<small>
@@ -79,7 +91,11 @@
 					</td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="wpinterspire_showlink"><?php echo __('Give Thanks (optional)', 'wpinterspire'); ?>:</label></th>
+					<th scope="row">
+						<label for="wpinterspire_showlink">
+							<?php _e( 'Give Thanks (optional)', 'wpinterspire' ); ?>:
+						</label>
+					</th>
 					<td>
 						<input type='checkbox' name='wpinterspire[showlink]' id='wpinterspire_showlink' value='yes' <?php echo ( ( isset( $options->showlink ) && $options->showlink == 'yes' ) ? 'checked=checked' : '' ); ?> />
 						Help show the love by telling the world you use this Plugin.<br />

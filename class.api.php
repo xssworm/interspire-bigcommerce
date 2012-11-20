@@ -21,11 +21,10 @@ class Bigcommerce_api {
 	}
 
 	// Get Products
-	public function GetProducts( $force_rebuild = true ) {
-		$options = Bigcommerce::get_options();
+	public function GetProducts( $rebuild ) {
 
 		// Not Forcing Rebuild
-		if( ! $force_rebuild ) {
+		if( ! $rebuild ) {
 			return maybe_unserialize( get_option( 'wpinterspire_products' ) );
 		}
 
@@ -57,12 +56,16 @@ class Bigcommerce_api {
 	}
 
 	// Builds Select Box Of Products
-	public function BuildProductsSelect( $rebuild = false ) {
+	public function BuildProductsSelect( $rebuild ) {
 		$output = get_option( 'wpinterspire_productselect' );
 
-		// Rebuilding
-		if( $rebuild || ! $output ) {
-			if ( ! $products = self::GetProducts() ) { return false; }
+		// Rebuilding Requested Or Necessary
+		if( $rebuild ) {
+
+			// Get Products
+			if ( ! $products = self::GetProducts( true ) ) { return false; }
+
+			// Generate HTML Selector
 			$output = '
 				<select id="interspire_add_product_id">
 				<option value="" disabled="disabled" selected="selected">Products</option>
@@ -75,7 +78,7 @@ class Bigcommerce_api {
 		    }
 	        $output .= '</select>';
 
-	        // Save Products To Cache
+	        // Save HTML Selector To Cache
 		    update_option( 'wpinterspire_productselect', $output );
 		}
 		return $output;
