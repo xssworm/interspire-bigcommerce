@@ -18,21 +18,33 @@
 			: 'Your product list has not yet been built.';
 		?>
 		<a href='<?php echo wp_nonce_url( admin_url( 'options-general.php?page=wpinterspire&amp;wpinterspirerebuild=all' ), 'rebuild' ); ?>' class='button'>
-		<?php echo get_option( 'wpinterspire_productselect' ) ? 'Re-build your products list' : 'Build your products list'; ?></a><br />
-		<small>Note: this may take a long time, depending on the size of your products list.</small>
+			<?php echo get_option( 'wpinterspire_productselect' ) ? 'Re-build your products list' : 'Build your products list'; ?>
+		</a><br />
+		<small>
+			<?php _e( 'Note: this may take a long time, depending on the size of your products list.', 'wpinterspire' ); ?>
+		</small>
 	</p>
 
 	<?php } else { ?>
 
-	<h3>This Plugin requires a Bigcommerce account.</h3>
-	<h4>What is Bigcommerce?</h4>
+	<h3>
+		<?php _e( 'This Plugin requires a Bigcommerce account.', 'wpinterspire' ); ?>
+	</h3>
+	<h4>
+		<?php _e( 'What is Bigcommerce?', 'wpinterspire' ); ?>
+	</h4>
 	<p>
-		Bigcommerce is the #1 rated hosted e-commerce platform.
-		If you want to have an e-commerce store without having to manage the server, security, and payments, Bigcommerce is for you.
+		<?php _e( 'Bigcommerce is the #1 rated hosted e-commerce platform.', 'wpinterspire' ); ?>
+		<?php _e( 'If you want to have an e-commerce store without having to manage the server, security, and payments, Bigcommerce is for you.', 'wpinterspire' ); ?>
 	</p>
 	<p>
-		<a href="<?php shuffle( $vendors ); echo $vendors[0]; ?>" target="_blank">Visit Bigcommerce.com to start your own online store today!</a>.
-		You can also check out all the <a href="http://www.bigcommerce.com/showcase/" target="_blank">neat stores that use Bigcommerce</a>.
+		<a href="<?php shuffle( $vendors ); echo $vendors[0]; ?>" target="_blank">
+			<?php _e( 'Visit Bigcommerce.com to start your own online store today!', 'wpinterspire' ); ?>
+		</a>
+		<?php _e( 'You can also check out all the', 'wpinterspire' ); ?>
+		<a href="http://www.bigcommerce.com/showcase/" target="_blank">
+			<?php _e( 'neat stores that use Bigcommerce', 'wpinterspire' ); ?>
+		</a>.
 	</p>
 
 	<?php } ?>
@@ -56,8 +68,9 @@
 					<td>
 						<input type='text' name='wpinterspire[username]' id='wpinterspire_username' value='<?php echo esc_attr( $options->username ); ?>' size='40' /><br />
 						<small>
-							Your store username, such as <code>admin</code>.
-							Find this setting by logging into your store, and clicking on Users.
+							<?php _e( 'Your store username, such as ', 'wpinterspire'); ?>
+							<code>admin</code>.
+							<?php _e( 'Find this setting by logging into your store, and clicking on Users.', 'wpinterspire'); ?>
 						</small>
 					</td>
 				</tr>
@@ -70,8 +83,8 @@
 					<td>
 						<input type='text' name='wpinterspire[xmltoken]' id='wpinterspire_xmltoken' value='<?php echo esc_attr( $options->xmltoken ); ?>' size='40' /><br />
 						<small>
-							Your API Token for the store username specified above.
-							Find this setting by logging into your store, clicking on Users, clicking Edit for the store username specified above, then scrolling down to the API Token.
+							<?php _e( 'Your API Token for the store username specified above.', 'wpinterspire'); ?>
+							<?php _e( 'Find this setting by logging into your store, clicking on Users, clicking Edit for the store username specified above, then scrolling down to the API Token.', 'wpinterspire'); ?>
 						</small>
 					</td>
 				</tr>
@@ -84,28 +97,34 @@
 					<td>
 						<input type='text' name='wpinterspire[storepath]' id='wpinterspire_storepath' value='<?php echo esc_attr( $options->storepath ); ?>' size='40' /><br />
 						<small>
-							Your Store's URL (<code>http://mystore.mybigcommerce.com/</code>).
-							Entering this into your browser should take you to your home page.
-							This is optional, and only to shorten the shortcode when linking to your products.
+							<?php _e( 'Your Store URL', 'wpinterspire'); ?>
+							(<code>http://mystore.mybigcommerce.com/</code>).
+							<?php _e( 'Entering this into your browser should take you to your home page.', 'wpinterspire'); ?>
+							<?php _e( 'This is optional, and only to shorten the shortcode when linking to your products.', 'wpinterspire'); ?>
 						</small>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="wpinterspire_showlink">
-							<?php _e( 'Give Thanks (optional)', 'wpinterspire' ); ?>:
-						</label>
+						<?php _e( 'Give Thanks (optional)', 'wpinterspire' ); ?>:
 					</th>
 					<td>
 						<input type='checkbox' name='wpinterspire[showlink]' id='wpinterspire_showlink' value='yes' <?php echo ( ( isset( $options->showlink ) && $options->showlink == 'yes' ) ? 'checked=checked' : '' ); ?> />
-						Help show the love by telling the world you use this Plugin.<br />
-						<small>A link will be added to your footer. Please show support for this Plugin by enabling.</small>
+						<label for="wpinterspire_showlink">
+							<?php _e( 'Help show the love by telling the world you use this Plugin.', 'wpinterspire'); ?>
+						</label><br />
+						<small>
+							<?php _e( 'A link will be added to your footer.', 'wpinterspire'); ?>
+							<?php _e( 'Please show support for this Plugin by enabling.', 'wpinterspire'); ?>
+						</small>
 					</td>
 				</tr>
 			</tbody>
 		</table>
-		<input type="hidden" name="page_options" value="<?php foreach($rows as $row) { $output .= $row['id'].','; } echo substr($output, 0, -1);?>" />
 		<input type="hidden" name="action" value="update" />
-		<p><input type="submit" class="button-primary" name="save" value="<?php _e('Save Changes', 'wpinterspire') ?>" /></p>
+		<p>
+			<input type="submit" class="button-primary" name="save"
+				value="<?php _e( 'Save Changes', 'wpinterspire' ); ?>" />
+		</p>
 	</form>
 </div>

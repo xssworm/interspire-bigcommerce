@@ -21,7 +21,7 @@ add_action( 'wp_footer', array( 'Bigcommerce', 'wp_footer' ) );
 // WP Hooks - Media Uploading
 add_action( 'media_buttons_context', array( 'Bigcommerce', 'media_buttons_context' ) );
 add_filter( 'media_upload_tabs', array( 'Bigcommerce', 'media_upload_tabs' ), 11 );
-add_action( 'media_upload_interspire', array( 'Bigcommerce', 'menu_handle' ) );
+add_action( 'media_upload_interspire', array( 'Bigcommerce', 'media_upload_interspire' ) );
 
 // Shortcodes (support for legacy ones too)
 add_shortcode( 'BigCommerce', array( 'Bigcommerce', 'shortcode' ) );
@@ -87,8 +87,8 @@ class Bigcommerce {
 		);
 	}
 
-	// Add Menu Item For Processing Media
-	function menu_handle() {
+	// Tied To WP Hook By The Same Name - Add Menu Item For Processing Media
+	function media_upload_interspire() {
 		return wp_iframe( array( 'Bigcommerce', 'media_process' ) );
 	}
 
@@ -97,7 +97,7 @@ class Bigcommerce {
 		if( ! self::$configured ) { return $context; }
 		return $context . '
 			<a href="#TB_inline?width=640&inlineId=interspire_select_product" class="thickbox"
-				title="' . __( 'Add Interspire Product(s)', 'wpinterspire' ) . '">
+				title="' . __( 'Add Bigcommerce Product(s)', 'wpinterspire' ) . '">
 			<img src="' . plugins_url( 'insert.png', __FILE__ ) . '" width="14" height="14"
 				alt="' . __( "Add a Product", 'wpinterspire' ) . '" /></a>
 		';
