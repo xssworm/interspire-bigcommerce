@@ -18,12 +18,12 @@ add_filter( 'plugin_action_links', array( 'Bigcommerce', 'plugin_action_links' )
 add_action( 'admin_footer',  array( 'Bigcommerce', 'admin_footer' ) );
 add_action( 'wp_footer', array( 'Bigcommerce', 'wp_footer' ) );
 
-// WP Hooks - Media Uploading
+// WP Hooks - Media Importing
 add_action( 'media_buttons_context', array( 'Bigcommerce', 'media_buttons_context' ) );
 add_filter( 'media_upload_tabs', array( 'Bigcommerce', 'media_upload_tabs' ), 11 );
-add_action( 'media_upload_interspire', array( 'Bigcommerce', 'media_upload_interspire' ) );
+add_action( 'media_upload_wpinterspire', array( 'Bigcommerce', 'media_upload_wpinterspire' ) );
 
-// Shortcodes (support for legacy ones too)
+// Shortcodes (Support For Legacy Ones Too)
 add_shortcode( 'BigCommerce', array( 'Bigcommerce', 'shortcode' ) );
 add_shortcode( 'Bigcommerce', array( 'Bigcommerce', 'shortcode' ) );
 add_shortcode( 'bigcommerce', array( 'Bigcommerce', 'shortcode' ) );
@@ -76,23 +76,23 @@ class Bigcommerce {
     }
 
 
-	/**************
-	 Media Uploader
-	 **************/
+	/***************
+	 Media Importing
+	 ***************/
 
-	// Tied To WP Hook By The Same Name - Add Tab To Media Uploader
+	// Tied To WP Hook By The Same Name - Adds Tab To Media Popup
 	function media_upload_tabs( $tabs ) {
 		return array_merge(
 			$tabs, array( 'wpinterspire' => __( 'Bigcommerce', 'wpinterspire' ) )
 		);
 	}
 
-	// Tied To WP Hook By The Same Name - Add Menu Item For Processing Media
-	function media_upload_interspire() {
+	// Tied To WP Hook By The Same Name - Adds Menu Item For Processing Media
+	function media_upload_wpinterspire() {
 		return wp_iframe( array( 'Bigcommerce', 'media_process' ) );
 	}
 
-	// Tied To WP Hook By The Same Name
+	// Tied To WP Hook By The Same Name - Ads Icon To WYSIWYG Posts/Pages Editor
 	function media_buttons_context( $context ) {
 		if( ! self::$configured ) { return $context; }
 		return $context . '
@@ -103,7 +103,7 @@ class Bigcommerce {
 		';
 	}
 
-	// Tied To WP Hook By The Same Name
+	// Tied To WP Hook By The Same Name - Admin Area Footer
 	function admin_footer() {
 		$options = self::get_options();
 		require( 'mce-popup.js.php' );
@@ -112,24 +112,54 @@ class Bigcommerce {
 
 	// Presents Media Insertion Content
 	function media_process() {
-		$options = self::get_options();
+    	$options = self::get_options();
+
+		// Get Products From Cache
+		$Products = get_option( 'wpinterspire_products' );
+		$Products = new SimpleXMLElement( $Products, LIBXML_NOCDATA );
 		media_upload_header();
-		$Products = Bigcommerce_api::GetProducts( false );
+
+		// Handle No Products
 		if( is_wp_error( $Products ) || ! $Products ) { 
 			echo '
 				<div class="tablenav">
 					<form id="filter">
-						<h3>The Bigcommerce plugin settings have not been properly configured.</h3>
+						<h3>'
+							. __( 'The Plugin settings have not been properly configured.', 'wpinterspire' ) .
+						'</h3>
 					</form>
 				</div>
 			';
 			return false;
 		}
+
+		// Loop Products
+		$images = array();
+		foreach( $Products->product as $i => $product ) {
+
+			// Skip Products Without Images
+			if( ! isset( $product->images[0]->link ) ) { continue; }
+
+			// Query Image Info
+			$path = substr( $product->images[0]->link, 1 );
+			$path = Bigcommerce_api::GetDetail( $path );
+			$path = new SimpleXMLElement( $path, LIBXML_NOCDATA );
+
+			// Skip Products Without Images
+			if( ! isset( $product->images[0]->link ) ) { continue; }
+
+			// Save Path
+			$path = $path->image[0]->image_file;
+			$path = $options->storepath . 'product_images/' . $path;
+			$images[] = $path;
+		}
+
+		// Output
 		$toggle_on  = __( 'Show', 'wpinterspire' );
 		$toggle_off = __( 'Hide', 'wpinterspire' );
-		$class = empty( $errors ) ? 'startclosed' : 'startopen';
-		if( !apply_filters( 'disable_captions', '' ) ) {
-			$caption = '
+		$class = 'startclosed';
+		$caption = ( ! apply_filters( 'disable_captions', '' ) )
+			? '
 				<tr>
 					<th valign="top" scope="row" class="label">
 						<span class="alignleft">
@@ -140,8 +170,7 @@ class Bigcommerce {
 						<input id="caption" name="caption" value="" type="text" />
 					</td>
 				</tr>
-			';
-		} else { $caption = ''; }
+			' : '';
 		require( 'media.js.php' );
 		require( 'media.html.php' );
 	}
