@@ -69,11 +69,10 @@
 				<tr>
 					<td></td>
 					<td>
-						<input type="button" class="button-primary" value="Insert Product" onclick="InterspireInsertProduct();"/>
-						&nbsp;&nbsp;&nbsp;
-						<a class="button" style="color:#bbb;" href="#" title="Cancel" onclick="tb_remove(); return false;">
-							<?php _e( 'Cancel', 'wpinterspire'); ?>
-						</a>
+						<input type="button" class="button-primary" onclick="InterspireInsertProduct();"
+							value="<?php _e( 'Insert Product', 'wpinterspire'); ?>" />
+						<input type="button" class="button-secondary" onclick="tb_remove(); return false;"
+							value="<?php _e( 'Cancel', 'wpinterspire'); ?>" />
 					</td>
 				</tr>
 			</tbody>

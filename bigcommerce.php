@@ -97,7 +97,7 @@ class Bigcommerce {
 		if( ! self::$configured ) { return $context; }
 		return $context . '
 			<a href="#TB_inline?width=640&inlineId=interspire_select_product" class="thickbox"
-				title="' . __( 'Add Bigcommerce Product(s)', 'wpinterspire' ) . '">
+				title="' . __( 'Add a Bigcommerce product link', 'wpinterspire' ) . '">
 			<img src="' . plugins_url( 'favicon.png', __FILE__ ) . '" width="16" height="16"
 				alt="' . __( "Add a Product", 'wpinterspire' ) . '" /></a>
 		';
@@ -254,7 +254,7 @@ class Bigcommerce {
 					? __( ' However, your product list has not yet been built.', 'wpinterspire' )
 					: __( ' When editing posts, look for the ', 'wpinterspire' )
 						. '<img src="' . plugins_url( 'favicon.png', __FILE__ )
-						. '" width="16" height="16" alt="' . __( 'Add a Product', 'wpinterspire') . '" />'
+						. '" width="16" height="16" alt="' . __( 'Bigcommerce icon', 'wpinterspire') . '" />'
 						. __( ' icon. Click it to add a product to your post or page.', 'wpinterspire' )
 				);
 		} else {
