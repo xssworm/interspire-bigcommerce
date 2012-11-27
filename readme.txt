@@ -7,7 +7,7 @@ Tested up to: 3.4.2
 Stable tag: 1.4
 License: GPLv2
 
-Integrate Bigcommerce hosted eCommerce shopping cart products, images, and links into WordPress.
+Integrate Bigcommerce hosted eCommerce shopping cart product images and links into WordPress.
 
 == Description ==
 
@@ -56,7 +56,7 @@ New Automatic Installation
 New Manual Installation
 
 1. Download the Plugin and un-zip it.
-1. Upload the `benchmark-email-lite` folder to your `wp-content/plugins/` directory.
+1. Upload the `interspire-bigcommerce` folder to your `wp-content/plugins/` directory.
 1. Activate the Plugin through the Plugins menu in WordPress.
 1. If you are creating a new Bigcommerce account, please click the `Visit Bigcommerce.com to start your own online store today!` link at the top of the Settings page to do so.
 1. Obtain your Bigcommerce API Key by following the instructions adjacent to that field.
@@ -75,7 +75,7 @@ New Manual Installation
 = Requirements = 
 
 * Requires PHP version 5. If your web host does not support PHP5, please contact your host and see if they can upgrade your PHP version.
-* Activate `curl` if your web host doesn't already have it running. Generally this can be done, and at no cost.
+* Activate `curl` if your web host doesn't already have it running. Generally this can be done at no cost.
 
 = When should I rebuild my products list? =
 
@@ -83,10 +83,9 @@ New Manual Installation
 
 = What's coming up in the future? =
 
-* We currently have plans to add:
-	* Product image search by name.
-	* Caching of product images.
-	* Feel free to make suggestions!
+* Product image search by name.
+* Caching of product images.
+* Feel free to make suggestions on [the Support tab](http://wordpress.org/support/plugin/interspire-bigcommerce "the Support tab").
 
 == Changelog ==
 
