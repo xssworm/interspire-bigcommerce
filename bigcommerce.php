@@ -97,7 +97,7 @@ class Bigcommerce {
 		if( ! self::$configured ) { return $context; }
 		return $context . '
 			<a href="#TB_inline?width=640&inlineId=interspire_select_product" class="thickbox"
-				title="' . __( 'Add a Bigcommerce product link', 'wpinterspire' ) . '">
+				title="' . __( 'Add Bigcommerce Product Link', 'wpinterspire' ) . '">
 			<img src="' . plugins_url( 'favicon.png', __FILE__ ) . '" width="16" height="16"
 				alt="' . __( "Add a Product", 'wpinterspire' ) . '" /></a>
 		';
