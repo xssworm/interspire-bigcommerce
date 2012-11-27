@@ -80,7 +80,7 @@ class Bigcommerce {
 	 Media Importing
 	 ***************/
 
-	// Tied To WP Hook By The Same Name - Adds Tab To Media Popup
+	// Tied To WP Hook By The Same Name - Adds Product Images Tab To Media Popup
 	function media_upload_tabs( $tabs ) {
 		return array_merge(
 			$tabs, array( 'wpinterspire' => __( 'Bigcommerce', 'wpinterspire' ) )
@@ -106,17 +106,18 @@ class Bigcommerce {
 	// Tied To WP Hook By The Same Name - Admin Area Footer
 	function admin_footer() {
 		$options = self::get_options();
-		require( 'mce-popup.js.php' );
 		require( 'mce-popup.html.php' );
 	}
 
-	// Presents Media Insertion Content
+	// Presents Product Image Choices
 	function media_process() {
     	$options = self::get_options();
 
 		// Get Products From Cache
 		$Products = get_option( 'wpinterspire_products' );
 		$Products = new SimpleXMLElement( $Products, LIBXML_NOCDATA );
+
+		// Present Other Tabs
 		media_upload_header();
 
 		// Handle No Products
@@ -130,12 +131,30 @@ class Bigcommerce {
 					</form>
 				</div>
 			';
-			return false;
+			return;
 		}
+
+		// Pagination Variables
+		$perpage = 5;
+		$page = isset( $_GET['paged'] ) ? $_GET['paged'] : 1;
+	   	$start = $perpage * ( $page - 1 );
+	   	$end = $start + ( $perpage - 1 );
+		$paginate_links = paginate_links(
+			array(
+				'base' => add_query_arg( 'paged', '%#%' ),
+				'format' => '',
+				'total' => ceil( sizeof( $Products->product ) / $perpage ),
+				'current' => $page,
+			)
+		);
 
 		// Loop Products
 		$images = array();
-		foreach( $Products->product as $i => $product ) {
+		for( $i = 0; $i < sizeof( $Products->product ); $i++ ) {
+			$product = $Products->product[$i];
+
+			// Limit To Per Page Quantity
+			if( $i < $start || $i > $end ) { continue; }
 
 			// Skip Products Without Images
 			if( ! isset( $product->images[0]->link ) ) { continue; }
@@ -151,27 +170,14 @@ class Bigcommerce {
 			// Save Path
 			$path = $path->image[0]->image_file;
 			$path = $options->storepath . 'product_images/' . $path;
-			$images[] = $path;
+			$images[] = array(
+				'productid'	=> $product->id,
+				'name' => $product->name,
+				'path' => $path,
+			);
 		}
 
 		// Output
-		$toggle_on  = __( 'Show', 'wpinterspire' );
-		$toggle_off = __( 'Hide', 'wpinterspire' );
-		$class = 'startclosed';
-		$caption = ( ! apply_filters( 'disable_captions', '' ) )
-			? '
-				<tr>
-					<th valign="top" scope="row" class="label">
-						<span class="alignleft">
-							<label for="caption">' . __( 'Image Caption' ) . '</label>
-						</span>
-					</th>
-					<td class="field">
-						<input id="caption" name="caption" value="" type="text" />
-					</td>
-				</tr>
-			' : '';
-		require( 'media.js.php' );
 		require( 'media.html.php' );
 	}
 
