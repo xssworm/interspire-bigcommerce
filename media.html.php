@@ -24,7 +24,7 @@ if ( ! $images ) {
 
 			<tr>
 				<td width="20%">
-					<img id="<?php echo $uniqid; ?>" src="<?php echo $path; ?>" style="width: 100px;" />
+					<img id="<?php echo $uniqid; ?>" src="<?php echo $path; ?>" style="max-width: 100px; max-height: 100px;" />
 				</td>
 				<td width="60%"><?php echo $name; ?></td>
 				<td width="20%">

@@ -98,7 +98,7 @@ class Bigcommerce {
 		return $context . '
 			<a href="#TB_inline?width=640&inlineId=interspire_select_product" class="thickbox"
 				title="' . __( 'Add Bigcommerce Product(s)', 'wpinterspire' ) . '">
-			<img src="' . plugins_url( 'insert.png', __FILE__ ) . '" width="14" height="14"
+			<img src="' . plugins_url( 'favicon.png', __FILE__ ) . '" width="16" height="16"
 				alt="' . __( "Add a Product", 'wpinterspire' ) . '" /></a>
 		';
 	}
@@ -135,7 +135,7 @@ class Bigcommerce {
 		}
 
 		// Pagination Variables
-		$perpage = 5;
+		$perpage = 10;
 		$page = isset( $_GET['paged'] ) ? $_GET['paged'] : 1;
 	   	$start = $perpage * ( $page - 1 );
 	   	$end = $start + ( $perpage - 1 );
@@ -253,8 +253,8 @@ class Bigcommerce {
 					( ! get_option( 'wpinterspire_productselect' ) )
 					? __( ' However, your product list has not yet been built.', 'wpinterspire' )
 					: __( ' When editing posts, look for the ', 'wpinterspire' )
-						. '<img src="' . plugins_url( 'insert.png', __FILE__ )
-						. '" width="14" height="14" alt="' . __( 'Add a Product', 'wpinterspire') . '" />'
+						. '<img src="' . plugins_url( 'favicon.png', __FILE__ )
+						. '" width="16" height="16" alt="' . __( 'Add a Product', 'wpinterspire') . '" />'
 						. __( ' icon. Click it to add a product to your post or page.', 'wpinterspire' )
 				);
 		} else {
