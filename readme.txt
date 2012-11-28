@@ -3,7 +3,7 @@ Contributors: katzwebdesign, beautomated, seanconklin, randywsandberg
 Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zackkatz%40gmail%2ecom&item_name=Bigcommerce%20for%20WordPress&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8
 Tags: ecommerce, interspire, bigcommerce, e-commerce, shop, cart, paypal, authorize, authorize.net, stock control, ecommerce, zencart, volition, shopsite, oscommerce, zen cart, prestashop, merchant, big commerce
 Requires at least: 3.2
-Tested up to: 3.4.2
+Tested up to: 3.5
 Stable tag: 1.4
 License: GPLv2
 
