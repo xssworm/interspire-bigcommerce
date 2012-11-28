@@ -93,7 +93,7 @@ New Manual Installation
 
 = 1.4 on 2012-11-27 =
 
-* Updated: New contributor, beAutomated, rewrote most of the Plugin to get everything up to date and working again.
+* Fixed: New contributor, beAutomated, rewrote most of the Plugin to get everything up to date and working again.
 * Updated: Removed the copy of the WP image editing, as that can be triggered following product image insert, utilizing the latest WordPress tools for doing so.
 * Added: Support for the latest Bigcommerce API, powered by cURL.
 
