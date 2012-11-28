@@ -11,27 +11,25 @@ Integrate Bigcommerce hosted eCommerce shopping cart product images and links in
 
 == Description ==
 
+You want to spend your time writing the best content, not hunting for the link or image for the product you're blogging about. This Plugin is powerful and simple to set up. It's a must have if you use WordPress and [Bigcommerce](http://beautomated.bigcommerce.com/ "Visit Bigcommerce").
+
 <h3>Easily find and link to your Bigcommerce products from within WordPress</h3>
 
-<strong>This plugin adds a button to the post/page editor that makes it easy to link to your products.</strong>
+This Plugin adds a button to the post/page editor that makes it easy to link to your products.
+* Set custom link text.
+* Choose to open the link in the same window or a new window.
+* Choose to "nofollow" the link.
 
-You want to spend your time writing the best content, not hunting for the link for the product you're blogging about. This plugin is simple to set up, and powerful. If you use WordPress and Bigcommerce, it's a must have.
+<h3>Easily embed your store's images</h3>
 
-<h3>Easily Embed & Link Your Store's Images</h3>
-Now you can easily insert product images using the WordPress `Add an Image` button. Adding product images has never been easier! (see the Screenshots section for an example).
+You can easily insert product images using the WordPress Add an Image button.
+* Browse all of your store's products with images.
+* Use the WordPress image editor tool to choose to link to the product page, the product image, or the full-sized product image.
+* Use the WordPress image editor tool to add alt, title, alignment and captions.
 
-<h4>Bigcommerce for WordPress Features:</h4>
-* Insert a link into your content for any product in your store:
-	* Set custom link text.
-	* Choose to open the link in the same window or a new window.
-	* Choose to "nofollow" the link, or other <code>rel</code> attribute.
-* Insert product images:
-	* Browse all of your store's products with images.
-	* Use the WordPress image editor tool to choose to link to the product page, the product image, or the full-sized product image.
-	* Use the WordPress image editor tool to add `alt`, `title`, alignment and captions.
+<h3>What is Bigcommerce?</h3>
 
-<strong>What is Bigcommerce?</strong><br />
-Bigcommerce is the #1 rated hosted e-commerce platform. If you want to have an e-commerce store without having to manage the server, security, and payments, Bigcommerce is for you. Check out all the <a href="http://www.bigcommerce.com/livestores/">neat stores that use Bigcommerce</a>.
+Bigcommerce is the #1 rated hosted e-commerce platform. If you want to have an eCommerce store without having to manage the server, security, and payments, [Bigcommerce](http://katzwebservices.bigcommerce.com "Visit Bigcommerce") is for you. Check out all the [neat stores that use Bigcommerce](http://www.bigcommerce.com/showcase/ "View over 25,000 successful stores").
 
 == Installation ==
 
