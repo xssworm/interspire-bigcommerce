@@ -11,7 +11,7 @@ Integrate Bigcommerce hosted eCommerce shopping cart product images and links in
 
 == Description ==
 
-You want to spend your time writing the best content, not hunting for the link or image for the product you're blogging about. This Plugin is powerful and simple to set up. It's a must have if you use WordPress and [Bigcommerce](http://beautomated.bigcommerce.com/ "Visit Bigcommerce").
+You want to spend your time writing the best content, not hunting for the link or image for the product you're blogging about. This Plugin is powerful and simple to set up. It's a must have if you use WordPress and Bigcommerce.
 
 <h3>Easily find and link to your Bigcommerce products from within WordPress</h3>
 
@@ -31,7 +31,7 @@ You can easily insert product images using the WordPress Add an Image button.
 
 <h3>What is Bigcommerce?</h3>
 
-Bigcommerce is the #1 rated hosted e-commerce platform. If you want to have an eCommerce store without having to manage the server, security, and payments, [Bigcommerce](http://katzwebservices.bigcommerce.com "Visit Bigcommerce") is for you. Check out all the [neat stores that use Bigcommerce](http://www.bigcommerce.com/showcase/ "View over 25,000 successful stores").
+Bigcommerce is the #1 rated hosted e-commerce platform. If you want to have an eCommerce store without having to manage the server, security, and payments, Bigcommerce is for you. Check out all the [neat stores that use Bigcommerce](http://www.bigcommerce.com/showcase/ "View over 25,000 successful stores").
 
 == Installation ==
 
