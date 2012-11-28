@@ -65,10 +65,12 @@ New Manual Installation
 
 == Screenshots ==
 
-1. How the Add Products modal screen appears in the WordPress editor.
-2. A button is added to the editor (next to the Media buttons). The product links appear as the `[bigcommerce]` shortcode.
-3. This shows the shortcode from above on the live site.
-4. Once configured, easily add an image from your Interspire or Bigcommerce shopping cart and link it to the product page.
+1. This is the Add Product popup, after clicking the Bigcommerce icon from the pages/posts editor.
+2. This is the shortcode that gets created by the Add Product popup.
+3. This is an example page or post showing a link to a Bigcommerce product page.
+4. This is the Add Media popup Bigcommerce tab, to insert product images into the pages/posts editor.
+5. This is the inserted product image within the pages/posts editor, which can be further adjusted using the WordPress image editor tool.
+6. This is an example page or post showing a product image and link to a Bigcommerce product page.
 
 == Frequently Asked Questions == 
 
