@@ -16,16 +16,18 @@ You want to spend your time writing the best content, not hunting for the link o
 <h3>Easily find and link to your Bigcommerce products from within WordPress</h3>
 
 This Plugin adds a button to the post/page editor that makes it easy to link to your products.
-* Set custom link text.
-* Choose to open the link in the same window or a new window.
-* Choose to "nofollow" the link.
+
+*	Set custom link text.
+*	Choose to open the link in the same window or a new window.
+*	Choose to "nofollow" the link.
 
 <h3>Easily embed your store's images</h3>
 
 You can easily insert product images using the WordPress Add an Image button.
-* Browse all of your store's products with images.
-* Use the WordPress image editor tool to choose to link to the product page, the product image, or the full-sized product image.
-* Use the WordPress image editor tool to add alt, title, alignment and captions.
+
+*	Browse all of your store's products with images.
+*	Use the WordPress image editor tool to choose to link to the product page, the product image, or the full-sized product image.
+*	Use the WordPress image editor tool to add alt, title, alignment and captions.
 
 <h3>What is Bigcommerce?</h3>
 
