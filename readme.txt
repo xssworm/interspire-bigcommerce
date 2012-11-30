@@ -31,7 +31,7 @@ You can easily insert product images using the WordPress Add an Image button.
 
 <h3>What is Bigcommerce?</h3>
 
-Bigcommerce is the #1 rated hosted e-commerce platform. If you want to have an eCommerce store without having to manage the server, security, and payments, Bigcommerce is for you. Check out all the [neat stores that use Bigcommerce](http://www.bigcommerce.com/showcase/ "View over 25,000 successful stores").
+Bigcommerce is the world’s leading e-commerce platform, powering more than 30,000 stores. You’ll get everything you need to create a successful online store, including a securely hosted site, shopping cart, product catalog and CRM. Themes and point-and-click design features make it easy to build a gorgeous site without any design or technical skills, while powerful built-in marketing and conversion optimization tools help you promote your store and sell more.
 
 == Installation ==
 
