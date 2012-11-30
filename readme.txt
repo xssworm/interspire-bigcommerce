@@ -3,7 +3,7 @@ Contributors: katzwebdesign, beautomated, seanconklin, randywsandberg
 Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zackkatz%40gmail%2ecom&item_name=Bigcommerce%20for%20WordPress&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8
 Tags: ecommerce, interspire, bigcommerce, e-commerce, shop, cart, paypal, authorize, authorize.net, stock control, ecommerce, zencart, volition, shopsite, oscommerce, zen cart, prestashop, merchant, big commerce
 Requires at least: 3.2
-Tested up to: 3.4.2
+Tested up to: 3.5
 Stable tag: 1.4
 License: GPLv2
 
@@ -11,7 +11,7 @@ Integrate Bigcommerce hosted eCommerce shopping cart product images and links in
 
 == Description ==
 
-You want to spend your time writing the best content, not hunting for the link or image for the product you're blogging about. This Plugin is powerful and simple to set up. It's a must have if you use WordPress and [Bigcommerce](http://beautomated.bigcommerce.com/ "Visit Bigcommerce").
+You want to spend your time writing the best content, not hunting for the link or image for the product you're blogging about. This Plugin is powerful and simple to set up. It's a must have if you use WordPress and Bigcommerce.
 
 <h3>Easily find and link to your Bigcommerce products from within WordPress</h3>
 
@@ -31,7 +31,7 @@ You can easily insert product images using the WordPress Add an Image button.
 
 <h3>What is Bigcommerce?</h3>
 
-Bigcommerce is the #1 rated hosted e-commerce platform. If you want to have an eCommerce store without having to manage the server, security, and payments, [Bigcommerce](http://katzwebservices.bigcommerce.com "Visit Bigcommerce") is for you. Check out all the [neat stores that use Bigcommerce](http://www.bigcommerce.com/showcase/ "View over 25,000 successful stores").
+Bigcommerce is the world’s leading e-commerce platform, powering more than 30,000 stores. You’ll get everything you need to create a successful online store, including a securely hosted site, shopping cart, product catalog and CRM. Themes and point-and-click design features make it easy to build a gorgeous site without any design or technical skills, while powerful built-in marketing and conversion optimization tools help you promote your store and sell more.
 
 == Installation ==
 
