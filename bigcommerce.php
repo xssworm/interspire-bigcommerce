@@ -4,7 +4,7 @@ Plugin Name: Bigcommerce
 Plugin URI: http://www.seodenver.com/interspire-bigcommerce-wordpress/
 Description: Integrate Bigcommerce products into your WordPress pages and posts.
 Author: Katz Web Services & beAutomated
-Version: 1.4
+Version: 1.4.1-devel
 Author URI: http://www.katzwebservices.com
 License: GPLv2
 
@@ -25,7 +25,10 @@ require_once( 'class.api.php' );
 // WP Hooks - General
 add_action( 'admin_init', array( 'Bigcommerce', 'admin_init' ) );
 add_action( 'admin_menu', array( 'Bigcommerce', 'admin_menu' ) );
-add_filter( 'plugin_action_links', array( 'Bigcommerce', 'plugin_action_links' ), 10, 2 );
+add_filter(
+	'plugin_action_links_' . plugin_basename( __FILE__ ),
+	array( 'Bigcommerce', 'plugin_action_links' )
+);
 add_action( 'admin_footer',  array( 'Bigcommerce', 'admin_footer' ) );
 add_action( 'wp_footer', array( 'Bigcommerce', 'wp_footer' ) );
 
@@ -57,19 +60,12 @@ class Bigcommerce {
         	array( 'Bigcommerce', 'sanitize_settings' )
         );
 
-		// Support For Localizations
+		// Load Support For Localizations
 		load_plugin_textdomain(
 			'wpinterspire', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/'
 		);
 
-		// Only Continue For Page/Post Editor Or Settings Page
-		if(
-			! in_array(
-				$pagenow, array(
-					'options-general.php', 'post.php', 'page.php', 'page-new.php', 'post-new.php'
-				)
-			) 
-		) { return; }
+		// Only Continue For Self Settings Page
 		if(
 			$pagenow == 'options-general.php'
 			&& isset( $_REQUEST['page'] )
@@ -79,7 +75,7 @@ class Bigcommerce {
 		// Run Settings Check
 		self::$configured = Bigcommerce_api::CheckSettings();
 
-		// (Re)Build Products If Requested
+		// (Re)Build Products Upon Request
 		if (
 			isset( $_REQUEST['wpinterspirerebuild'] )
 			&& $_REQUEST['wpinterspirerebuild'] == 'all'
@@ -225,16 +221,11 @@ class Bigcommerce {
 	}
 
 	// Tied To WP Hook By The Same Name - Adds Settings Link
-    function plugin_action_links( $links, $file ) {
-        static $the_plugin;
-        if( ! $the_plugin ) $the_plugin = plugin_basename(__FILE__);
-        if ( $file == $the_plugin ) {
-            $settings_link = '<a href="' . admin_url( 'options-general.php?page=wpinterspire' ) . '">'
-            	. __( 'Settings', 'wpinterspire' ) . '</a>';
-            array_unshift( $links, $settings_link );
-        }
-        return $links;
-    }
+	function plugin_action_links( $links ) {
+		$links['settings'] = '<a href="options-general.php?page=wpinterspire">'
+			. __( 'Settings', 'wpinterspire' ) . '</a>';
+		return $links;
+	}
 
 	// Tied To WP Hook By The Same Name - Adds Admin Submenu Link
     function admin_menu() {
@@ -258,6 +249,8 @@ class Bigcommerce {
 
 	// Displays The Configuration Check
 	function show_configuration_check() {
+
+		// Configured
 		if( self::$configured ) {
 			$content = __( 'Your Bigcommerce API settings are configured properly.', 'wpinterspire' )
 				. (
@@ -268,10 +261,14 @@ class Bigcommerce {
 						. '" width="16" height="16" alt="' . __( 'Bigcommerce icon', 'wpinterspire') . '" />'
 						. __( ' icon. Click it to add a product to your post or page.', 'wpinterspire' )
 				);
+
+		// Unconfigured
 		} else {
 			$content =  __( 'Your Bigcommerce API settings are <strong>not configured properly</strong>.', 'wpinterspire' ) ;
 			if( self::$errors ) { $content .= '<br /><blockquote>' . implode( '<br />', self::$errors ) . '</blockquote>'; }
 		}
+
+		// Output
 		echo self::make_notice_box( $content, ( ( self::$configured ) ? false : true ) );
 	}
 
@@ -335,7 +332,6 @@ class Bigcommerce {
 		$val = str_replace( '+', '-', $val );
 		return $val;
 	}
-
-} /* End Of Plugin Class */
+}
 
 ?>
