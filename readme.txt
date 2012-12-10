@@ -74,7 +74,11 @@ New Manual Installation
 
 == Frequently Asked Questions == 
 
-= Requirements = 
+= Where can I view or submit bugs or feature requests? =
+
+You may use [the Support tab](http://wordpress.org/support/plugin/interspire-bigcommerce "Open the Support tab"), or better yet [view current bugs and roadmap items](https://beautomated.repositoryhosting.com/trac/beautomated_trac-bugs/report "View Tickets"), and [submit your own ideas](https://beautomated.repositoryhosting.com/trac/beautomated_trac-bugs/newticket "New Ticket") using our issue tracking system. You may also email these requests to bugs@beautomated.repositoryhosting.com or roadmap@beautomated.repositoryhosting.com, as appropriate.
+
+= What are the system requirements = 
 
 * Requires PHP version 5. If your web host does not support PHP5, please contact your host and see if they can upgrade your PHP version.
 * Activate `curl` if your web host doesn't already have it running. Generally this can be done at no cost.
@@ -82,12 +86,6 @@ New Manual Installation
 = When should I rebuild my products list? =
 
 * Rebuild your products list whenever you upgrade the Plugin, or whenever you add new products or change existing product names, links, or images within your store.
-
-= What's coming up in the future? =
-
-* Product image search by name.
-* Caching of product images.
-* Feel free to make suggestions on [the Support tab](http://wordpress.org/support/plugin/interspire-bigcommerce "the Support tab").
 
 == Changelog ==
 
