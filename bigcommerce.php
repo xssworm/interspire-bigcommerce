@@ -165,18 +165,7 @@ class Bigcommerce {
 
 			// Skip Products Without Images
 			if( ! isset( $product->images[0]->link ) ) { continue; }
-
-			// Query Image Info
-			$path = substr( $product->images[0]->link, 1 );
-			$path = Bigcommerce_api::GetDetail( $path );
-			$path = new SimpleXMLElement( $path, LIBXML_NOCDATA );
-
-			// Skip Products Without Images
-			if( ! isset( $product->images[0]->link ) ) { continue; }
-
-			// Save Path
-			$path = $path->image[0]->image_file;
-			$path = $options->storepath . 'product_images/' . $path;
+			$path = Bigcommerce_api::GetImage( $product->images[0]->link );
 			$images[] = array(
 				'productid'	=> $product->id,
 				'name' => $product->name,
@@ -295,14 +284,186 @@ class Bigcommerce {
 					'link' => '',
 					'rel' => '',
 					'target' => '',
-					'nofollow' => ''
+					'nofollow' => '',
+					'category' => '',
 				), $atts
 			)
 		);
+
+		// Handle Category Lookup
+		if( $category ) {
+
+			// Get Categories
+			$categories = Bigcommerce_api::GetCategories();
+			if( $categories ) {
+				foreach( $categories as $cat ) {
+	
+					// Found Category Match
+					if( $cat->name == $category ) {
+						return self::DisplayProductsInCategory( (int) $cat->id );
+					}
+				}
+
+			// No Category Match
+			} else {
+				$output = __(
+					sprintf( "Unable to find a category match for: %s</p>", $category ),
+					'wpinterspire'
+				);
+			}
+
+			// Output
+			return $output;
+		}
+
+		// Handle Link
 		if( $rel ) { $rel = " rel='{$rel}'"; }
 		if( $target ) { $target = " target='{$target}'"; };
 		if( $nofollow ) { $nofollow = " nofollow='nofollow'"; };
-		return "<a href='{$options->storepath}{$link}/'{$rel}{$target}{$nofollow}>{$content}</a>";
+		$extra = "{$rel}{$target}{$nofollow}";
+		return "<a href='{$options->storepath}{$link}/'{$extra}>{$content}</a>";
+	}
+
+	// Outputs Products In a Category
+	private function DisplayProductsInCategory( $catid ) {
+		$output = '';
+
+		// Find Products
+		$products = Bigcommerce_api::GetProducts( false );
+		if( $products ) {
+			foreach( $products as $product ) {
+				foreach( $product->categories as $product_category ) {
+					$product_category = intval( $product_category->value );
+
+					// Product Matches Category
+					if( $catid == $product_category ) {
+
+						// Ensure Visible
+						if( (string) $product->is_visible != 'true' ) { continue; }
+
+						// Check For Image
+						$image = '<p>No image available</p>';
+						if( isset( $product->images[0]->link ) ) {
+							$image = Bigcommerce_api::GetImage( $product->images[0]->link );
+						}
+
+						// Output The Row			
+						$output .= self::DisplayProduct(
+							(object) array(
+								'is_featured' => (
+									( (string) $product->is_featured == 'true' )
+										? 'featured' : ''
+								),
+								'name' => (string) $product->name,
+								'sku' => (
+									( (string) $product->sku )
+										? (string) $product->sku
+										: 'Not specified'
+								),
+								'price' => (
+									( (string) $product->is_price_hidden == 'true' )
+										? 'Not specified'
+										: (
+											( (int) $product->retail_price > 0 )
+											? number_format( (int) $product->retail_price )
+											: number_format( (int) $product->price )
+										)
+								),
+								'condition' => (
+									( (string) $product->is_condition_shown == 'false' )
+										? 'Not specified'
+										: (string) $product->condition
+								),
+								'availability' => (string) $product->availability,
+								'link' => sanitize_title( (string) $product->name ),
+								'image' => $image,
+								'description' => (string) $product->description,
+								'warranty' => (
+									( (string) $product->warranty )
+										? (string) $product->warranty
+										: 'Not specified'
+								),
+								'rating_total' => (int) $product->rating_total,
+								'rating_count' => (int) $product->rating_count,								
+							)
+						);
+					}
+				}
+			}
+
+		// No Product Matches
+		} else {
+			$output = __(
+				sprintf( "Unable to find any products within: %s</p>", $category ),
+				'wpinterspire'
+			);
+		}
+
+		// Output
+		return $output;
+	}
+
+	// Products Listings Row
+	private function DisplayProduct( $data ) {
+		$options = self::get_options();
+		return "
+			<div class='bigcommerce-row'>
+				<h2 class='title {$data->is_featured}'>{$data->name}</h2>
+				<div style='padding:10px 20px;'>
+					<table style='border:0;'>
+						<tbody>
+							<tr>
+								<td rowspan='9' style='border:0;'>
+									<a href='{$data->image}' title='Click to enlarge'>
+										<img src='{$data->image}'
+											style='max-width:200px;max-height:200px;margin:10px;padding:10px;' />
+									</a>
+								</td>
+							</tr>
+							<tr>
+								<th>Price</th>
+								<td>{$data->price}</td>
+							</tr>
+							<tr>
+								<th>Availibility</th>
+								<td>{$data->availability}</td>
+							</tr>
+							<tr>
+								<th>Condition</th>
+								<td>{$data->condition}</td>
+							</tr>
+							<tr>
+								<th>SKU</th>
+								<td>{$data->sku}</td>
+							</tr>
+							<tr>
+								<th>Warranty</th>
+								<td>{$data->warranty}</td>
+							</tr>
+							<tr>
+								<th>Rating</th>
+								<td>
+									{$data->rating_total}
+									(from {$data->rating_count} ratings)
+								</td>
+							</tr>
+							<tr>
+								<th></th>
+								<td>
+									<a href='{$options->storepath}{$data->link}/'
+										title='View the main store page'>
+										More Information / Buy Now
+									</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div style='overflow:auto;max-height:100px;padding:5px 10px;'>
+						{$data->description}
+					</div>
+				</div>
+			</div>
+		";
 	}
 
 

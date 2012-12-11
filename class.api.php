@@ -38,12 +38,26 @@ class Bigcommerce_api {
 		return $response;
 	}
 
+	// Gets Live Image URL
+	public function GetImage( $link ) {
+    	$options = Bigcommerce::get_options();
+
+		// Query Image Info
+		$path = substr( $link, 1 );
+		$path = self::GetDetail( $path );
+		$path = new SimpleXMLElement( $path, LIBXML_NOCDATA );
+		$path = $path->image[0]->image_file;
+		$path = $options->storepath . 'product_images/' . $path;
+		return $path;
+	}
+
 	// Get Products
 	public function GetProducts( $rebuild ) {
 
 		// Not Forcing Rebuild
 		if( ! $rebuild ) {
-			return maybe_unserialize( get_option( 'wpinterspire_products' ) );
+			$response = maybe_unserialize( get_option( 'wpinterspire_products' ) );
+			if( isset( $response->product ) ) { return $response->product; }
 		}
 
 		// Query Bigcommerce API
@@ -52,7 +66,7 @@ class Bigcommerce_api {
 		// Handle Lack Of Response
 		if( ! $response || empty( $response ) ) { return false; }
 
-		// Save Products To Cache
+		// Save To Cache
 		update_option( 'wpinterspire_products', $response );
 
 		// Convert XML To Object
@@ -71,6 +85,33 @@ class Bigcommerce_api {
 
 		// Handle Good Response
 		return isset( $response->product ) ? $response->product : false;
+	}
+
+	// Get Categories
+	public function GetCategories() {
+
+		// Query Bigcommerce API
+		$response = self::curl( 'categories' );
+
+		// Handle Lack Of Response
+		if( ! $response || empty( $response ) ) { return false; }
+
+		// Convert XML To Object
+		try {
+			$response = new SimpleXMLElement( $response, LIBXML_NOCDATA );
+		} catch ( Exception $error ) {
+			Bigcommerce::$errors[] = $error;
+			return false;
+		}
+
+		// Handle Bad Response
+		if( isset( $response->errors->error[0]->message ) ) {
+			Bigcommerce::$errors[] = $response->errors->error[0]->message;
+			return false;
+		}
+
+		// Handle Good Response
+		return isset( $response->category ) ? $response->category : false;
 	}
 
 	// Builds Select Box Of Products
