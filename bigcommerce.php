@@ -46,8 +46,8 @@ add_shortcode( 'interspire', array( 'Bigcommerce', 'shortcode' ) );
 
 // Plugin Class
 class Bigcommerce {
-	public static $configured = false;
-	public static $errors = array();
+	static $configured = false;
+	static $errors = array();
 
 	// Tied To WP Hook By The Same Name
 	function admin_init() {
@@ -79,7 +79,10 @@ class Bigcommerce {
 		if (
 			isset( $_REQUEST['wpinterspirerebuild'] )
 			&& $_REQUEST['wpinterspirerebuild'] == 'all'
-		) { Bigcommerce_api::BuildProductsSelect( true ); }
+		) {
+			Bigcommerce_api::BuildProductsSelect( true );
+			Bigcommerce_api::BuildCategoriesSelect( true );
+		}
     }
 
 
@@ -122,13 +125,13 @@ class Bigcommerce {
 
 		// Get Products From Cache
 		$Products = get_option( 'wpinterspire_products' );
-		$Products = new SimpleXMLElement( $Products, LIBXML_NOCDATA );
+		$Products = Bigcommerce_api::XmlToObject( $Products, 'product' );
 
 		// Present Other Tabs
 		media_upload_header();
 
 		// Handle No Products
-		if( is_wp_error( $Products ) || ! $Products ) { 
+		if( ! $Products ) {
 			echo '
 				<div class="tablenav">
 					<form id="filter">
@@ -150,15 +153,16 @@ class Bigcommerce {
 			array(
 				'base' => add_query_arg( 'paged', '%#%' ),
 				'format' => '',
-				'total' => ceil( sizeof( $Products->product ) / $perpage ),
+				'total' => ceil( sizeof( $Products ) / $perpage ),
 				'current' => $page,
 			)
 		);
 
 		// Loop Products
 		$images = array();
-		for( $i = 0; $i < sizeof( $Products->product ); $i++ ) {
-			$product = $Products->product[$i];
+		$i = -1;
+		foreach( $Products as $product ) {
+			$i++;
 
 			// Limit To Per Page Quantity
 			if( $i < $start || $i > $end ) { continue; }
@@ -218,7 +222,13 @@ class Bigcommerce {
 
 	// Tied To WP Hook By The Same Name - Adds Admin Submenu Link
     function admin_menu() {
-        add_options_page( 'Bigcommerce', 'Bigcommerce', 'administrator', 'wpinterspire', array( 'Bigcommerce', 'admin_page' ) );
+		add_options_page(
+			'Bigcommerce',
+			'Bigcommerce',
+			'administrator',
+			'wpinterspire',
+			array( 'Bigcommerce', 'admin_page' )
+		);
     }
 
     // Tied To Admin Submenu Link
@@ -254,7 +264,9 @@ class Bigcommerce {
 		// Unconfigured
 		} else {
 			$content =  __( 'Your Bigcommerce API settings are <strong>not configured properly</strong>.', 'wpinterspire' ) ;
-			if( self::$errors ) { $content .= '<br /><blockquote>' . implode( '<br />', self::$errors ) . '</blockquote>'; }
+			if( self::$errors ) {
+				$content .= '<br /><blockquote>' . implode( '<br />', self::$errors ) . '</blockquote>';
+			}
 		}
 
 		// Output
@@ -294,26 +306,23 @@ class Bigcommerce {
 		if( $category ) {
 
 			// Get Categories
-			$categories = Bigcommerce_api::GetCategories();
+			$categories = get_option( 'wpinterspire_categories' );
+			$categories = Bigcommerce_api::XmlToObject( $categories, 'category' );
 			if( $categories ) {
 				foreach( $categories as $cat ) {
-	
+
 					// Found Category Match
 					if( $cat->name == $category ) {
 						return self::DisplayProductsInCategory( (int) $cat->id );
 					}
 				}
-
-			// No Category Match
-			} else {
-				$output = __(
-					sprintf( "Unable to find a category match for: %s</p>", $category ),
-					'wpinterspire'
-				);
 			}
 
-			// Output
-			return $output;
+			// No Category Match
+			return __(
+				sprintf( "Unable to find a the category: %s</p>", $category ),
+				'wpinterspire'
+			);
 		}
 
 		// Handle Link
@@ -325,11 +334,12 @@ class Bigcommerce {
 	}
 
 	// Outputs Products In a Category
-	private function DisplayProductsInCategory( $catid ) {
+	function DisplayProductsInCategory( $catid ) {
 		$output = '';
 
 		// Find Products
-		$products = Bigcommerce_api::GetProducts( false );
+		$products = get_option( 'wpinterspire_products' );
+		$products = Bigcommerce_api::XmlToObject( $products, 'product' );
 		if( $products ) {
 			foreach( $products as $product ) {
 				foreach( $product->categories as $product_category ) {
@@ -365,8 +375,8 @@ class Bigcommerce {
 										? 'Not specified'
 										: (
 											( (int) $product->retail_price > 0 )
-											? number_format( (int) $product->retail_price )
-											: number_format( (int) $product->price )
+											? '$' . number_format( (int) $product->retail_price, 2 )
+											: '$' . number_format( (int) $product->price, 2 )
 										)
 								),
 								'condition' => (
@@ -374,37 +384,38 @@ class Bigcommerce {
 										? 'Not specified'
 										: (string) $product->condition
 								),
-								'availability' => (string) $product->availability,
+								'availability' => ucwords( (string) $product->availability ),
 								'link' => sanitize_title( (string) $product->name ),
 								'image' => $image,
-								'description' => (string) $product->description,
 								'warranty' => (
 									( (string) $product->warranty )
 										? (string) $product->warranty
 										: 'Not specified'
 								),
-								'rating_total' => (int) $product->rating_total,
-								'rating_count' => (int) $product->rating_count,								
+								'rating' => (
+									( (int) $product->rating_count === 0 )
+										? 'No ratings available'
+										: (int) $product->rating_total
+											. " (from {$data->rating_count} ratings)"
+								),
 							)
 						);
 					}
 				}
 			}
-
-		// No Product Matches
-		} else {
-			$output = __(
-				sprintf( "Unable to find any products within: %s</p>", $category ),
-				'wpinterspire'
-			);
 		}
 
 		// Output
-		return $output;
+		return ( $output )
+			? $output
+			: __(
+				sprintf( "Unable to find any products within: %s</p>", $category ),
+				'wpinterspire'
+			);
 	}
 
 	// Products Listings Row
-	private function DisplayProduct( $data ) {
+	function DisplayProduct( $data ) {
 		$options = self::get_options();
 		return "
 			<div class='bigcommerce-row'>
@@ -421,8 +432,8 @@ class Bigcommerce {
 								</td>
 							</tr>
 							<tr>
-								<th>Price</th>
-								<td>{$data->price}</td>
+								<th>SKU</th>
+								<td>{$data->sku}</td>
 							</tr>
 							<tr>
 								<th>Availibility</th>
@@ -433,8 +444,8 @@ class Bigcommerce {
 								<td>{$data->condition}</td>
 							</tr>
 							<tr>
-								<th>SKU</th>
-								<td>{$data->sku}</td>
+								<th>Price</th>
+								<td>{$data->price}</td>
 							</tr>
 							<tr>
 								<th>Warranty</th>
@@ -442,10 +453,7 @@ class Bigcommerce {
 							</tr>
 							<tr>
 								<th>Rating</th>
-								<td>
-									{$data->rating_total}
-									(from {$data->rating_count} ratings)
-								</td>
+								<td>{$data->rating}</td>
 							</tr>
 							<tr>
 								<th></th>
@@ -458,9 +466,6 @@ class Bigcommerce {
 							</tr>
 						</tbody>
 					</table>
-					<div style='overflow:auto;max-height:100px;padding:5px 10px;'>
-						{$data->description}
-					</div>
 				</div>
 			</div>
 		";

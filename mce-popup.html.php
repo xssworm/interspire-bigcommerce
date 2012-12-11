@@ -1,11 +1,8 @@
 <div id="interspire_select_product" style="display:none;">
 	<div id="media-upload">
-		<h3>
-			<?php _e( 'Insert a Product', 'wpinterspire' ); ?>
-		</h3>
-		<?php
 
-		Bigcommerce_api::BuildProductsSelect( false );
+		<?php
+		// Check Settings
 		if( ! get_option('wpinterspire_productselect') ) {
 			echo '
 				<p>Your settings are correct, however your product list has not been generated.</p>
@@ -15,15 +12,40 @@
 				</p>
 			';
 		} else { 
-
 		?>
-		<h4>
-			<?php _e( 'Select a product below to add it to your post or page.', 'wpinterspire' ); ?>
-		</h4>
-		<table class="describe">
+
+		<h3><?php _e( 'Insert All Products By Category', 'wpinterspire' ); ?></h3>
+		<table>
 			<tbody>
 				<tr>
-					<th valign="top" scope="row" class="label" style="width:130px;">
+					<th valign="top" scope="row" class="label">
+						<span class="alignleft">
+							<label for="interspire_add_product_id">
+								<?php _e( 'Select the Category', 'wpinterspire' ); ?>:
+							</label>
+						</span>
+					</th>
+					<td class="field">
+						<?php echo get_option( 'wpinterspire_categoryselect' ); ?>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						<input type="button" class="button-primary" onclick="BigcommerceShortcodeCategory();"
+							value="<?php _e( 'Insert Products', 'wpinterspire'); ?>" />
+						<input type="button" class="button-secondary" onclick="tb_remove(); return false;"
+							value="<?php _e( 'Cancel', 'wpinterspire'); ?>" />
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<h3><?php _e( 'Insert One Product Link', 'wpinterspire' ); ?></h3>
+		<table>
+			<tbody>
+				<tr>
+					<th valign="top" scope="row" class="label">
 						<span class="alignleft">
 							<label for="interspire_display_title">
 								<?php _e( 'Link Text', 'wpinterspire' ); ?>:
@@ -31,7 +53,7 @@
 						</span>
 					</th>
 					<td class="field">
-						<input type="text" id="interspire_display_title" size="100" />
+						<input type="text" id="interspire_display_title" />
 					</td>
 				</tr>
 				<tr>
@@ -69,7 +91,7 @@
 				<tr>
 					<td></td>
 					<td>
-						<input type="button" class="button-primary" onclick="InterspireInsertProduct();"
+						<input type="button" class="button-primary" onclick="BigcommerceShortcodeProduct();"
 							value="<?php _e( 'Insert Product', 'wpinterspire'); ?>" />
 						<input type="button" class="button-secondary" onclick="tb_remove(); return false;"
 							value="<?php _e( 'Cancel', 'wpinterspire'); ?>" />
@@ -77,12 +99,13 @@
 				</tr>
 			</tbody>
 		</table>
-		<?php } ?>
+
+		<?php } /* End Of Settings Check */ ?>
 	</div>
 </div>
 
 <script type="text/javascript">
-function InterspireInsertProduct() {
+function BigcommerceShortcodeProduct() {
 	var product_id = jQuery( '#interspire_add_product_id' ).val();
 	if( product_id == '' ) {
 		alert("<?php _e('The product you selected does not have a link. Try rebuilding your product list in settings.', 'wpinterspire'); ?>");
@@ -100,5 +123,10 @@ function InterspireInsertProduct() {
 	if( jQuery( '#link_nofollow' ).is( ':checked' ) ) { link_nofollow = ' rel="nofollow"'; }
 	var win = window.dialogArguments || opener || parent || top;
 	win.send_to_editor('[bigcommerce' + link_product + link_target + link_nofollow + ']' + display_title + '[/bigcommerce]');
+}
+function BigcommerceShortcodeCategory() {
+	var itemid = jQuery( '#interspire_add_category_id' ).val();
+	var win = window.dialogArguments || opener || parent || top;
+	win.send_to_editor('[bigcommerce category="' + itemid + '"]');
 }
 </script>
