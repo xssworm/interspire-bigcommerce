@@ -91,22 +91,21 @@
 				<tr>
 					<th scope="row">
 						<label for="wpinterspire_storepath">
-							<?php _e( 'Store Path (optional)', 'wpinterspire' ); ?>:
+							<?php _e( 'Store URL', 'wpinterspire' ); ?>:
 						</label>
 					</th>
 					<td>
 						<input type='text' name='wpinterspire[storepath]' id='wpinterspire_storepath' value='<?php echo esc_attr( $options->storepath ); ?>' size='40' /><br />
 						<small>
-							<?php _e( 'Your Store URL', 'wpinterspire'); ?>
-							(<code>http://mystore.mybigcommerce.com/</code>).
-							<?php _e( 'Entering this into your browser should take you to your home page.', 'wpinterspire'); ?>
-							<?php _e( 'This is optional, and only to shorten the shortcode when linking to your products.', 'wpinterspire'); ?>
+							<?php _e( 'Your store URL or API URL', 'wpinterspire'); ?><br />
+							For example: <code>https://www.mystore.com/</code><br />
+							or <code>https://store-abcdefg.mybigcommerce.com/api/v2/</code>
 						</small>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">
-						<?php _e( 'Give Thanks (optional)', 'wpinterspire' ); ?>:
+						<?php _e( 'Give Thanks', 'wpinterspire' ); ?>:
 					</th>
 					<td>
 						<input type='checkbox' name='wpinterspire[showlink]' id='wpinterspire_showlink' value='yes' <?php echo ( ( isset( $options->showlink ) && $options->showlink == 'yes' ) ? 'checked=checked' : '' ); ?> />

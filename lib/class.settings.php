@@ -53,19 +53,9 @@ class Bigcommerce_settings {
 		}
     }
 
-    // Sanitizes Setting Value Submissions
-    function sanitize_settings( $input ) {
-		foreach( $input as $key => $val ) {
-
-		   	// Add SSL Protocol and Trailing Slash To Store URL
-		   	if( $key == 'storepath' ) {
-				$val = str_replace( 'http:', 'https:', $val );
-				$val = ( substr( $val, ( strlen( $val ) - 1 ), 1 ) != '/' )
-					? "{$val}/" : $val;
-				$input[$key] = $val;
-			}
-		}
-    	return $input;
+	// Sanitizes Setting Value Submissions
+	function sanitize_settings( $input ) {
+		return $input;
 	}
 
 	// Checks Saved Settings
