@@ -8,15 +8,10 @@ class Bigcommerce_api {
 	private function curl( $path ) {
 		$options = Bigcommerce_settings::get_options();
 		$storepath = Bigcommerce_parser::storepath( true );
-
-		// Communicate
 		$ch = curl_init();
 		curl_setopt( $ch, CURLOPT_URL, "{$storepath}{$path}" );
 		curl_setopt( $ch, CURLOPT_USERPWD, "{$options->username}:{$options->xmltoken}" );
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-		curl_setopt( $ch, CURLOPT_POSTFIELDS, null );
-		curl_setopt( $ch, CURLOPT_POST, false );
-		curl_setopt( $ch, CURLOPT_HTTPGET, true );
+		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
 		$result = curl_exec( $ch );
 		curl_close( $ch );
 		return $result;

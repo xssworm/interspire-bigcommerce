@@ -29,7 +29,7 @@ class Bigcommerce_display {
 					// Found Category Match
 					if( $cat->name == $category ) {
 						return Bigcommerce_parser::DisplayProductsInCategory(
-							(int) $cat->id
+							$category, (int) $cat->id
 						);
 					}
 				}

@@ -96,10 +96,14 @@ class Bigcommerce_settings {
 
 		// Configured
 		if( self::$configured ) {
+
+			// Configured Message
 			$content = __( 'Your Bigcommerce API settings are configured properly.', 'wpinterspire' )
 				. (
+
+					// Add Caching Status Messages
 					( ! get_option( 'wpinterspire_productselect' ) )
-					? __( ' However, your product list has not yet been built.', 'wpinterspire' )
+					? __( ' However, your products and categories have not yet been built.', 'wpinterspire' )
 					: __( ' When editing posts, look for the ', 'wpinterspire' )
 						. '<img src="' . plugins_url( 'favicon.png', dirname( __FILE__ ) )
 						. '" width="16" height="16" alt="' . __( 'Bigcommerce icon', 'wpinterspire') . '" />'
@@ -108,7 +112,29 @@ class Bigcommerce_settings {
 
 		// Unconfigured
 		} else {
-			$content =  __( 'Your Bigcommerce API settings are <strong>not configured properly</strong>.', 'wpinterspire' ) ;
+
+			// Test PHP-cURL
+			if( ! function_exists( 'curl_version' ) ) {
+				$content = __( 'Your web host does not have cURL (php-libcurl) installed.', 'wpinterspire' );
+				$content .= ' ' . __( 'This is a requirement for this Plugin to work.', 'wpinterspire' );
+				$content .= ' ' . __( 'Please contact your web host to get this fixed.', 'wpinterspire' );
+
+			// Test PHP-cURL-SSL
+			} else {
+				$curl = curl_version();
+				if( ! isset( $curl['ssl_version_number'] ) || ! $curl['ssl_version_number'] ) {
+					$content = __( 'Your web host does not have SSL (php-openssl) installed and available to cURL (php-curl).', 'wpinterspire' );
+					$content .= ' ' . __( 'This is a requirement for this Plugin to work.', 'wpinterspire' );
+					$content .= ' ' . __( 'Please contact your web host to get this fixed.', 'wpinterspire' );
+				}
+			}
+
+			// Just Not Configured
+			if( ! $content ) {
+				$content =  __( 'Your Bigcommerce API settings are not configured properly.', 'wpinterspire' );
+			}
+
+			// Add Specific Errors
 			if( self::$errors ) {
 				$content .= '<br /><blockquote>' . implode( '<br />', self::$errors ) . '</blockquote>';
 			}

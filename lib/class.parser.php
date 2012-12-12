@@ -118,7 +118,7 @@ class Bigcommerce_parser {
 	}
 
 	// Outputs Products In a Category
-	function DisplayProductsInCategory( $catid ) {
+	function DisplayProductsInCategory( $category, $catid ) {
 		$output = '';
 
 		// Find Products

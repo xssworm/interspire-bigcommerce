@@ -30,12 +30,30 @@
 					</td>
 				</tr>
 				<tr>
+					<th valign="top" scope="row" class="label">
+						<span class="alignleft">
+							<label for="url">
+								<?php _e( 'Additional options', 'wpinterspire' ); ?>:
+							</label>
+						</span>
+					</th>
+					<td class="field">
+						<input type="checkbox" id="link_nofollow1" />
+						<label for="link_nofollow1">
+							<?php _e( 'Nofollow the links', 'wpinterspire' ); ?>
+						</label><br />
+
+						<input type="checkbox" id="link_target1" />
+						<label for="link_target1">
+							<?php _e( 'Open links in a new window', 'wpinterspire' ); ?>
+						</label>
+					</td>
+				</tr>
+				<tr>
 					<td></td>
 					<td>
 						<input type="button" class="button-primary" onclick="BigcommerceShortcodeCategory();"
 							value="<?php _e( 'Insert Products', 'wpinterspire'); ?>" />
-						<input type="button" class="button-secondary" onclick="tb_remove(); return false;"
-							value="<?php _e( 'Cancel', 'wpinterspire'); ?>" />
 					</td>
 				</tr>
 			</tbody>
@@ -77,13 +95,13 @@
 						</span>
 					</th>
 					<td class="field">
-						<input type="checkbox" id="link_nofollow" />
-						<label for="link_nofollow">
+						<input type="checkbox" id="link_nofollow2" />
+						<label for="link_nofollow2">
 							<?php _e( 'Nofollow the link', 'wpinterspire' ); ?>
 						</label><br />
 
-						<input type="checkbox" id="link_target" />
-						<label for="link_target">
+						<input type="checkbox" id="link_target2" />
+						<label for="link_target2">
 							<?php _e( 'Open link in a new window', 'wpinterspire' ); ?>
 						</label>
 					</td>
@@ -93,8 +111,6 @@
 					<td>
 						<input type="button" class="button-primary" onclick="BigcommerceShortcodeProduct();"
 							value="<?php _e( 'Insert Product', 'wpinterspire'); ?>" />
-						<input type="button" class="button-secondary" onclick="tb_remove(); return false;"
-							value="<?php _e( 'Cancel', 'wpinterspire'); ?>" />
 					</td>
 				</tr>
 			</tbody>
@@ -105,28 +121,34 @@
 </div>
 
 <script type="text/javascript">
+function BigcommerceShortcodeCategory() {
+	var item_id = jQuery( '#interspire_add_category_id' ).val();
+	var link_category = ' category="' + item_id + '"';
+	var link_target = '';
+	var link_nofollow = '';
+	if( jQuery( '#link_target1' ).is( ':checked' ) ) { link_target = ' target="blank"'; }
+	if( jQuery( '#link_nofollow1' ).is( ':checked' ) ) { link_nofollow = ' rel="nofollow"'; }
+	var win = window.dialogArguments || opener || parent || top;
+	win.send_to_editor('[bigcommerce' + link_category + link_target + link_nofollow + ']');
+}
+
 function BigcommerceShortcodeProduct() {
-	var product_id = jQuery( '#interspire_add_product_id' ).val();
-	if( product_id == '' ) {
+	var item_id = jQuery( '#interspire_add_product_id' ).val();
+	if( item_id == '' ) {
 		alert("<?php _e('The product you selected does not have a link. Try rebuilding your product list in settings.', 'wpinterspire'); ?>");
 		return;
 	} else {
-		var link_product = ' link="' + product_id + '"';
+		var link_product = ' link="' + item_id + '"';
 	}
 	var display_title = jQuery( '#interspire_display_title' ).val();
 	var link_target = '';
 	var link_nofollow = '';
 	<?php if( ! empty( $storepath ) ) { ?>
-	product_id = product_id.replace( '<?php echo $storepath; ?>', '');
+	item_id = item_id.replace( '<?php echo $storepath; ?>', '');
 	<?php } ?>
-	if( jQuery( '#link_target' ).is( ':checked' ) ) { link_target = ' target="blank"'; }
-	if( jQuery( '#link_nofollow' ).is( ':checked' ) ) { link_nofollow = ' rel="nofollow"'; }
+	if( jQuery( '#link_target2' ).is( ':checked' ) ) { link_target = ' target="blank"'; }
+	if( jQuery( '#link_nofollow2' ).is( ':checked' ) ) { link_nofollow = ' rel="nofollow"'; }
 	var win = window.dialogArguments || opener || parent || top;
 	win.send_to_editor('[bigcommerce' + link_product + link_target + link_nofollow + ']' + display_title + '[/bigcommerce]');
-}
-function BigcommerceShortcodeCategory() {
-	var itemid = jQuery( '#interspire_add_category_id' ).val();
-	var win = window.dialogArguments || opener || parent || top;
-	win.send_to_editor('[bigcommerce category="' + itemid + '"]');
 }
 </script>
