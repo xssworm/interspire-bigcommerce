@@ -3,7 +3,7 @@
 
 	<h2>Bigcommerce for WordPress</h2>
 
-	<?php self::show_configuration_check(); ?>
+	<?php Bigcommerce_settings::show_configuration_check(); ?>
 	
 	<hr />
 
@@ -52,7 +52,7 @@
 
 	<h3>Store Settings</h3>
 	<form method="post" action="options.php">
-		<input type='hidden' name='wpinterspire[configured]' value='<?php echo self::$configured; ?>' />
+		<input type='hidden' name='wpinterspire[configured]' value='<?php echo Bigcommerce_settings::$configured; ?>' />
 		<?php 
 		wp_nonce_field( 'update-options' );
 		settings_fields( 'wpinterspire_options' );
