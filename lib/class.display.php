@@ -5,7 +5,6 @@ class Bigcommerce_display {
 
 	// Handle Shortcodes
 	function shortcode( $atts, $content ) {
-		$options = Bigcommerce_settings::get_options();
 		extract(
 			shortcode_atts(
 				array(
@@ -48,7 +47,8 @@ class Bigcommerce_display {
 		if( $target ) { $target = " target='{$target}'"; };
 		if( $nofollow ) { $nofollow = " nofollow='nofollow'"; };
 		$extra = "{$rel}{$target}{$nofollow}";
-		return "<a href='{$options->storepath}{$link}/'{$extra}>{$content}</a>";
+		$storepath = Bigcommerce_parser::storepath();
+		return "<a href='{$storepath}{$link}/'{$extra}>{$content}</a>";
 	}
 
 	// Give Thanks Footer Link
@@ -67,7 +67,7 @@ class Bigcommerce_display {
 
 	// Products Listings Row
 	function DisplayProductRow( $data ) {
-		$options = Bigcommerce_settings::get_options();
+		$storepath = Bigcommerce_parser::storepath();
 		return "
 			<div class='bigcommerce-row'>
 				<h2 class='title {$data->is_featured}'>{$data->name}</h2>
@@ -109,7 +109,7 @@ class Bigcommerce_display {
 							<tr>
 								<th></th>
 								<td>
-									<a href='{$options->storepath}{$data->link}/'
+									<a href='{$storepath}{$data->link}/'
 										title='View the main store page'>
 										More Information / Buy Now
 									</a>

@@ -28,13 +28,12 @@ class Bigcommerce_media {
 
 	// Tied To WP Hook By The Same Name - Admin Area Footer
 	function admin_footer() {
-		$options = Bigcommerce_settings::get_options();
+		$storepath = Bigcommerce_parser::storepath();
 		require( dirname( __FILE__ ) . '/../views/mce-popup.html.php' );
 	}
 
 	// Presents Product Image Choices
 	function media_process() {
-    	$options = Bigcommerce_settings::get_options();
 
 		// Get Products From Cache
 		$Products = get_option( 'wpinterspire_products' );

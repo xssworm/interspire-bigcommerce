@@ -116,8 +116,8 @@ function BigcommerceShortcodeProduct() {
 	var display_title = jQuery( '#interspire_display_title' ).val();
 	var link_target = '';
 	var link_nofollow = '';
-	<?php if( ! empty( $options->storepath ) ) { ?>
-	product_id = product_id.replace( '<?php echo $options->storepath; ?>', '');
+	<?php if( ! empty( $storepath ) ) { ?>
+	product_id = product_id.replace( '<?php echo $storepath; ?>', '');
 	<?php } ?>
 	if( jQuery( '#link_target' ).is( ':checked' ) ) { link_target = ' target="blank"'; }
 	if( jQuery( '#link_nofollow' ).is( ':checked' ) ) { link_nofollow = ' rel="nofollow"'; }

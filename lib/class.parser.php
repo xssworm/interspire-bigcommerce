@@ -3,6 +3,32 @@
 // Plugin Parser Class
 class Bigcommerce_parser {
 
+	// Cleans Store URL
+	public function storepath( $api=false ) {
+    	$options = Bigcommerce_settings::get_options();
+
+		// Ensure API URL Is Secure
+		$options->storepath = str_replace( 'http://', 'https://', $options->storepath );
+
+		// Convert API v1 URLs To v2
+		$options->storepath = str_replace( '/xml.php', '/api/v2/', $options->storepath );
+
+		// Ensure The API URL Has a Trailing Slash
+		$options->storepath = (
+			substr( $options->storepath, ( strlen( $options->storepath ) - 1 ), 1 ) != '/'
+		) ? "{$options->storepath}/" : $options->storepath;
+
+		// Ensure The API URL Contains The API Path
+		$options->storepath = ( strstr( $options->storepath, '/api/v2/' ) )
+			? $options->storepath
+			: "{$options->storepath}api/v2/";
+
+		// Remove API Path, Except For The API
+		return ( $api )
+			? $options->storepath
+			: str_replace( '/api/v2/', '/', $options->storepath );
+	}
+
 	// Converts XML To Object
 	public function XmlToObject( $xml, $test ) {
 
@@ -28,13 +54,10 @@ class Bigcommerce_parser {
 
 	// Gets Live Image URL
 	public function GetImage( $link ) {
-    	$options = Bigcommerce_settings::get_options();
-
-		// Query Image Info
 		$image = Bigcommerce_api::GetDetail( substr( $link, 1 ) );
 		$image = self::XmlToObject( $image, 'image' );
 		$path = $image[0]->image_file;
-		return $options->storepath . 'product_images/' . $path;
+		return self::storepath() . 'product_images/' . $path;
 	}
 
 	// Builds Select Box For Products
