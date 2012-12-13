@@ -11,17 +11,18 @@
 
 	<p>
 		<?php
-		echo get_option( 'wpinterspire_productselect' )
-			? 'Your product list has been built:</p>'
+		echo get_option( 'wpinterspire_categoryselect' )
+			? 'Your cache has been built:</p>'
+				. get_option( 'wpinterspire_categoryselect' )
 				. get_option( 'wpinterspire_productselect' )
 				. '<p><strong>Has the list changed?</strong>'
-			: 'Your product list has not yet been built.';
+			: 'Your cache has not yet been built.';
 		?>
 		<a href='<?php echo wp_nonce_url( admin_url( 'options-general.php?page=wpinterspire&amp;wpinterspirerebuild=all' ), 'rebuild' ); ?>' class='button'>
 			<?php echo get_option( 'wpinterspire_productselect' ) ? 'Re-build your products list' : 'Build your products list'; ?>
 		</a><br />
 		<small>
-			<?php _e( 'Note: this may take a long time, depending on the size of your products list.', 'wpinterspire' ); ?>
+			<?php _e( 'Note: this may take some time, depending on the size of your products.', 'wpinterspire' ); ?>
 		</small>
 	</p>
 

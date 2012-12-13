@@ -77,10 +77,11 @@ class Bigcommerce_parser {
 			<option value="" disabled="disabled" selected="selected">Products</option>
 		';
 		foreach( $items as $item ) {
-			if( isset( $item->name ) ) {
-				$output .= '<option value="' . sanitize_title( $item->name ) . '">'
-					. esc_html( $item->name ) . '</option>';
-			}
+			if( ! isset( $item->is_visible ) || ! $item->is_visible ) { continue; }
+			if( ! isset( $item->name ) ) { continue; }
+			$value = sanitize_title( $item->name );
+			$name = esc_html( $item->name );
+			$output .= "<option value='{$value}'>{$name}</option>";
 		}
 		$output .= '</select>';
 
@@ -105,10 +106,19 @@ class Bigcommerce_parser {
 			<select id="interspire_add_category_id">
 			<option value="" disabled="disabled" selected="selected">Categories</option>
 		';
+		$categories = array();
 		foreach( $items as $item ) {
-			if( isset( $item->name ) ) {
-				$output .= '<option>' . esc_html( $item->name ) . '</option>';
+			$categories[(int) $item->id] = esc_html( $item->name );
+			if( ! isset( $item->is_visible ) || ! $item->is_visible ) { continue; }
+			if( ! isset( $item->name ) ) { continue; }
+			$value = $item->id;
+			$name = esc_html( $item->name );
+			foreach( $item->parent_category_list as $val ) {
+				$parent = $categories[(int) $val->value];
+				if( $parent == $name ) { continue; }
+				$name = "{$parent} | {$name}";
 			}
+			$output .= "<option value='{$value}'>{$name}</option>";
 		}
 		$output .= '</select>';
 
@@ -118,7 +128,7 @@ class Bigcommerce_parser {
 	}
 
 	// Outputs Products In a Category
-	function DisplayProductsInCategory( $category, $catid ) {
+	function DisplayProductsInCategory( $catid ) {
 		$output = '';
 
 		// Find Products
@@ -195,7 +205,7 @@ class Bigcommerce_parser {
 		return ( $output )
 			? $output
 			: __(
-				sprintf( "Unable to find any products within: %s</p>", $category ),
+				sprintf( "Unable to find any products within category ID: %d</p>", $catid ),
 				'wpinterspire'
 			);
 	}

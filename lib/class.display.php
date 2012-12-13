@@ -19,27 +19,7 @@ class Bigcommerce_display {
 
 		// Handle Category Lookup
 		if( $category ) {
-
-			// Get Categories
-			$categories = get_option( 'wpinterspire_categories' );
-			$categories = Bigcommerce_parser::XmlToObject( $categories, 'category' );
-			if( $categories ) {
-				foreach( $categories as $cat ) {
-
-					// Found Category Match
-					if( $cat->name == $category ) {
-						return Bigcommerce_parser::DisplayProductsInCategory(
-							$category, (int) $cat->id
-						);
-					}
-				}
-			}
-
-			// No Category Match
-			return __(
-				sprintf( "Unable to find a the category: %s</p>", $category ),
-				'wpinterspire'
-			);
+			return Bigcommerce_parser::DisplayProductsInCategory( $category );
 		}
 
 		// Handle Link
