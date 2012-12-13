@@ -52,16 +52,12 @@ class Bigcommerce_display {
 			<div class='bigcommerce-row'>
 				<h2 class='title {$data->is_featured}'>{$data->name}</h2>
 				<div style='padding:10px 20px;'>
-					<table style='border:0;'>
+					<a href='{$data->image}' title='Click to enlarge'>
+						<img src='{$data->image}'
+							style='float:left;max-width:35%;max-height:200px;padding:10px;' />
+					</a>
+					<table style='border:0;width:55%;float:right;'>
 						<tbody>
-							<tr>
-								<td rowspan='9' style='border:0;'>
-									<a href='{$data->image}' title='Click to enlarge'>
-										<img src='{$data->image}'
-											style='max-width:200px;max-height:200px;margin:10px;padding:10px;' />
-									</a>
-								</td>
-							</tr>
 							<tr>
 								<th>SKU</th>
 								<td>{$data->sku}</td>
@@ -91,12 +87,14 @@ class Bigcommerce_display {
 								<td>
 									<a href='{$storepath}{$data->link}/'
 										title='View the main store page'>
-										More Information / Buy Now
+										More Info<br />
+										Buy Now
 									</a>
 								</td>
 							</tr>
 						</tbody>
 					</table>
+					<div style='clear:both;'></div>
 				</div>
 			</div>
 		";

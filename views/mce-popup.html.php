@@ -126,7 +126,7 @@ function BigcommerceShortcodeCategory() {
 	var link_category = ' category="' + item_id + '"';
 	var link_target = '';
 	var link_nofollow = '';
-	if( jQuery( '#link_target1' ).is( ':checked' ) ) { link_target = ' target="blank"'; }
+	if( jQuery( '#link_target1' ).is( ':checked' ) ) { link_target = ' target="_blank"'; }
 	if( jQuery( '#link_nofollow1' ).is( ':checked' ) ) { link_nofollow = ' rel="nofollow"'; }
 	var win = window.dialogArguments || opener || parent || top;
 	win.send_to_editor('[bigcommerce' + link_category + link_target + link_nofollow + ']');
@@ -141,12 +141,17 @@ function BigcommerceShortcodeProduct() {
 		var link_product = ' link="' + item_id + '"';
 	}
 	var display_title = jQuery( '#interspire_display_title' ).val();
+	if( display_title == '' ) {
+		alert( 'Please add link text.' );
+		jQuery( '#interspire_display_title' ).focus();
+		return;
+	}
 	var link_target = '';
 	var link_nofollow = '';
 	<?php if( ! empty( $storepath ) ) { ?>
 	item_id = item_id.replace( '<?php echo $storepath; ?>', '');
 	<?php } ?>
-	if( jQuery( '#link_target2' ).is( ':checked' ) ) { link_target = ' target="blank"'; }
+	if( jQuery( '#link_target2' ).is( ':checked' ) ) { link_target = ' target="_blank"'; }
 	if( jQuery( '#link_nofollow2' ).is( ':checked' ) ) { link_nofollow = ' rel="nofollow"'; }
 	var win = window.dialogArguments || opener || parent || top;
 	win.send_to_editor('[bigcommerce' + link_product + link_target + link_nofollow + ']' + display_title + '[/bigcommerce]');

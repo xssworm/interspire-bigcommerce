@@ -107,6 +107,7 @@ class Bigcommerce_parser {
 			<option value="" disabled="disabled" selected="selected">Categories</option>
 		';
 		$categories = array();
+		$options = array();
 		foreach( $items as $item ) {
 			$categories[(int) $item->id] = esc_html( $item->name );
 			if( ! isset( $item->is_visible ) || ! $item->is_visible ) { continue; }
@@ -116,10 +117,12 @@ class Bigcommerce_parser {
 			foreach( $item->parent_category_list as $val ) {
 				$parent = $categories[(int) $val->value];
 				if( $parent == $name ) { continue; }
-				$name = "{$parent} | {$name}";
+				$name = "{$parent} &gt; {$name}";
 			}
-			$output .= "<option value='{$value}'>{$name}</option>";
+			$options[$name] = "<option value='{$value}'>{$name}</option>";
 		}
+		ksort( $options );
+		foreach( $options as $option ) { $output .= $option; }
 		$output .= '</select>';
 
 		// Save HTML Selector To Cache
