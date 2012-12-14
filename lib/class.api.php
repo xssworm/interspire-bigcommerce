@@ -8,13 +8,20 @@ class Bigcommerce_api {
 	private function curl( $path ) {
 		$options = Bigcommerce_settings::get_options();
 		$storepath = Bigcommerce_parser::storepath( true );
-		$ch = curl_init();
-		curl_setopt( $ch, CURLOPT_URL, "{$storepath}{$path}" );
-		curl_setopt( $ch, CURLOPT_USERPWD, "{$options->username}:{$options->xmltoken}" );
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
-		$result = curl_exec( $ch );
-		curl_close( $ch );
-		return $result;
+
+		$args = array(
+			'headers' => array(
+				'Authorization' => 'Basic ' . base64_encode("{$options->username}:{$options->xmltoken}")
+			)
+		);
+
+		$response = wp_remote_request($storepath.$path, $args );
+
+		if(!is_wp_error($response)) {
+			$result = $response['body'];
+			return $result;
+		}
+		return false;
 	}
 
 	// Get Product Image
