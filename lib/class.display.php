@@ -48,55 +48,69 @@ class Bigcommerce_display {
 	// Products Listings Row
 	function DisplayProductRow( $data ) {
 		$storepath = Bigcommerce_parser::storepath();
-		return apply_filters('bigcommerce_display_product_row', sprintf("
-			<div class='bigcommerce-row'>
-				<h2 class='title {$data->is_featured}'>{$data->name}</h2>
-				<div style='padding:10px 20px;'>
-					<a href='{$data->image}' title='Click to enlarge'>
-						<img src='{$data->image}' style='float:left;max-width:35%%;max-height:200px;padding:10px;' />
-					</a>
-					<table style='border:0;width:55%%;float:right;'>
-						<tbody>
-							<tr>
-								<th>%s</th>
-								<td>{$data->sku}</td>
-							</tr>
-							<tr>
-								<th>%s</th>
-								<td>{$data->availability}</td>
-							</tr>
-							<tr>
-								<th>%s</th>
-								<td>{$data->condition}</td>
-							</tr>
-							<tr>
-								<th>%s</th>
-								<td>{$data->price}</td>
-							</tr>
-							<tr>
-								<th>%s</th>
-								<td>{$data->warranty}</td>
-							</tr>
-							<tr>
-								<th>%s</th>
-								<td>{$data->rating}</td>
-							</tr>
-							<tr>
-								<th></th>
-								<td>
-									<a href='{$storepath}{$data->link}/'
-										title='%s'>
-										%s
-									</a>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<div style='clear:both;'></div>
-				</div>
-			</div>
-		", __('SKU', 'wpinterspire'), __('Availability', 'wpinterspire'), __('Condition', 'wpinterspire'), __('Price', 'wpinterspire'), __('Warranty'), __('Rating', 'wpinterspire'), sprintf(__('View %s in the store', 'wpinterspire'), esc_html($data->name)), __('Buy Now', 'wpinterspire')),
-		$data, $storepath);
+		return apply_filters(
+			'bigcommerce_display_product_row',
+			sprintf(
+				"
+					<div class='bigcommerce-row'>
+						<h2 class='title {$data->is_featured}'>{$data->name}</h2>
+						<div style='padding:10px 20px;'>
+							<a href='{$data->image}' title='Click to enlarge'>
+								<img src='{$data->image}' style='float:left;max-width:35%%;max-height:200px;padding:10px;' />
+							</a>
+							<table style='border:0;width:55%%;float:right;'>
+								<tbody>
+									<tr>
+										<th>%s</th>
+										<td>{$data->sku}</td>
+									</tr>
+									<tr>
+										<th>%s</th>
+										<td>{$data->availability}</td>
+									</tr>
+									<tr>
+										<th>%s</th>
+										<td>{$data->condition}</td>
+									</tr>
+									<tr>
+										<th>%s</th>
+										<td>{$data->price}</td>
+									</tr>
+									<tr>
+										<th>%s</th>
+										<td>{$data->warranty}</td>
+									</tr>
+									<tr>
+										<th>%s</th>
+										<td>{$data->rating}</td>
+									</tr>
+									<tr>
+										<th></th>
+										<td>
+											<a href='{$storepath}{$data->link}/'
+												title='%s'>
+												%s
+											</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<div style='clear:both;'></div>
+						</div>
+					</div>
+				",
+				__( 'SKU', 'wpinterspire' ),
+				__( 'Availability', 'wpinterspire' ),
+				__( 'Condition', 'wpinterspire' ),
+				__( 'Price', 'wpinterspire' ),
+				__( 'Warranty', 'wpinterspire' ),
+				__( 'Rating', 'wpinterspire' ),
+				sprintf( __( 'View %s in the store', 'wpinterspire' ), esc_html( $data->name ) ),
+				__( 'Buy Now', 'wpinterspire' )
+			),
+			$data,
+			$storepath
+		);
 	}
 }
 

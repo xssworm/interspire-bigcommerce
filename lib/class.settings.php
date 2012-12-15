@@ -112,27 +112,7 @@ class Bigcommerce_settings {
 
 		// Unconfigured
 		} else {
-
-			// Test PHP-cURL
-			if( ! function_exists( 'curl_version' ) ) {
-				$content = __( 'Your web host does not have cURL (php-libcurl) installed.', 'wpinterspire' );
-				$content .= ' ' . __( 'This is a requirement for this Plugin to work.', 'wpinterspire' );
-				$content .= ' ' . __( 'Please contact your web host to get this fixed.', 'wpinterspire' );
-
-			// Test PHP-cURL-SSL
-			} else {
-				$curl = curl_version();
-				if( ! isset( $curl['ssl_version_number'] ) || ! $curl['ssl_version_number'] ) {
-					$content = __( 'Your web host does not have SSL (php-openssl) installed and available to cURL (php-curl).', 'wpinterspire' );
-					$content .= ' ' . __( 'This is a requirement for this Plugin to work.', 'wpinterspire' );
-					$content .= ' ' . __( 'Please contact your web host to get this fixed.', 'wpinterspire' );
-				}
-			}
-
-			// Just Not Configured
-			if( ! $content ) {
-				$content =  __( 'Your Bigcommerce API settings are not configured properly.', 'wpinterspire' );
-			}
+			$content =  __( 'Your Bigcommerce API settings are not configured properly.', 'wpinterspire' );
 
 			// Add Specific Errors
 			if( self::$errors ) {
