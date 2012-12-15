@@ -55,7 +55,7 @@ class Bigcommerce_display {
 					<div class='bigcommerce-row'>
 						<h2 class='title {$data->is_featured}'>{$data->name}</h2>
 						<div style='padding:10px 20px;'>
-							<a href='{$data->image}' title='Click to enlarge'>
+							<a href='{$data->image}' title='%s'>
 								<img src='{$data->image}' style='float:left;max-width:35%%;max-height:200px;padding:10px;' />
 							</a>
 							<table style='border:0;width:55%%;float:right;'>
@@ -86,12 +86,7 @@ class Bigcommerce_display {
 									</tr>
 									<tr>
 										<th></th>
-										<td>
-											<a href='{$storepath}{$data->link}/'
-												title='%s'>
-												%s
-											</a>
-										</td>
+										<td><a href='{$storepath}{$data->link}/' title='%s'>%s</a></td>
 									</tr>
 								</tbody>
 							</table>
@@ -99,6 +94,7 @@ class Bigcommerce_display {
 						</div>
 					</div>
 				",
+				__( 'Click to enlarge', 'wpinterspire' ),
 				__( 'SKU', 'wpinterspire' ),
 				__( 'Availability', 'wpinterspire' ),
 				__( 'Condition', 'wpinterspire' ),
