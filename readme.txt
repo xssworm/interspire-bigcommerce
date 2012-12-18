@@ -166,13 +166,13 @@ function bigcommerce_product_row( $data, $storepath ) {
 
 = 1.5 on 2012-12-18 =
 
-Added: Product categories caching and display.
-Added: Shortcode attribute `category` to display product listings by category name.
-Added: Shortcode category builder on MCE popup.
-Added: Filter `bigcommerce_display_product_row` for customizing product listings HTML. See FAQ.
-Updated: Changed from using cURL to wp_remote_request() for failover handling.
-Updated: Broke methods up into separate PHP class files for better OOP mojo.
-Fixed: Internal bug 91. Allows the entry of store URL in either the old format, the new format, or the pretty store URL when applicable.
+* Added: Product categories caching and display.
+* Added: Shortcode attribute `category` to display product listings by category name.
+* Added: Shortcode category builder on MCE popup.
+* Added: Filter `bigcommerce_display_product_row` for customizing product listings HTML. See FAQ.
+* Updated: Changed from using cURL to wp_remote_request() for failover handling.
+* Updated: Broke methods up into separate PHP class files for better OOP mojo.
+* Fixed: Internal bug 91. Allows the entry of store URL in either the old format, the new format, or the pretty store URL when applicable.
 
 = 1.4 on 2012-11-27 =
 
