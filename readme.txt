@@ -4,7 +4,7 @@ Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zackka
 Tags: ecommerce, interspire, bigcommerce, e-commerce, shop, cart, paypal, authorize, authorize.net, stock control, ecommerce, zencart, volition, shopsite, oscommerce, zen cart, prestashop, merchant, big commerce
 Requires at least: 3.2
 Tested up to: 3.5
-Stable tag: 1.4
+Stable tag: 1.5
 License: GPLv2
 
 Integrate Bigcommerce hosted eCommerce shopping cart product images and links into WordPress.
@@ -83,11 +83,96 @@ You may use [the Support tab](http://wordpress.org/support/plugin/interspire-big
 * Requires PHP version 5. If your web host does not support PHP5, please contact your host and see if they can upgrade your PHP version.
 * Activate `curl` if your web host doesn't already have it running. Generally this can be done at no cost.
 
-= When should I rebuild my products list? =
+= When should I rebuild my products/cache? =
 
 * Rebuild your products list whenever you upgrade the Plugin, or whenever you add new products or change existing product names, links, or images within your store.
 
+= How can I change the product listings by category HTML? =
+
+* In version 1.5 we added a filter to permit template customization using external code. This allows you to customize the product rows HTML while continuing to keep the Plugin up to date. Use the following code in a new Plugin file, for example: `wp-content/plugins/my_custom_plugin/my_custom_plugin.php`
+
+`
+<?php
+/*
+Plugin Name: Customize Bigcommerce Product Listings Template
+Plugin URI: http://wordpress.org/extend/plugins/interspire-bigcommerce/
+Description: Customizes the Bigcommerce product listings template.
+Version: 1.0
+Author: Myself
+Author URI: http://www.beautomated.com/contact/
+License: GPL2
+*/
+add_filter( 'bigcommerce_display_product_row', 'bigcommerce_product_row', 10, 1 );
+function bigcommerce_product_row( $data, $storepath ) {
+	return sprintf(
+		"
+			<div class='bigcommerce-row'>
+				<h2 class='title {$data->is_featured}'>{$data->name}</h2>
+				<div style='padding:10px 20px;'>
+					<a href='{$data->image}' title='%s'>
+						<img src='{$data->image}' style='float:left;max-width:35%%;max-height:200px;padding:10px;' />
+					</a>
+					<table style='border:0;width:55%%;float:right;'>
+						<tbody>
+							<tr>
+								<th>%s</th>
+								<td>{$data->sku}</td>
+							</tr>
+							<tr>
+								<th>%s</th>
+								<td>{$data->availability}</td>
+							</tr>
+							<tr>
+								<th>%s</th>
+								<td>{$data->condition}</td>
+							</tr>
+							<tr>
+								<th>%s</th>
+								<td>{$data->price}</td>
+							</tr>
+							<tr>
+								<th>%s</th>
+								<td>{$data->warranty}</td>
+							</tr>
+							<tr>
+								<th>%s</th>
+								<td>{$data->rating}</td>
+							</tr>
+							<tr>
+								<th></th>
+								<td><a href='{$storepath}{$data->link}/' title='%s'>%s</a></td>
+							</tr>
+						</tbody>
+					</table>
+					<div style='clear:both;'></div>
+				</div>
+			</div>
+		",
+		__( 'Click to enlarge', 'wpinterspire' ),
+		__( 'SKU', 'wpinterspire' ),
+		__( 'Availability', 'wpinterspire' ),
+		__( 'Condition', 'wpinterspire' ),
+		__( 'Price', 'wpinterspire' ),
+		__( 'Warranty', 'wpinterspire' ),
+		__( 'Rating', 'wpinterspire' ),
+		sprintf( __( 'View %s in the store', 'wpinterspire' ), esc_html( $data->name ) ),
+		__( 'Buy Now', 'wpinterspire' )
+	);
+}
+?>
+`
+
 == Changelog ==
+
+= 1.5 on 2012-12-18 =
+
+Added: Product categories caching and display.
+Added: Shortcode attribute `category` to display product listings by category name.
+Added: Shortcode category builder on MCE popup.
+Added: Filter `bigcommerce_display_product_row` for customizing product listings HTML. See FAQ.
+Updated: Changed from using cURL to wp_remote_request() for failover handling.
+Updated: Broke methods up into separate PHP class files for better OOP mojo.
+Fixed: Internal bug 91. Allows the entry of store URL in either the old format, the new format, or the pretty store URL when applicable.
 
 = 1.4 on 2012-11-27 =
 
@@ -160,6 +245,10 @@ You may use [the Support tab](http://wordpress.org/support/plugin/interspire-big
 * Initial launch
 
 == Upgrade Notice ==
+
+= 1.5 =
+
+* Bug fixes, updates, and a new big feature for presenting products by category shortcode.
 
 = 1.4 =
 
