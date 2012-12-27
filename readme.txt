@@ -65,12 +65,17 @@ New Manual Installation
 
 == Screenshots ==
 
-1. This is the Add Product popup, after clicking the Bigcommerce icon from the pages/posts editor.
-2. This is the shortcode that gets created by the Add Product popup.
-3. This is an example page or post showing a link to a Bigcommerce product page.
-4. This is the Add Media popup Bigcommerce tab, to insert product images into the pages/posts editor.
-5. This is the inserted product image within the pages/posts editor, which can be further adjusted using the WordPress image editor tool.
-6. This is an example page or post showing a product image and link to a Bigcommerce product page.
+1. This is the Plugin settings page.
+2. This is the icon you click to open the Add Product popup.
+3. This is the Add Product popup showing how to add a listing of products by category.
+4. This is the product category shortcode that gets created by the Add Product popup.
+5. This is an example page or post showing a listing of products from a category.
+6. This is the Add Product popup showing how to create a product link.
+7. This is the product link shortcode that gets created by the Add Product popup.
+8. This is the icon you click to open the Add Media popup containing the Bigcommerce tab.
+9. This is the Add Media popup Bigcommerce tab, to insert product images into the pages/posts editor.
+10. This is the inserted product image within the pages/posts editor, which can be further adjusted using the WordPress image editor tool.
+11. This is an example page or post showing a product image and link to a Bigcommerce product page.
 
 == Frequently Asked Questions == 
 
