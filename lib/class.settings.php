@@ -86,7 +86,7 @@ class Bigcommerce_settings {
     	$options = self::get_options();
 		$vendors = array(
 			'http://beautomated.bigcommerce.com/',
-			'http://katzwebservices.bigcommerce.com/',
+			'http://katz.si/bigc',
 		);
 		require( dirname( __FILE__ ) . '/../views/admin-page.html.php' );
     }
