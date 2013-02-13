@@ -1,5 +1,5 @@
 === Bigcommerce ===
-Contributors: katzwebdesign, beautomated, seanconklin, randywsandberg
+Contributors: katzwebdesign
 Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zackkatz%40gmail%2ecom&item_name=Bigcommerce%20for%20WordPress&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8
 Tags: ecommerce, interspire, bigcommerce, e-commerce, shop, cart, paypal, authorize, authorize.net, stock control, ecommerce, zencart, volition, shopsite, oscommerce, zen cart, prestashop, merchant, big commerce
 Requires at least: 3.2
@@ -11,11 +11,11 @@ Integrate Bigcommerce hosted eCommerce shopping cart product images and links in
 
 == Description ==
 
-You want to spend your time writing the best content, not hunting for the link or image for the product you're blogging about. This plugin is powerful and simple to set up. It's a must have if you use WordPress and Bigcommerce.
+You want to spend your time writing the best content, not hunting for the link or image for the product you're blogging about. This Plugin is powerful and simple to set up. It's a must have if you use WordPress and Bigcommerce.
 
 <h3>Easily find and link to your Bigcommerce products from within WordPress</h3>
 
-This plugin adds a button to the post/page editor that makes it easy to link to your products.
+This Plugin adds a button to the post/page editor that makes it easy to link to your products.
 
 *	Set custom link text.
 *	Choose to open the link in the same window or a new window.
@@ -30,8 +30,6 @@ You can easily insert product images using the WordPress Add an Image button.
 *	Use the WordPress image editor tool to add alt, title, alignment and captions.
 
 <h3>What is Bigcommerce?</h3>
-
-[youtube http://www.youtube.com/watch?v=GqS6nnkVuuU]
 
 Bigcommerce is the world’s leading e-commerce platform, powering more than 30,000 stores. You’ll get everything you need to create a successful online store, including a securely hosted site, shopping cart, product catalog and CRM. Themes and point-and-click design features make it easy to build a gorgeous site without any design or technical skills, while powerful built-in marketing and conversion optimization tools help you promote your store and sell more.
 
@@ -83,7 +81,7 @@ New Manual Installation
 
 = Where can I view or submit bugs or feature requests? =
 
-You may use [the Support tab](http://wordpress.org/support/plugin/interspire-bigcommerce "Open the Support tab"), or better yet [view current bugs and roadmap items](https://beautomated.repositoryhosting.com/trac/beautomated_trac-bugs/report "View Tickets"), and [submit your own ideas](https://beautomated.repositoryhosting.com/trac/beautomated_trac-bugs/newticket "New Ticket") using our issue tracking system. You may also email these requests to bugs@beautomated.repositoryhosting.com or roadmap@beautomated.repositoryhosting.com, as appropriate.
+You may use [the Support tab](http://wordpress.org/support/plugin/interspire-bigcommerce "Open the Support tab").
 
 = What are the system requirements = 
 
@@ -106,7 +104,7 @@ Plugin URI: http://wordpress.org/extend/plugins/interspire-bigcommerce/
 Description: Customizes the Bigcommerce product listings template.
 Version: 1.0
 Author: Myself
-Author URI: http://www.beautomated.com/contact/
+Author URI: http://www.mysite.com/contact/
 License: GPL2
 */
 add_filter( 'bigcommerce_display_product_row', 'bigcommerce_product_row', 10, 1 );
