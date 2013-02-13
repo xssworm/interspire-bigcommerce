@@ -1,5 +1,5 @@
 === Bigcommerce ===
-Contributors: katzwebdesign, beautomated, seanconklin, randywsandberg
+Contributors: katzwebdesign
 Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zackkatz%40gmail%2ecom&item_name=Bigcommerce%20for%20WordPress&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8
 Tags: ecommerce, interspire, bigcommerce, e-commerce, shop, cart, paypal, authorize, authorize.net, stock control, ecommerce, zencart, volition, shopsite, oscommerce, zen cart, prestashop, merchant, big commerce
 Requires at least: 3.2
@@ -81,7 +81,7 @@ New Manual Installation
 
 = Where can I view or submit bugs or feature requests? =
 
-You may use [the Support tab](http://wordpress.org/support/plugin/interspire-bigcommerce "Open the Support tab"), or better yet [view current bugs and roadmap items](https://beautomated.repositoryhosting.com/trac/beautomated_trac-bugs/report "View Tickets"), and [submit your own ideas](https://beautomated.repositoryhosting.com/trac/beautomated_trac-bugs/newticket "New Ticket") using our issue tracking system. You may also email these requests to bugs@beautomated.repositoryhosting.com or roadmap@beautomated.repositoryhosting.com, as appropriate.
+You may use [the Support tab](http://wordpress.org/support/plugin/interspire-bigcommerce "Open the Support tab").
 
 = What are the system requirements = 
 
@@ -104,7 +104,7 @@ Plugin URI: http://wordpress.org/extend/plugins/interspire-bigcommerce/
 Description: Customizes the Bigcommerce product listings template.
 Version: 1.0
 Author: Myself
-Author URI: http://www.beautomated.com/contact/
+Author URI: http://www.mysite.com/contact/
 License: GPL2
 */
 add_filter( 'bigcommerce_display_product_row', 'bigcommerce_product_row', 10, 1 );
