@@ -137,5 +137,3 @@ class Bigcommerce_settings {
         return $output;
     }
 }
-
-?>
