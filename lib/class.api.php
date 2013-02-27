@@ -12,7 +12,8 @@ class Bigcommerce_api {
 				'Authorization' => 'Basic ' . base64_encode(
 					"{$options->username}:{$options->xmltoken}"
 				)
-			)
+			),
+			'sslverify' => 0
 		);
 		$response = wp_remote_request( $storepath . $path, $args );
 		if( is_wp_error( $response ) ) {
@@ -63,5 +64,3 @@ class Bigcommerce_api {
 		return Bigcommerce_parser::XmlToObject( $response, 'category' );
 	}
 }
-
-?>

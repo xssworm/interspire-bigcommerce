@@ -3,11 +3,11 @@ Contributors: katzwebdesign
 Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zackkatz%40gmail%2ecom&item_name=Bigcommerce%20for%20WordPress&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8
 Tags: ecommerce, interspire, bigcommerce, e-commerce, shop, cart, paypal, authorize, authorize.net, stock control, ecommerce, zencart, volition, shopsite, oscommerce, zen cart, prestashop, merchant, big commerce
 Requires at least: 3.2
-Tested up to: 3.5
-Stable tag: 1.5
+Tested up to: 3.5.1
+Stable tag: 1.5.1
 License: GPLv2
 
-Integrate Bigcommerce hosted eCommerce shopping cart product images and links into WordPress.
+Integrate Bigcommerce hosted eCommerce shopping cart into WordPress.
 
 == Description ==
 
@@ -30,8 +30,8 @@ You can easily insert product images using the WordPress Add an Image button.
 *	Use the WordPress image editor tool to add alt, title, alignment and captions.
 
 <h3>What is Bigcommerce?</h3>
-
-Bigcommerce is the world’s leading e-commerce platform, powering more than 30,000 stores. You’ll get everything you need to create a successful online store, including a securely hosted site, shopping cart, product catalog and CRM. Themes and point-and-click design features make it easy to build a gorgeous site without any design or technical skills, while powerful built-in marketing and conversion optimization tools help you promote your store and sell more.
+[youtube http://www.youtube.com/watch?v=GqS6nnkVuuU]
+Bigcommerce is the world's leading e-commerce platform, powering more than 30,000 stores. You’ll get everything you need to create a successful online store, including a securely hosted site, shopping cart, product catalog and CRM. Themes and point-and-click design features make it easy to build a gorgeous site without any design or technical skills, while powerful built-in marketing and conversion optimization tools help you promote your store and sell more.
 
 == Installation ==
 
@@ -77,13 +77,13 @@ New Manual Installation
 10. This is the inserted product image within the pages/posts editor, which can be further adjusted using the WordPress image editor tool.
 11. This is an example page or post showing a product image and link to a Bigcommerce product page.
 
-== Frequently Asked Questions == 
+== Frequently Asked Questions ==
 
 = Where can I view or submit bugs or feature requests? =
 
 You may use [the Support tab](http://wordpress.org/support/plugin/interspire-bigcommerce "Open the Support tab").
 
-= What are the system requirements = 
+= What are the system requirements =
 
 * Requires PHP version 5. If your web host does not support PHP5, please contact your host and see if they can upgrade your PHP version.
 * Activate `curl` if your web host doesn't already have it running. Generally this can be done at no cost.
@@ -169,6 +169,9 @@ function bigcommerce_product_row( $data, $storepath ) {
 
 == Changelog ==
 
+= 1.5.1 on 2013-02-27 =
+* Fixed potential SSL warning caused by `sslverify`. Bigcommerce SSL is secure.
+
 = 1.5 on 2012-12-18 =
 
 * Added: Product categories caching and display.
@@ -214,13 +217,13 @@ function bigcommerce_product_row( $data, $storepath ) {
 * Bigcommerce users will now see `[bigcommerce]` shortcode instead of `[interspire]`
 * Improved settings check: settings are only checked when they have changed
 
-= 1.0.6 on 2010-11-23 = 
+= 1.0.6 on 2010-11-23 =
 
 * Whoops! This is what 1.0.5 was supposed to be.
 * Fixed generation of product list
 * Fixed editor button product insertion
 
-= 1.0.4 on 2010-08-27 = 
+= 1.0.4 on 2010-08-27 =
 
 * Fixed bug where product lists would appear to have not been built, although they already had.
 * Removed the dialog box when inserting product. That was for debug purposes.
@@ -251,6 +254,9 @@ function bigcommerce_product_row( $data, $storepath ) {
 
 == Upgrade Notice ==
 
+= 1.5.1 =
+* Fixed potential SSL warning caused by `sslverify`. Bigcommerce SSL is secure.
+
 = 1.5 =
 
 * Bug fixes, updates, and a new big feature for presenting products by category shortcode.
@@ -265,11 +271,11 @@ function bigcommerce_product_row( $data, $storepath ) {
 * Fixed some PHP notices on fresh installation and in the product image browser
 * Fixed <a href="http://www.seodenver.com/interspire-bigcommerce-wordpress/#comment-307176267">issue reported</a> by <a href="http://www.brandywinejewelrysupply.com/">Brandywine Jewelry</a>  where "Screen Options" in WordPress' Add/Edit Post screen are permanently hidden. Thanks for reporting!
 
-= 1.2.2 = 
+= 1.2.2 =
 
 * Fixed `Call to undefined function MakeURLSafe()` error
 
-= 1.2.1 = 
+= 1.2.1 =
 
 * Fixed <a href="http://wordpress.org/support/topic/445905">bug #445905</a> issue where product list would not appear to have been generated.
 * Fixed issue where plugin says settings are configured properly, but are not.
@@ -287,7 +293,7 @@ function bigcommerce_product_row( $data, $storepath ) {
 * Bigcommerce users will now see `[bigcommerce]` shortcode instead of `[interspire]`
 * Improved settings check: settings are only checked when they have changed
 
-= 1.0.6 = 
+= 1.0.6 =
 
 * Whoops! This is what 1.0.5 was supposed to be.
 
@@ -296,7 +302,7 @@ function bigcommerce_product_row( $data, $storepath ) {
 * Fixed generation of product list
 * Fixed editor button product insertion
 
-= 1.0.4 = 
+= 1.0.4 =
 
 * Fixed bug where product lists would appear to have not been built, although they already had.
 * Speeded up the plugin a bit by removing a few calls to the database
@@ -311,11 +317,11 @@ function bigcommerce_product_row( $data, $storepath ) {
 * Very important if you upgraded to 1.0.1 without having configured your settings!
 * Otherwise, it improves settings validation
 
-= 1.0.1 = 
+= 1.0.1 =
 
 * Fixes possible `Uncaught exception 'Exception' with message 'String could not be parsed as XML` error
 * Added error notice if PHP5 is not supported.
 
-= 1.0 = 
+= 1.0 =
 
 * Blastoff!
