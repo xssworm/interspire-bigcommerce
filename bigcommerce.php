@@ -3,8 +3,8 @@
 Plugin Name: Bigcommerce
 Plugin URI: http://www.seodenver.com/interspire-bigcommerce-wordpress/
 Description: Integrate Bigcommerce products into your WordPress pages and posts.
-Author: Katz Web Services & beAutomated
-Version: 1.5.1
+Author: Katz Web Services, Inc.
+Version: 1.6
 Author URI: http://www.katzwebservices.com
 License: GPLv2
 
@@ -19,6 +19,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
+define('BIGCOMMERCE_PLUGIN_FILE', __FILE__);
+
 // Includes
 require_once( 'lib/class.api.php' );
 require_once( 'lib/class.display.php' );
@@ -30,7 +32,7 @@ require_once( 'lib/class.settings.php' );
 add_action( 'admin_init', array( 'Bigcommerce_settings', 'admin_init' ) );
 add_action( 'admin_menu', array( 'Bigcommerce_settings', 'admin_menu' ) );
 add_filter(
-	'plugin_action_links_' . plugin_basename( __FILE__ ),
+	'plugin_action_links_' . plugin_basename( BIGCOMMERCE_PLUGIN_FILE ),
 	array( 'Bigcommerce_settings', 'plugin_action_links' )
 );
 
@@ -49,3 +51,5 @@ add_shortcode( 'Bigcommerce', array( 'Bigcommerce_display', 'shortcode' ) );
 add_shortcode( 'bigcommerce', array( 'Bigcommerce_display', 'shortcode' ) );
 add_shortcode( 'Interspire', array( 'Bigcommerce_display', 'shortcode' ) );
 add_shortcode( 'interspire', array( 'Bigcommerce_display', 'shortcode' ) );
+
+?>

@@ -1,13 +1,13 @@
 === Bigcommerce ===
-Contributors: katzwebdesign
+Contributors: katzwebdesign, katzwebservices
 Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zackkatz%40gmail%2ecom&item_name=Bigcommerce%20for%20WordPress&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8
-Tags: ecommerce, interspire, bigcommerce, e-commerce, shop, cart, paypal, authorize, authorize.net, stock control, ecommerce, zencart, volition, shopsite, oscommerce, zen cart, prestashop, merchant, big commerce
+Tags: ecommerce, interspire, bigcommerce, e-commerce, woocommerce, shop, cart, paypal, authorize, authorize.net, stock control, ecommerce, zencart, volition, shopsite, oscommerce, zen cart, prestashop, merchant, big commerce
 Requires at least: 3.2
 Tested up to: 3.5.1
-Stable tag: 1.5.1
+Stable tag: 1.6
 License: GPLv2
 
-Integrate Bigcommerce hosted eCommerce shopping cart into WordPress.
+Integrate Bigcommerce hosted eCommerce shopping cart product images and links into WordPress.
 
 == Description ==
 
@@ -30,17 +30,17 @@ You can easily insert product images using the WordPress Add an Image button.
 *	Use the WordPress image editor tool to add alt, title, alignment and captions.
 
 <h3>What is Bigcommerce?</h3>
-[youtube http://www.youtube.com/watch?v=GqS6nnkVuuU]
-Bigcommerce is the world's leading e-commerce platform, powering more than 30,000 stores. You’ll get everything you need to create a successful online store, including a securely hosted site, shopping cart, product catalog and CRM. Themes and point-and-click design features make it easy to build a gorgeous site without any design or technical skills, while powerful built-in marketing and conversion optimization tools help you promote your store and sell more.
+
+Bigcommerce is the world’s leading e-commerce platform, powering more than 30,000 stores. You’ll get everything you need to create a successful online store, including a securely hosted site, shopping cart, product catalog and CRM. Themes and point-and-click design features make it easy to build a gorgeous site without any design or technical skills, while powerful built-in marketing and conversion optimization tools help you promote your store and sell more.
 
 == Installation ==
 
-Update Instructions
+### Update Instructions
 
 1. Click to have the Plugin updated.
 1. Click Bigcommerce on the administration sidebar menu. Click the Settings tab. Check to ensure that your settings are properly configured. Click to rebuild your products list.
 
-New Automatic Installation
+### New Automatic Installation
 
 1. Log in to your blog and go to the Plugins page.
 1. Click Add New button.
@@ -53,7 +53,7 @@ New Automatic Installation
 1. Back on your site, click Bigcommerce on the administration sidebar menu. Click the Settings tab. Check to ensure that your settings are properly configured. Click to rebuild your products list.
 1. On any page or post, click on the Bigcommerce icon to insert product links, or click on the media library icon and the Bigcommerce tab to insert product images.
 
-New Manual Installation
+### New Manual Installation
 
 1. Download the Plugin and un-zip it.
 1. Upload the `interspire-bigcommerce` folder to your `wp-content/plugins/` directory.
@@ -92,6 +92,15 @@ You may use [the Support tab](http://wordpress.org/support/plugin/interspire-big
 
 * Rebuild your products list whenever you upgrade the Plugin, or whenever you add new products or change existing product names, links, or images within your store.
 
+= How can I replace the "No Image Available" image with my own? =
+Add a filter on `bigcommerce_no_image` that includes HTML output of an image file of your choosing.
+`
+add_filter( 'bigcommerce_no_image', 'replace_bigcommerce_no_image_with_my_image');
+function replace_bigcommerce_no_image_with_my_image($content) {
+	return '<img src="http://example.com/my-no-image-image.jpg" alt="No image available" />';
+}
+`
+
 = How can I change the product listings by category HTML? =
 
 * In version 1.5 we added a filter to permit template customization using external code. This allows you to customize the product rows HTML while continuing to keep the Plugin up to date. Use the following code in a new Plugin file, for example: `wp-content/plugins/my_custom_plugin/my_custom_plugin.php`
@@ -109,65 +118,88 @@ License: GPL2
 */
 add_filter( 'bigcommerce_display_product_row', 'bigcommerce_product_row', 10, 1 );
 function bigcommerce_product_row( $data, $storepath ) {
-	return sprintf(
-		"
-			<div class='bigcommerce-row'>
-				<h2 class='title {$data->is_featured}'>{$data->name}</h2>
-				<div style='padding:10px 20px;'>
-					<a href='{$data->image}' title='%s'>
-						<img src='{$data->image}' style='float:left;max-width:35%%;max-height:200px;padding:10px;' />
-					</a>
-					<table style='border:0;width:55%%;float:right;'>
-						<tbody>
-							<tr>
-								<th>%s</th>
-								<td>{$data->sku}</td>
-							</tr>
-							<tr>
-								<th>%s</th>
-								<td>{$data->availability}</td>
-							</tr>
-							<tr>
-								<th>%s</th>
-								<td>{$data->condition}</td>
-							</tr>
-							<tr>
-								<th>%s</th>
-								<td>{$data->price}</td>
-							</tr>
-							<tr>
-								<th>%s</th>
-								<td>{$data->warranty}</td>
-							</tr>
-							<tr>
-								<th>%s</th>
-								<td>{$data->rating}</td>
-							</tr>
-							<tr>
-								<th></th>
-								<td><a href='{$storepath}{$data->link}/' title='%s'>%s</a></td>
-							</tr>
-						</tbody>
-					</table>
-					<div style='clear:both;'></div>
-				</div>
-			</div>
-		",
-		__( 'Click to enlarge', 'wpinterspire' ),
-		__( 'SKU', 'wpinterspire' ),
-		__( 'Availability', 'wpinterspire' ),
-		__( 'Condition', 'wpinterspire' ),
-		__( 'Price', 'wpinterspire' ),
-		__( 'Warranty', 'wpinterspire' ),
-		__( 'Rating', 'wpinterspire' ),
-		sprintf( __( 'View %s in the store', 'wpinterspire' ), esc_html( $data->name ) ),
-		__( 'Buy Now', 'wpinterspire' )
-	);
+		if(!empty($data->image)) {
+			$image = sprintf("<a href='{$data->image}' title='%s'>
+								<img src='{$data->image}' style='float:left;max-width:35%%;max-height:200px;padding:10px;' class='bigcommerce_image' alt='%s' />
+					</a>", __( 'Click to enlarge', 'wpinterspire' ), esc_html( $data->name ));
+		} else {
+			$image = apply_filters( 'bigcommerce_no_image', sprintf("<img src='".plugins_url( 'no_image_available.png', BIGCOMMERCE_PLUGIN_FILE )."' style='float:left;max-width:35%%;max-height:200px;padding:10px;' class='bigcommerce_image' alt='%s' />", esc_html( $data->name )));
+		}
+
+		return apply_filters(
+			'bigcommerce_display_product_row',
+			sprintf(
+				"
+					<div class='bigcommerce-row'>
+						<h2 class='title {$data->is_featured}'>{$data->name}</h2>
+						<div style='padding:10px 20px;'>
+							%s
+							<table style='border:0;width:55%%;float:right;'>
+								<tbody>
+									<tr>
+										<th>%s</th>
+										<td>{$data->sku}</td>
+									</tr>
+									<tr>
+										<th>%s</th>
+										<td>{$data->availability}</td>
+									</tr>
+									<tr>
+										<th>%s</th>
+										<td>{$data->condition}</td>
+									</tr>
+									<tr>
+										<th>%s</th>
+										<td>{$data->price}</td>
+									</tr>
+									<tr>
+										<th>%s</th>
+										<td>{$data->warranty}</td>
+									</tr>
+									<tr>
+										<th>%s</th>
+										<td>{$data->rating}</td>
+									</tr>
+									<tr>
+										<th></th>
+										<td><a href='{$storepath}{$data->link}/' title='%s'>%s</a></td>
+									</tr>
+								</tbody>
+							</table>
+							<div style='clear:both;'></div>
+						</div>
+					</div>
+				",
+				$image,
+				__( 'SKU', 'wpinterspire' ),
+				__( 'Availability', 'wpinterspire' ),
+				__( 'Condition', 'wpinterspire' ),
+				__( 'Price', 'wpinterspire' ),
+				__( 'Warranty', 'wpinterspire' ),
+				__( 'Rating', 'wpinterspire' ),
+				sprintf( __( 'View %s in the store', 'wpinterspire' ), esc_html( $data->name ) ),
+				__( 'Buy Now', 'wpinterspire' )
+			),
+			$data,
+			$storepath
+		);
 }
 ?>
 `
 
 == Changelog ==
+
+= 1.6 on 2013-03-14 =
+* Improved and fixed issues with the insert image ("Add Media") functionality
+	- Now properly paginates based on products with images, not number of products
+	- Speed is much improved
+	- Improved pagination style
+* Improved caching of products and product images.
+* Fixed rebuilding products and categories list (it now rebuilds properly)
+* Fixed issue where content would be clipped after inserted Bigcommerce category (caused by using `]` instead of `/]` in the shortcode)
+* Fixed issue with store validation not updating when settings were changed
+* Products without images now show "No Image Available" image instead of broken image link (see FAQ to use your own custom image)
+* Added `alt` text to images
 
 = 1.5.1 on 2013-02-27 =
 * Fixed potential SSL warning caused by `sslverify`. Bigcommerce SSL is secure.
@@ -253,6 +285,16 @@ function bigcommerce_product_row( $data, $storepath ) {
 * Initial launch
 
 == Upgrade Notice ==
+
+= 1.6 on 2013-03-14 =
+* Improved and fixed issues with the insert image ("Add Media") functionality
+	- Now properly paginates based on products with images, not number of products
+	- Speed is much improved
+	- Improved pagination style
+* Fixed rebuilding products and categories list (it now rebuilds properly)
+* Fixed issue where content would be clipped after inserted Bigcommerce category (caused by using `]` instead of `/]` in the shortcode)
+* Fixed issue with store validation not updating when settings were changed
+* Products without images now show "No Image Available" image instead of broken image link (see FAQ to use your own custom image)
 
 = 1.5.1 =
 * Fixed potential SSL warning caused by `sslverify`. Bigcommerce SSL is secure.

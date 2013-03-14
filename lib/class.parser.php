@@ -35,6 +35,7 @@ class Bigcommerce_parser {
 		// Try To Convert
 		try {
 			$response = new SimpleXMLElement( $xml, LIBXML_NOCDATA );
+			return $response;
 
 		// Catch Error In Conversion
 		} catch ( Exception $error ) {
@@ -55,9 +56,11 @@ class Bigcommerce_parser {
 	// Gets Live Image URL
 	public function GetImage( $link ) {
 		$image = Bigcommerce_api::GetDetail( substr( $link, 1 ) );
-		$image = self::XmlToObject( $image, 'image' );
-		$path = $image[0]->image_file;
-		return self::storepath() . 'product_images/' . $path;
+		if(!$image) { return false; }
+		$xml = self::XmlToObject( $image, 'image' );
+		$image = isset($xml->image) ? $xml->image : $xml;
+		$path = is_array($image) ? $image[0]->image_file : $image->image_file;
+		return self::storepath() . 'product_images/' . (string)$path;
 	}
 
 	// Builds Select Box For Products
@@ -135,9 +138,10 @@ class Bigcommerce_parser {
 		$output = '';
 
 		// Find Products
-		$products = get_option( 'wpinterspire_products' );
-		$products = self::XmlToObject( $products, 'product' );
+		$products = Bigcommerce_api::GetProducts();
+
 		if( $products ) {
+
 			foreach( $products as $product ) {
 				foreach( $product->categories as $product_category ) {
 					$product_category = intval( $product_category->value );
@@ -150,13 +154,11 @@ class Bigcommerce_parser {
 
 						// Check For Image
 						$image = '<p>No image available</p>';
-						if( isset( $product->images[0]->link ) ) {
-							$image = self::GetImage(
-								$product->images[0]->link
-							);
+						if( isset( $product->images->link ) ) {
+							$image = self::GetImage($product->images->link);
 						}
 
-						// Output The Row			
+						// Output The Row
 						$output .= Bigcommerce_display::DisplayProductRow(
 							(object) array(
 								'is_featured' => (

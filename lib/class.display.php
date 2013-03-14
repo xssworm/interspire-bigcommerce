@@ -4,7 +4,7 @@
 class Bigcommerce_display {
 
 	// Handle Shortcodes
-	function shortcode( $atts, $content ) {
+	function shortcode( $atts, $content = '') {
 		extract(
 			shortcode_atts(
 				array(
@@ -48,6 +48,15 @@ class Bigcommerce_display {
 	// Products Listings Row
 	function DisplayProductRow( $data ) {
 		$storepath = Bigcommerce_parser::storepath();
+
+		if(!empty($data->image)) {
+			$image = sprintf("<a href='{$data->image}' title='%s'>
+								<img src='{$data->image}' style='float:left;max-width:35%%;max-height:200px;padding:10px;' class='bigcommerce_image' alt='%s' />
+					</a>", __( 'Click to enlarge', 'wpinterspire' ), esc_html( $data->name ));
+		} else {
+			$image = apply_filters( 'bigcommerce_no_image', sprintf("<img src='".plugins_url( 'no_image_available.png', BIGCOMMERCE_PLUGIN_FILE )."' style='float:left;max-width:35%%;max-height:200px;padding:10px;' class='bigcommerce_image' alt='%s' />", esc_html( $data->name )));
+		}
+
 		return apply_filters(
 			'bigcommerce_display_product_row',
 			sprintf(
@@ -55,9 +64,7 @@ class Bigcommerce_display {
 					<div class='bigcommerce-row'>
 						<h2 class='title {$data->is_featured}'>{$data->name}</h2>
 						<div style='padding:10px 20px;'>
-							<a href='{$data->image}' title='%s'>
-								<img src='{$data->image}' style='float:left;max-width:35%%;max-height:200px;padding:10px;' />
-							</a>
+							%s
 							<table style='border:0;width:55%%;float:right;'>
 								<tbody>
 									<tr>
@@ -94,7 +101,7 @@ class Bigcommerce_display {
 						</div>
 					</div>
 				",
-				__( 'Click to enlarge', 'wpinterspire' ),
+				$image,
 				__( 'SKU', 'wpinterspire' ),
 				__( 'Availability', 'wpinterspire' ),
 				__( 'Condition', 'wpinterspire' ),

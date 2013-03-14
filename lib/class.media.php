@@ -19,10 +19,18 @@ class Bigcommerce_media {
 	function media_buttons_context( $context ) {
 		if( ! Bigcommerce_settings::$configured ) { return $context; }
 		return $context . '
-			<a href="#TB_inline?width=640&inlineId=interspire_select_product" class="thickbox"
-				title="' . __( 'Add Bigcommerce Product Link', 'wpinterspire' ) . '">
-			<img src="' . plugins_url( 'favicon.png', dirname( __FILE__ ) ) . '" width="16" height="16"
-				alt="' . __( "Add a Product", 'wpinterspire' ) . '" /></a>
+			<style>
+			.wp-media-buttons .wpinterspire { padding-left: 3px!important; }
+			.wp-media-buttons .wpinterspire span.wp-media-buttons-icon {
+				background: transparent url(' . plugins_url( 'favicon-small.png', dirname( __FILE__ ) ) . ') left top no-repeat;
+				width: 12px;
+				height:17px;
+			}
+			</style>
+			<a href="#TB_inline?width=640&inlineId=interspire_select_product" class="thickbox button wpinterspire"
+				title="' . __( 'Add Bigcommerce Link', 'wpinterspire' ) . '">
+				<span class="wp-media-buttons-icon"></span>
+				'.__( 'Add Bigcommerce Link', 'wpinterspire' ).'</a>
 		';
 	}
 
@@ -35,9 +43,7 @@ class Bigcommerce_media {
 	// Presents Product Image Choices
 	function media_process() {
 
-		// Get Products From Cache
-		$Products = get_option( 'wpinterspire_products' );
-		$Products = Bigcommerce_parser::XmlToObject( $Products, 'product' );
+		$Products = Bigcommerce_api::GetProducts();
 
 		// Present Other Tabs
 		media_upload_header();
@@ -57,37 +63,53 @@ class Bigcommerce_media {
 		}
 
 		// Pagination Variables
-		$perpage = 10;
+		$perpage = apply_filters('wpinterspire_images_per_page', 20);
 		$page = isset( $_GET['paged'] ) ? $_GET['paged'] : 1;
 	   	$start = $perpage * ( $page - 1 );
 	   	$end = $start + ( $perpage - 1 );
-		$paginate_links = paginate_links(
-			array(
-				'base' => add_query_arg( 'paged', '%#%' ),
-				'format' => '',
-				'total' => ceil( sizeof( $Products ) / $perpage ),
-				'current' => $page,
-			)
-		);
+		$total_images = 0;
 
-		// Loop Products
-		$images = array();
+		$all_images = maybe_unserialize(get_option( 'wpinterspire_product_images'));
+
+		if(empty($all_images) || isset($_GET['cache'])) {
+
+			// Loop Products
+			$all_images = array();
+			foreach( $Products as $product ) {
+				// Skip Products Without Images
+				if( empty( $product->images->link ) ) { continue; }
+				$path = Bigcommerce_parser::GetImage( $product->images->link );
+				if(!$path) { continue; }
+				$all_images[(string)$product->id] = array(
+					'productid'	=> (string)$product->id,
+					'name' => (string)$product->name,
+					'path' => (string)$path,
+				);
+			}
+
+			update_option( 'wpinterspire_product_images', $all_images);
+		}
+
+		$total_images = sizeof($all_images);
 		$i = -1;
-		foreach( $Products as $product ) {
+		foreach($all_images as $image) {
 			$i++;
 
 			// Limit To Per Page Quantity
 			if( $i < $start || $i > $end ) { continue; }
 
-			// Skip Products Without Images
-			if( ! isset( $product->images[0]->link ) ) { continue; }
-			$path = Bigcommerce_parser::GetImage( $product->images[0]->link );
-			$images[] = array(
-				'productid'	=> $product->id,
-				'name' => $product->name,
-				'path' => $path,
-			);
+			$images[$image['productid']] = $image;
 		}
+
+		$paginate_links = paginate_links(
+			array(
+				'base' => add_query_arg( 'paged', '%#%' ),
+				'show_all' => true,
+				'format' => '',
+				'total' => ceil( $total_images / $perpage ),
+				'current' => $page,
+			)
+		);
 
 		// Output
 		require( dirname( __FILE__ ) . '/../views/media.html.php' );

@@ -29,15 +29,14 @@ class Bigcommerce_settings {
         );
 
 		// Load Support For Localizations
-		load_plugin_textdomain(
-			'wpinterspire', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/'
-		);
+		load_plugin_textdomain( 'bigcommerce', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+		load_plugin_textdomain( 'wpinterspire', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
 		// Only Continue For Self Settings Page
 		if(
 			$pagenow == 'options-general.php'
 			&& isset( $_REQUEST['page'] )
-			&& $_REQUEST['page'] != 'wpinterspire'
+			&& $_REQUEST['page'] != 'bigcommerce'
 		) { return; }
 
 		// Run Settings Check
@@ -45,8 +44,8 @@ class Bigcommerce_settings {
 
 		// (Re)Build Products Upon Request
 		if (
-			isset( $_REQUEST['wpinterspirerebuild'] )
-			&& $_REQUEST['wpinterspirerebuild'] == 'all'
+			isset( $_REQUEST['rebuild'] )
+			&& $_REQUEST['rebuild'] == 'all'
 		) {
 			Bigcommerce_parser::BuildProductsSelect( true );
 			Bigcommerce_parser::BuildCategoriesSelect( true );
@@ -60,12 +59,12 @@ class Bigcommerce_settings {
 
 	// Checks Saved Settings
 	function CheckSettings() {
-    	return ( Bigcommerce_api::GetCategories() );
+    	return ( Bigcommerce_api::GetCategories(!isset($_GET['settings-updated'])) );
 	}
 
 	// Tied To WP Hook By The Same Name - Adds Settings Link
 	function plugin_action_links( $links ) {
-		$links['settings'] = '<a href="options-general.php?page=wpinterspire">'
+		$links['settings'] = '<a href="options-general.php?page=bigcommerce">'
 			. __( 'Settings', 'wpinterspire' ) . '</a>';
 		return $links;
 	}
@@ -73,10 +72,10 @@ class Bigcommerce_settings {
 	// Tied To WP Hook By The Same Name - Adds Admin Submenu Link
     function admin_menu() {
 		add_options_page(
-			'Bigcommerce',
-			'Bigcommerce',
+			__('Bigcommerce', 'wpinterspire'),
+			__('Bigcommerce', 'wpinterspire'),
 			'administrator',
-			'wpinterspire',
+			'bigcommerce',
 			array( 'Bigcommerce_settings', 'admin_page' )
 		);
     }
@@ -137,3 +136,5 @@ class Bigcommerce_settings {
         return $output;
     }
 }
+
+?>

@@ -2,7 +2,7 @@
 
 // Handle No Product Image
 if ( ! $images ) {
-	echo '<div id="message" class="error"><p>Your store has no images.</p></div>';
+	echo '<div id="message" class="error"><p>'.__('Your store has no images.', 'wpinterspire').'</p></div>';
 	return;
 }
 
@@ -10,7 +10,14 @@ if ( ! $images ) {
 
 <div style="margin: 20px;">
 
-	<p><?php echo $paginate_links; ?></p>
+	<div class="tablenav">
+		<div class="tablenav-pages" style="float:left">
+			<span class="pagination-links">
+				<?php echo $paginate_links; ?>
+			</span>
+		</div>
+		<span class="displaying-num" style="float:right"><?php _e(sprintf('%d %s', $total_images, _n( 'image','images', $total_images, 'wpinterspire' ))); ?></span>
+	</div>
 
 	<table style="width: 100%;">
 		<tbody>
@@ -18,6 +25,7 @@ if ( ! $images ) {
 			<?php
 			// Loop Product Images
 			foreach( $images as $i => $imagedata ) {
+				flush();
 				extract( $imagedata );
 				$uniqid = uniqid();
 			?>

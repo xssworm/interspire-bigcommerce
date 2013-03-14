@@ -4,7 +4,7 @@
 	<h2>Bigcommerce for WordPress</h2>
 
 	<?php Bigcommerce_settings::show_configuration_check(); ?>
-	
+
 	<hr />
 
 	<?php if( self::$configured ) { ?>
@@ -18,7 +18,7 @@
 				. '<p><strong>Has the list changed?</strong>'
 			: 'Your cache has not yet been built.';
 		?>
-		<a href='<?php echo wp_nonce_url( admin_url( 'options-general.php?page=wpinterspire&amp;wpinterspirerebuild=all' ), 'rebuild' ); ?>' class='button'>
+		<a href='<?php echo wp_nonce_url( admin_url( 'options-general.php?page=bigcommerce&amp;rebuild=all' ), 'rebuild' ); ?>' class='button'>
 			<?php echo get_option( 'wpinterspire_productselect' ) ? 'Re-build your products list' : 'Build your products list'; ?>
 		</a><br />
 		<small>
@@ -51,10 +51,10 @@
 	<?php } ?>
 	<hr />
 
-	<h3>Store Settings</h3>
+	<h3><?php _e( 'Store Settings', 'wpinterspire' ); ?></h3>
 	<form method="post" action="options.php">
 		<input type='hidden' name='wpinterspire[configured]' value='<?php echo Bigcommerce_settings::$configured; ?>' />
-		<?php 
+		<?php
 		wp_nonce_field( 'update-options' );
 		settings_fields( 'wpinterspire_options' );
 		?>

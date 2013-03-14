@@ -1,4 +1,5 @@
 <div id="interspire_select_product" style="display:none;">
+	<div class="wrap">
 	<div id="media-upload">
 
 		<?php
@@ -11,55 +12,10 @@
 					Bigcommerce Settings</a>
 				</p>
 			';
-		} else { 
+		} else {
 		?>
 
-		<h3><?php _e( 'Insert All Products By Category', 'wpinterspire' ); ?></h3>
-		<table>
-			<tbody>
-				<tr>
-					<th valign="top" scope="row" class="label">
-						<span class="alignleft">
-							<label for="interspire_add_product_id">
-								<?php _e( 'Select the Category', 'wpinterspire' ); ?>:
-							</label>
-						</span>
-					</th>
-					<td class="field">
-						<?php echo get_option( 'wpinterspire_categoryselect' ); ?>
-					</td>
-				</tr>
-				<tr>
-					<th valign="top" scope="row" class="label">
-						<span class="alignleft">
-							<label for="url">
-								<?php _e( 'Additional options', 'wpinterspire' ); ?>:
-							</label>
-						</span>
-					</th>
-					<td class="field">
-						<input type="checkbox" id="link_nofollow1" />
-						<label for="link_nofollow1">
-							<?php _e( 'Nofollow the links', 'wpinterspire' ); ?>
-						</label><br />
-
-						<input type="checkbox" id="link_target1" />
-						<label for="link_target1">
-							<?php _e( 'Open links in a new window', 'wpinterspire' ); ?>
-						</label>
-					</td>
-				</tr>
-				<tr>
-					<td></td>
-					<td>
-						<input type="button" class="button-primary" onclick="BigcommerceShortcodeCategory();"
-							value="<?php _e( 'Insert Products', 'wpinterspire'); ?>" />
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<h3><?php _e( 'Insert One Product Link', 'wpinterspire' ); ?></h3>
+		<h2><?php _e( 'Insert Product Link', 'wpinterspire' ); ?></h2>
 		<table>
 			<tbody>
 				<tr>
@@ -116,7 +72,53 @@
 			</tbody>
 		</table>
 
+		<h2><?php _e( 'Insert All Products By Category', 'wpinterspire' ); ?></h2>
+		<table>
+			<tbody>
+				<tr>
+					<th valign="top" scope="row" class="label">
+						<span class="alignleft">
+							<label for="interspire_add_product_id">
+								<?php _e( 'Select the Category', 'wpinterspire' ); ?>:
+							</label>
+						</span>
+					</th>
+					<td class="field">
+						<?php echo get_option( 'wpinterspire_categoryselect' ); ?>
+					</td>
+				</tr>
+				<tr>
+					<th valign="top" scope="row" class="label">
+						<span class="alignleft">
+							<label for="url">
+								<?php _e( 'Additional options', 'wpinterspire' ); ?>:
+							</label>
+						</span>
+					</th>
+					<td class="field">
+						<input type="checkbox" id="link_nofollow1" />
+						<label for="link_nofollow1">
+							<?php _e( 'Nofollow the links', 'wpinterspire' ); ?>
+						</label><br />
+
+						<input type="checkbox" id="link_target1" />
+						<label for="link_target1">
+							<?php _e( 'Open links in a new window', 'wpinterspire' ); ?>
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						<input type="button" class="button-primary" onclick="BigcommerceShortcodeCategory();"
+							value="<?php _e( 'Insert Products', 'wpinterspire'); ?>" />
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
 		<?php } /* End Of Settings Check */ ?>
+	</div>
 	</div>
 </div>
 
@@ -129,7 +131,7 @@ function BigcommerceShortcodeCategory() {
 	if( jQuery( '#link_target1' ).is( ':checked' ) ) { link_target = ' target="_blank"'; }
 	if( jQuery( '#link_nofollow1' ).is( ':checked' ) ) { link_nofollow = ' rel="nofollow"'; }
 	var win = window.dialogArguments || opener || parent || top;
-	win.send_to_editor('[bigcommerce' + link_category + link_target + link_nofollow + ']');
+	win.send_to_editor('[bigcommerce' + link_category + link_target + link_nofollow + ' /]');
 }
 
 function BigcommerceShortcodeProduct() {
