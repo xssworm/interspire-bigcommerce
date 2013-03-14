@@ -19,7 +19,8 @@ class Bigcommerce_api {
 					"{$options->username}:{$options->xmltoken}"
 				)
 			),
-			'sslverify' => 0
+			'sslverify' => 0,
+			'timeout' => 20
 		);
 		$response = wp_remote_request( $storepath . $path, $args );
 
